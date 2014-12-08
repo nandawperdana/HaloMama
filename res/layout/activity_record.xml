@@ -21,7 +21,7 @@
             android:layout_marginRight="8dp"
             android:background="@drawable/icon_dismiss_mdpi" />
 
-        <com.nandanu.hallomama.roboto.RobotoTextView
+        <com.nandanu.halomama.roboto.RobotoTextView
             android:id="@+id/textViewBatalkan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <com.nandanu.hallomama.roboto.RobotoChronometer
+        <com.nandanu.halomama.roboto.RobotoChronometer
             android:id="@+id/chronometer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

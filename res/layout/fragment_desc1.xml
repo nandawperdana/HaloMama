@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/slide1"
-    tools:context="com.nandanu.hallomama.MainActivity$PlaceholderFragment" >
+    android:background="@drawable/slide1" >
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -23,7 +22,7 @@
             android:layout_marginTop="40px"
             android:src="@drawable/fhab_logo_mdpi" />
 
-        <com.nandanu.hallomama.roboto.RobotoTextView
+        <com.nandanu.halomama.roboto.RobotoTextView
             android:id="@+id/section_label1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
