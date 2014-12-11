@@ -53,7 +53,6 @@ public class AmazonClientManager {
     }
 
     public void validateCredentials() {
-
         if (ddb == null) {
             initClients();
         }

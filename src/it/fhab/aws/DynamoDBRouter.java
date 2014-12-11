@@ -17,6 +17,8 @@ package it.fhab.aws;
 
 import it.fhab.aws.dynamodb.tablerow.DDBTableRow;
 import it.fhab.aws.dynamodb.tablerow.People;
+import it.fhab.aws.dynamodb.tablerow.Question;
+import it.fhab.aws.dynamodb.tablerow.Question2;
 
 import java.util.ArrayList;
 
@@ -24,7 +26,9 @@ import android.util.Log;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
@@ -42,11 +46,55 @@ public class DynamoDBRouter {
 		mapper = new DynamoDBMapper(dDBClient);
 	}
 
-	public void signUp(DDBTableRow dDBModel){
-		People p = (People) dDBModel;
-		save(p);
-	}
-	
+//	public void signUp(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	
+//	public void signIn(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	
+//	public void deactive(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	public void postFhab(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	
+//	public void postHaloMama(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	
+//	public void deleteHaloMama(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//
+//	public void overideHaloMama(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	
+//	public void incrementSeen(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	
+//	public void getPopularHaloMama(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+//	
+//	public void getLastHaloMama(DDBTableRow dDBModel){
+//		People p = (People) dDBModel;
+//		save(p);
+//	}
+		
 	/*
 	 * Inserts ten users with userNo from 1 to 10 and random names.
 	 */
@@ -64,9 +112,124 @@ public class DynamoDBRouter {
 	}
 
 	/*
+	 * Query the table and returns the list of users.
+	 */
+	public ArrayList<DDBTableRow> queryModels(DDBTableRow dDBModel) {
+		
+		DynamoDBQueryExpression queryExpression = dDBModel.getQueryExpression();
+		try {
+			PaginatedQueryList<DDBTableRow> result = mapper.query(
+					DDBTableRow.class, queryExpression);
+
+			ArrayList<DDBTableRow> resultList = new ArrayList<DDBTableRow>();
+			for (DDBTableRow up : result) {
+				resultList.add(up);
+			}
+			return resultList;
+
+		} catch (AmazonServiceException ex) {
+			amazonClientManager
+					.wipeCredentialsOnAuthError(ex);
+		}
+
+		return null;
+	}
+
+	/*
 	 * Scans the table and returns the list of users.
 	 */
-	public ArrayList<DDBTableRow> getModels(DDBTableRow dDBModel) {
+	public ArrayList<People> scanPeople() {
+//		DynamoDBScanExpression scanExpression = dDBModel.getScanExpression();
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		try {
+			PaginatedScanList<People> result = mapper.scan(
+					People.class, scanExpression);
+
+			ArrayList<People> resultList = new ArrayList<People>();
+			for (People up : result) {
+				resultList.add(up);
+				System.out.println(up.getCognitoId());
+			}
+			return resultList;
+
+		} catch (AmazonServiceException ex) {
+			amazonClientManager
+					.wipeCredentialsOnAuthError(ex);
+		}
+
+		return null;
+	}
+
+	public ArrayList<Question2> scanQuestion() {
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		try {
+			PaginatedScanList<Question2> result = mapper.scan(
+					Question2.class, scanExpression);
+
+			ArrayList<Question2> resultList = new ArrayList<Question2>();
+			for (Question2 up : result) {
+				resultList.add(up);
+				System.out.println(up.getQuestion());
+			}
+			return resultList;
+
+		} catch (AmazonServiceException ex) {
+			amazonClientManager
+					.wipeCredentialsOnAuthError(ex);
+		}
+
+		return null;
+	}
+
+	public ArrayList<Question> queryQuestion() {
+//		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		DynamoDBQueryExpression<Question> queryExpression = new DynamoDBQueryExpression<Question>();
+		Question q = new Question();
+		q.setEmotionId("5");
+		queryExpression.withHashKeyValues(q);
+		try {
+			PaginatedQueryList<Question> result = mapper.query(
+					Question.class, queryExpression);
+
+			ArrayList<Question> resultList = new ArrayList<Question>();
+			for (Question up : result) {
+				resultList.add(up);
+				System.out.println(up.getQuestion());
+			}
+			return resultList;
+
+		} catch (AmazonServiceException ex) {
+			amazonClientManager
+					.wipeCredentialsOnAuthError(ex);
+		}
+
+		return null;
+	}
+	public ArrayList<Question> scanQuestion2() {
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		try {
+			PaginatedScanList<Question> result = mapper.scan(
+					Question.class, scanExpression);
+
+			ArrayList<Question> resultList = new ArrayList<Question>();
+			for (Question up : result) {
+				resultList.add(up);
+				System.out.println(up.getQuestion());
+			}
+			return resultList;
+
+		} catch (AmazonServiceException ex) {
+			amazonClientManager
+					.wipeCredentialsOnAuthError(ex);
+		}
+
+		return null;
+	}
+	
+	/*
+	 * Scans the table and returns the list of users.
+	 */
+	public ArrayList<DDBTableRow> scanModels(DDBTableRow dDBModel) {
 		DynamoDBScanExpression scanExpression = dDBModel.getScanExpression();
 		try {
 			PaginatedScanList<DDBTableRow> result = mapper.scan(
@@ -103,6 +266,8 @@ public class DynamoDBRouter {
 
 		return null;
 	}
+	
+	
 	
 //	private enum DynamoDBRouterType {
 //		GET_TABLE_STATUS, CREATE_TABLE, INSERT_USER, LIST_USERS, CLEAN_UP
@@ -154,9 +319,9 @@ public class DynamoDBRouter {
 //			} else if (result.getTaskType() == DynamoDBRouterType.LIST_USERS) {
 //				
 //				//do something with activity
-//				// resut.
+//				// result.
 //			}
 //		}
 //	}
-
+	
 }

@@ -18,11 +18,9 @@ package it.fhab.aws;
 import com.amazonaws.regions.Regions;
 
 public class Constants {
-	
     public static final String ACCOUNT_ID = "326820369316";
     public static final String IDENTITY_POOL_ID = "us-east-1:d51cfebb-a83f-4d6b-9ad4-b44f2e6340ba";
     public static final String UNAUTH_ROLE_ARN = "arn:aws:iam::326820369316:role/Cognito_fhabBackendUnauth_DefaultRole";
     public static final Regions COGNITO_REGION = Regions.US_EAST_1;	
-    public static final Regions DDB_REGION = Regions.US_EAST_1;
-    
+    public static final Regions DDB_REGION = Regions.US_EAST_1;    
 }
