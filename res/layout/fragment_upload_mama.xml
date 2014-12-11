@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_marginLeft="16px"
+            android:layout_marginLeft="16dp"
             android:background="@drawable/icon_dismiss_mdpi" />
 
         <com.nandanu.halomama.roboto.RobotoTextView
@@ -24,10 +24,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_marginLeft="8px"
+            android:layout_marginLeft="8dp"
             android:text="BATALKAN"
             android:textColor="#fdce31"
-            android:textSize="11px"
+            android:textSize="11dp"
             app:typeface="roboto_medium" />
     </LinearLayout>
 
@@ -49,14 +49,14 @@
                 android:id="@+id/textViewDescMama"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="28px"
-                android:layout_marginLeft="43px"
-                android:layout_marginRight="43px"
-                android:layout_marginTop="13px"
+                android:layout_marginBottom="28dp"
+                android:layout_marginLeft="43dp"
+                android:layout_marginRight="43dp"
+                android:layout_marginTop="13dp"
                 android:gravity="center"
                 android:text="@string/fragment_upload_mama"
                 android:textColor="#FFFFFF"
-                android:textSize="18px"
+                android:textSize="18dp"
                 app:typeface="roboto_light" />
         </FrameLayout>
 
@@ -72,14 +72,14 @@
                 android:id="@+id/editTextNamaMama"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18px"
-                android:layout_marginLeft="16px"
-                android:layout_marginRight="16px"
-                android:layout_marginTop="18px"
+                android:layout_marginBottom="18dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="18dp"
                 android:ems="10"
                 android:hint="Nama Mama Kamu..."
                 android:textColor="#fdce31"
-                android:textSize="16px"
+                android:textSize="16dp"
                 app:typeface="roboto_light" >
 
                 <requestFocus />
@@ -95,15 +95,15 @@
                 android:id="@+id/editTextMention"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18px"
-                android:layout_marginLeft="16px"
-                android:layout_marginRight="16px"
-                android:layout_marginTop="18px"
+                android:layout_marginBottom="18dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="18dp"
                 android:ems="10"
                 android:hint="Mention teman di Twitter"
                 android:inputType="textMultiLine"
                 android:textColor="#fdce31"
-                android:textSize="16px"
+                android:textSize="16dp"
                 app:typeface="roboto_light" />
         </LinearLayout>
 
@@ -114,7 +114,7 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@+id/lay_mention"
             android:background="#a63b3444"
-            android:paddingBottom="34px" >
+            android:paddingBottom="34dp" >
 
             <Button
                 android:id="@+id/buttonLanjut"

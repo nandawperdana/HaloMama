@@ -8,6 +8,7 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -27,7 +28,6 @@ import android.view.animation.AlphaAnimation;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nandanu.halomama.model.Constants;
@@ -38,30 +38,20 @@ public class Desc3Fragment extends Fragment {
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
-	private static final String ARG_SECTION_NUMBER = "section_number";
 
 	private Dialog auth_dialog;
 	private WebView web;
 	private ProgressDialog progress;
-	Button btnLogin;
+	private Button btnLogin;
 
 	// Shared Preferences
-	private static SharedPreferences pref;
+	private SharedPreferences pref;
 	private Twitter twitter;
 	private RequestToken requestToken = null;
 	private AccessToken accessToken;
 	private String oauth_url, oauth_verifier;
-
-	/**
-	 * Returns a new instance of this fragment for the given section number.
-	 */
-	public Desc3Fragment newInstance(int sectionNumber) {
-		Desc3Fragment fragment = new Desc3Fragment();
-		Bundle args = new Bundle();
-		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-		fragment.setArguments(args);
-		return fragment;
-	}
+	private Dialog dialog;
+	private RobotoTextView tvPolicy, tvDesc3;
 
 	public Desc3Fragment() {
 	}
@@ -74,23 +64,36 @@ public class Desc3Fragment extends Fragment {
 		/**
 		 * twitter init
 		 */
-		pref = getActivity().getPreferences(0);
+		pref = getActivity().getSharedPreferences("halomama",
+				Context.MODE_PRIVATE);
 		twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(pref.getString("CONSUMER_KEY",
 				Constants.TWITTER_CONSUMER_KEY), pref.getString(
 				"CONSUMER_SECRET", Constants.TWITTER_CONSUMER_SECRET));
-		Toast.makeText(getActivity(), Constants.TWITTER_CONSUMER_KEY, Toast.LENGTH_SHORT).show();
 
-		TextView textView = (TextView) rootView
-				.findViewById(R.id.section_label3);
-		textView.setText(Html.fromHtml(getString(R.string.fragment3_desc)));
+		tvDesc3 = (RobotoTextView) rootView.findViewById(R.id.section_label3);
+		tvDesc3.setText(Html.fromHtml(getString(R.string.fragment3_desc)));
+
+		tvPolicy = (RobotoTextView) rootView
+				.findViewById(R.id.section_labelPolicy);
+		tvPolicy.setText(Html.fromHtml(getString(R.string.fragment3_policy)));
+		tvPolicy.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.fhab.it/policy"));
+				startActivity(browserIntent);
+			}
+		});
+
+		dialog = new Dialog(getActivity());
 		btnLogin = (Button) rootView.findViewById(R.id.buttonLogin);
 		btnLogin.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				final Dialog dialog = new Dialog(getActivity());
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(R.layout.permission_dialog);
 
@@ -110,13 +113,12 @@ public class Desc3Fragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-//						tvIzinkan.setTextColor(Color.parseColor("#4a90e2"));
+						// tvIzinkan.setTextColor(Color.parseColor("#4a90e2"));
 						v.startAnimation(buttonClick);
 						/*
 						 * login to twitter
 						 */
 						new TokenGet().execute();
-
 					}
 				});
 
@@ -196,6 +198,8 @@ public class Desc3Fragment extends Fragment {
 				});
 				auth_dialog.show();
 				auth_dialog.setCancelable(true);
+				// Intent i = new Intent(getActivity(), RecordActivity.class);
+				// startActivity(i);
 
 			} else {
 
@@ -228,14 +232,12 @@ public class Desc3Fragment extends Fragment {
 				accessToken = twitter.getOAuthAccessToken(requestToken,
 						oauth_verifier);
 				SharedPreferences.Editor edit = pref.edit();
-				 edit.putString("ACCESS_TOKEN", accessToken.getToken());
-//				edit.putString("ACCESS_TOKEN", Constants.TWITTER_ACCESS_TOKEN);
-				 edit.putString("ACCESS_TOKEN_SECRET",
-				 accessToken.getTokenSecret());
-//				edit.putString("ACCESS_TOKEN_SECRET",
-//						Constants.TWITTER_ACCESS_TOKEN_SECRET);
+				edit.putString("ACCESS_TOKEN", accessToken.getToken());
+				edit.putString("ACCESS_TOKEN_SECRET",
+						accessToken.getTokenSecret());
 				User user = twitter.showUser(accessToken.getUserId());
 				edit.putString("NAME", user.getName());
+				edit.putString("USERNAME", user.getScreenName());
 
 				edit.commit();
 
@@ -252,8 +254,11 @@ public class Desc3Fragment extends Fragment {
 		protected void onPostExecute(Boolean response) {
 			if (response) {
 				progress.hide();
+
 				Intent i = new Intent(getActivity(), RecordActivity.class);
+				// Intent i = new Intent(getActivity(), UploadActivity.class);
 				startActivity(i);
+				dialog.dismiss();
 			}
 		}
 

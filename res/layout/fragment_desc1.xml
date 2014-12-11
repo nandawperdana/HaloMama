@@ -29,6 +29,7 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginLeft="43px"
             android:layout_marginRight="43px"
+            android:textSize="18dp"
             android:textColor="#FFFFFF"
             android:gravity="center"
             app:typeface="roboto_light" />

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 
@@ -42,8 +43,9 @@ public class DescActivity extends FragmentActivity {
 	/**
 	 * variables
 	 */
+	private static String KEY_FIRST_RUN = "";
 	// Shared Preferences
-	private static SharedPreferences pref;
+	private SharedPreferences pref;
 	// Internet Connection detector
 	private ConnectionDetector cd;
 	// Alert Dialog Manager
@@ -90,8 +92,17 @@ public class DescActivity extends FragmentActivity {
 		mIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		mIndicator.setViewPager(mViewPager);
 
-		pref = getPreferences(0);
+//		pref = getPreferences(0);
+		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
+		if (!pref.contains("KEY_FIRST_RUN")) {
+			KEY_FIRST_RUN = "something";
+			Log.d("First", "First run!");
+		} else {
+			Log.d("Second...", "Second run...!");
+		}
+
 		SharedPreferences.Editor edit = pref.edit();
+		edit.putString("KEY_FIRST_RUN", KEY_FIRST_RUN);
 		edit.putString("CONSUMER_KEY", Constants.TWITTER_CONSUMER_KEY);
 		edit.putString("CONSUMER_SECRET", Constants.TWITTER_CONSUMER_SECRET);
 		edit.commit();

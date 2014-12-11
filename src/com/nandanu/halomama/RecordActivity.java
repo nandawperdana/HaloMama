@@ -35,6 +35,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	// camera
 	// private CameraPreview mCameraPreview;
 	// private PictureCallback mPicture;
+	private ImageButton btnBatalkan;
 	private SurfaceHolder surfaceHolder;
 	private SurfaceView surfaceView;
 	private Camera mCamera;
@@ -53,6 +54,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	private boolean cameraFront = false;
 	private boolean isRecording = false;
 	private Context myContext;
+	private String[] randomText = { "Pengalaman tersedih bareng ibu?",
+			"Aku punya cerita sendiri...", "Ibuku itu..." };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,26 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 			// will close the app if the device does't have camera
 			finish();
 		}
+		btnBatalkan = (ImageButton) findViewById(R.id.imageButtonBatalkan1);
+		btnBatalkan.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				Intent i = new Intent(RecordActivity.this,
+						DescActivity.class);
+
+				i.addCategory(Intent.CATEGORY_HOME);
+				// closing all the activity
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+				// add new flag to start new activity
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+				startActivity(i);
+			}
+		});
 
 		recordButton = (ImageButton) findViewById(R.id.buttonRecord);
 		recordButton.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +118,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 					// MediaRecorder
 
 					mChronometer.stop();
-					recordButton.setBackgroundResource(R.drawable.fab_record_mdpi);
+					recordButton
+							.setBackgroundResource(R.drawable.fab_record_mdpi);
 					// inform the user that recording has stopped
 					// setCaptureButtonText("Capture");
 					isRecording = false;
@@ -116,7 +140,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 						// Camera is available and unlocked, MediaRecorder is
 						// prepared,
 						// now you can start recording
-						recordButton.setBackgroundResource(R.drawable.fab_stop_mdpi);
+						recordButton
+								.setBackgroundResource(R.drawable.fab_stop_mdpi);
 						mMediaRecorder.start();
 						mChronometer.setBase(SystemClock.elapsedRealtime());
 						mChronometer.start();
@@ -204,6 +229,9 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		try {
 			c = Camera.open(findFrontFacingCamera()); // attempt to get a Camera
 														// instance
+			if (findFrontFacingCamera() == -1) {
+				c = Camera.open(findBackFacingCamera());
+			}
 		} catch (Exception e) {
 			// Camera is not available (in use or does not exist)
 		}
