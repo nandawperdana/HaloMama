@@ -1,14 +1,13 @@
 package com.nandanu.halomama;
 
-import com.nandanu.halomama.roboto.RobotoTextView;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.nandanu.halomama.roboto.RobotoTextView;
 
 public class Desc1Fragment extends Fragment {
 

@@ -6,6 +6,7 @@ import it.fhab.aws.dynamodb.tablerow.HaloMama;
 import it.fhab.aws.dynamodb.tablerow.People;
 import it.fhab.aws.dynamodb.tablerow.Question;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -24,12 +25,9 @@ import com.nandanu.halomama.controller.LinePageIndicator;
 import com.nandanu.halomama.model.Constants;
 
 public class DescActivity extends FragmentActivity {
-
-	/**
-	 * widgets
-	 */
 	public Context ctx = DescActivity.this;
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
+
 	private LinePageIndicator mIndicator;
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -48,13 +46,14 @@ public class DescActivity extends FragmentActivity {
 	/**
 	 * variables
 	 */
-	private static String KEY_FIRST_RUN = "";
 	// Shared Preferences
 	private SharedPreferences pref;
 	// Internet Connection detector
 	private ConnectionDetector cd;
 	// Alert Dialog Manager
 	private AlertDialogManager alert = new AlertDialogManager();
+	public static boolean exists = false;
+	public static boolean checked = false;
 
 	/**
 	 * Twitter
@@ -72,11 +71,11 @@ public class DescActivity extends FragmentActivity {
 					.permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 		}
-		cd = new ConnectionDetector(getApplicationContext());
 
 		/**
 		 * Check if Internet present
 		 */
+		cd = new ConnectionDetector(getApplicationContext());
 		if (!cd.isConnectingToInternet()) {
 			// Internet Connection is not present
 			alert.showAlertDialog(DescActivity.this,
@@ -128,17 +127,12 @@ public class DescActivity extends FragmentActivity {
 		mIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		mIndicator.setViewPager(mViewPager);
 
-//		pref = getPreferences(0);
+		// pref = getPreferences(0);
 		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
-		if (!pref.contains("KEY_FIRST_RUN")) {
-			KEY_FIRST_RUN = "something";
-			Log.d("First", "First run!");
-		} else {
-			Log.d("Second...", "Second run...!");
-		}
+		
 
 		SharedPreferences.Editor edit = pref.edit();
-		edit.putString("KEY_FIRST_RUN", KEY_FIRST_RUN);
+//		edit.putString("KEY_FIRST_RUN", KEY_FIRST_RUN);
 		edit.putString("CONSUMER_KEY", Constants.TWITTER_CONSUMER_KEY);
 		edit.putString("CONSUMER_SECRET", Constants.TWITTER_CONSUMER_SECRET);
 		edit.commit();
@@ -186,16 +180,9 @@ public class DescActivity extends FragmentActivity {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			// Locale l = Locale.getDefault();
-			// switch (position) {
-			// case 0:
-			// return getString(R.string.title_section1).toUpperCase(l);
-			// case 1:
-			// return getString(R.string.title_section2).toUpperCase(l);
-			// case 2:
-			// return getString(R.string.title_section3).toUpperCase(l);
-			// }
+
 			return null;
 		}
 	}
+
 }

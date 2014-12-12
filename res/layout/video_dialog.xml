@@ -33,29 +33,6 @@
             android:layout_marginBottom="30dp" >
 
             <ImageView
-                android:id="@+id/imageViewPlayVid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="35dp"
-                android:src="@drawable/action_sheet_icon_play_mdpi" />
-
-            <com.nandanu.halomama.roboto.RobotoTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:text="Lihat Videoku"
-                android:textColor="#000000"
-                android:textSize="16dp"
-                app:typeface="roboto_regular" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp" >
-
-            <ImageView
                 android:id="@+id/imageViewRekamUlang"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -100,7 +77,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp" >
 
             <ImageView
                 android:id="@+id/imageViewShareSocial"
@@ -116,6 +94,29 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:text="Bagikan ke Sosial media"
+                android:textColor="#000000"
+                android:textSize="16dp"
+                app:typeface="roboto_regular" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/imageViewHapusVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35dp"
+                android:src="@drawable/action_sheet_icon_play_mdpi" />
+
+            <com.nandanu.halomama.roboto.RobotoTextView
+                android:id="@+id/textViewHapusVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="Hapus Video"
                 android:textColor="#000000"
                 android:textSize="16dp"
                 app:typeface="roboto_regular" />
