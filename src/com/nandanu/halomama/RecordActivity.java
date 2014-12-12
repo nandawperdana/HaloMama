@@ -543,6 +543,11 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 			return null;
 		}
 
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			progress.dismiss();
+		}
 	}
 
 }

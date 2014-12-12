@@ -52,7 +52,8 @@ public class Util {
 
     public static String getPrefix(Context context) {
 //        return getCredProvider(context).getIdentityId() + "/";
-        return "androtest" + "/";
+//        return "androtest" + "/";
+        return "halomama" + "/";
     }
 
     public static AmazonS3Client getS3Client(Context context) {

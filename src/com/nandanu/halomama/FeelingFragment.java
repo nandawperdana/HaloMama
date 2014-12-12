@@ -1,6 +1,5 @@
 package com.nandanu.halomama;
 
-import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -55,7 +54,7 @@ public class FeelingFragment extends Fragment {
 	private SharedPreferences pref;
 	private boolean feeling = false;
 	private int feel;
-	private Status tweet;
+	private twitter4j.Status tweet;
 
 	/*
 	 * transfer s3 vars
@@ -67,9 +66,9 @@ public class FeelingFragment extends Fragment {
 	 * dynamo DB
 	 */
 	// instantiate cognito client manager
-	AmazonClientManager acm = new AmazonClientManager(getActivity());
+	AmazonClientManager acm = null;
 	// instantiate interface for databaserouter
-	DynamoDBRouter router = new DynamoDBRouter(acm);
+	DynamoDBRouter router = null;
 
 	public FeelingFragment() {
 	}
@@ -172,15 +171,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 0;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -192,15 +191,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 1;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -212,15 +211,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 2;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -232,15 +231,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 3;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -252,15 +251,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 4;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -272,15 +271,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 5;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -292,15 +291,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 6;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -312,15 +311,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 7;
-				ivSedih.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
 				ivPercaya
-						.setBackgroundResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setBackgroundResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+						.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -345,6 +344,8 @@ public class FeelingFragment extends Fragment {
 		}
 
 		protected String doInBackground(String... args) {
+			acm = new AmazonClientManager(getActivity());
+			new DynamoDBRouter(acm);
 
 			ConfigurationBuilder builder = new ConfigurationBuilder();
 			builder.setOAuthConsumerKey(pref.getString("CONSUMER_KEY",
