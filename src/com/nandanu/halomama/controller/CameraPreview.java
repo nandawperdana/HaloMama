@@ -57,6 +57,7 @@ public class CameraPreview extends SurfaceView implements
 		try {
 			// create the surface and start camera preview
 			if (mCamera == null) {
+			    mCamera.setDisplayOrientation(90);
 				mCamera.setPreviewDisplay(holder);
 				Camera.Parameters params = mCamera.getParameters();
 				mCamera.setParameters(params);

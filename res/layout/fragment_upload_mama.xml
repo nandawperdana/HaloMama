@@ -116,7 +116,7 @@
             android:background="#a63b3444"
             android:paddingBottom="34dp" >
 
-            <Button
+            <ImageButton
                 android:id="@+id/buttonLanjut"
                 android:layout_gravity="bottom|center_horizontal"
                 android:background="@drawable/btn_lanjut_mdpi"

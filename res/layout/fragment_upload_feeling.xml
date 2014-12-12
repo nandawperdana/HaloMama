@@ -68,25 +68,25 @@
                 android:gravity="center" >
 
                 <ImageView
-                    android:id="@+id/imageView1"
+                    android:id="@+id/imageViewSedih"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/imageViewBosan"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/imageViewMarah"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/imageViewWasWas"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
@@ -139,25 +139,25 @@
                 android:gravity="center" >
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/imageViewKaget"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/imageViewTakut"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
 
                 <ImageView
-                    android:id="@+id/imageView7"
+                    android:id="@+id/imageViewPercaya"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
 
                 <ImageView
-                    android:id="@+id/imageView8"
+                    android:id="@+id/imageViewSenang"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/emotion_button_white_mdpi" />
@@ -213,31 +213,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|center_horizontal"
+                android:gravity="center"
                 android:text="Supaya benar-benar"
                 android:textColor="#ffffff"
-                android:textSize="15dp"
+                android:textSize="13dp"
                 app:typeface="roboto_medium" />
         </FrameLayout>
 
-        <com.nandanu.halomama.roboto.RobotoButton
+        <ImageButton
             android:id="@+id/buttonUpload"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="@drawable/btn_kirim_mdpi"
-            app:typeface="roboto_medium" />
+            android:background="@drawable/btn_kirim_mdpi" />
 
-        <com.nandanu.halomama.roboto.RobotoButton
+        <ImageButton
             android:id="@+id/buttonUlang"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="23dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="@drawable/btn_rekam_ulang_mdpi"
-            app:typeface="roboto_medium" />
+            android:background="@drawable/btn_rekam_ulang_mdpi" />
     </LinearLayout>
 
 </RelativeLayout>

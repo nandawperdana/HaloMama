@@ -157,6 +157,7 @@
             android:layout_weight="1" />
 
         <com.nandanu.halomama.roboto.RobotoTextView
+            android:id="@+id/textViewVideoLainnya"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"

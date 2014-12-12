@@ -84,7 +84,7 @@
         android:textSize="18dp"
         app:typeface="roboto_medium" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/buttonRandom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -92,9 +92,9 @@
         android:layout_below="@+id/lay_header"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="80dp"
-        android:src="@drawable/fab_record_mdpi" />
+        android:background="@drawable/fab_record_mdpi" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/buttonCeritaSendiri"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,6 +102,6 @@
         android:layout_below="@+id/lay_header"
         android:layout_marginRight="80dp"
         android:layout_marginTop="80dp"
-        android:src="@drawable/icon_dismiss_mdpi" />
+        android:background="@drawable/icon_dismiss_mdpi" />
 
 </RelativeLayout>

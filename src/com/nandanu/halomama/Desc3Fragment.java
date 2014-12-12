@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -27,10 +28,13 @@ import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.nandanu.halomama.controller.AmazonClientManager;
+import com.nandanu.halomama.controller.DynamoDBRouter;
 import com.nandanu.halomama.model.Constants;
+import com.nandanu.halomama.model.People;
 import com.nandanu.halomama.roboto.RobotoTextView;
 
 public class Desc3Fragment extends Fragment {
@@ -39,19 +43,33 @@ public class Desc3Fragment extends Fragment {
 	 */
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
 
-	private Dialog auth_dialog;
+	/*
+	 * widgets
+	 */
+	private Dialog auth_dialog, dialog;
 	private WebView web;
 	private ProgressDialog progress;
-	private Button btnLogin;
+	private ImageButton btnLogin;
+	private RobotoTextView tvPolicy, tvDesc3;
 
 	// Shared Preferences
 	private SharedPreferences pref;
+
+	/*
+	 * twitter
+	 */
 	private Twitter twitter;
 	private RequestToken requestToken = null;
 	private AccessToken accessToken;
 	private String oauth_url, oauth_verifier;
-	private Dialog dialog;
-	private RobotoTextView tvPolicy, tvDesc3;
+
+	/*
+	 * dynamo DB
+	 */
+	// instantiate cognito client manager
+	AmazonClientManager acm = null;
+	// instantiate interface for databaserouter
+	DynamoDBRouter router = null;
 
 	public Desc3Fragment() {
 	}
@@ -73,22 +91,23 @@ public class Desc3Fragment extends Fragment {
 
 		tvDesc3 = (RobotoTextView) rootView.findViewById(R.id.section_label3);
 		tvDesc3.setText(Html.fromHtml(getString(R.string.fragment3_desc)));
-
 		tvPolicy = (RobotoTextView) rootView
 				.findViewById(R.id.section_labelPolicy);
+		dialog = new Dialog(getActivity());
+		btnLogin = (ImageButton) rootView.findViewById(R.id.buttonLogin);
+
 		tvPolicy.setText(Html.fromHtml(getString(R.string.fragment3_policy)));
 		tvPolicy.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.fhab.it/policy"));
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
+						.parse("http://www.fhab.it/policy"));
 				startActivity(browserIntent);
 			}
 		});
 
-		dialog = new Dialog(getActivity());
-		btnLogin = (Button) rootView.findViewById(R.id.buttonLogin);
 		btnLogin.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -139,6 +158,12 @@ public class Desc3Fragment extends Fragment {
 		return rootView;
 	}
 
+	/**
+	 * login with twitter
+	 * 
+	 * @author Aslab-NWP
+	 * 
+	 */
 	public class TokenGet extends AsyncTask<String, String, String> {
 
 		@Override
@@ -198,9 +223,6 @@ public class Desc3Fragment extends Fragment {
 				});
 				auth_dialog.show();
 				auth_dialog.setCancelable(true);
-				// Intent i = new Intent(getActivity(), RecordActivity.class);
-				// startActivity(i);
-
 			} else {
 
 				Toast.makeText(getActivity(),
@@ -211,6 +233,12 @@ public class Desc3Fragment extends Fragment {
 		}
 	}
 
+	/**
+	 * get profile
+	 * 
+	 * @author Aslab-NWP
+	 * 
+	 */
 	private class AccessTokenGet extends AsyncTask<String, String, Boolean> {
 
 		@Override
@@ -221,23 +249,43 @@ public class Desc3Fragment extends Fragment {
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
 			progress.show();
-
 		}
 
 		@Override
 		protected Boolean doInBackground(String... args) {
 
 			try {
+				acm = new AmazonClientManager(getActivity());
+				router = new DynamoDBRouter(acm);
 
+				/*
+				 * twitter
+				 */
 				accessToken = twitter.getOAuthAccessToken(requestToken,
 						oauth_verifier);
 				SharedPreferences.Editor edit = pref.edit();
-				edit.putString("ACCESS_TOKEN", accessToken.getToken());
-				edit.putString("ACCESS_TOKEN_SECRET",
+				edit.putString(Constants.TAG_TWITTER_ACCESS_TOKEN,
+						accessToken.getToken());
+				edit.putString(Constants.TAG_TWITTER_ACCESS_TOKEN_SECRET,
 						accessToken.getTokenSecret());
 				User user = twitter.showUser(accessToken.getUserId());
-				edit.putString("NAME", user.getName());
-				edit.putString("USERNAME", user.getScreenName());
+				String username = user.getScreenName();
+				String fullname = user.getName();
+				String url = user.getProfileImageURL();
+				String androidOS = Build.VERSION.RELEASE;
+
+				/*
+				 * sign up
+				 */
+				People p = new People(acm.getIdentityId(), "Android "
+						+ androidOS);
+				p.prepareSignUp(username, fullname);
+				router.signUp(p);
+
+				edit.putString(Constants.TAG_DEVICE_OS, androidOS);
+				edit.putString(Constants.TAG_TWITTER_IMG_URL, url);
+				edit.putString(Constants.TAG_TWITTER_FULLNAME, fullname);
+				edit.putString(Constants.TAG_TWITTER_USERNAME, username);
 
 				edit.commit();
 
@@ -254,7 +302,6 @@ public class Desc3Fragment extends Fragment {
 		protected void onPostExecute(Boolean response) {
 			if (response) {
 				progress.hide();
-
 				Intent i = new Intent(getActivity(), RecordActivity.class);
 				// Intent i = new Intent(getActivity(), UploadActivity.class);
 				startActivity(i);

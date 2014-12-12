@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">HaloMama</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Halo Mama</string>
     <string name="fragment_upload_mama">Kamu bisa menuliskan nama mamamu kemudian mention beberapa orang untuk diberitahu mengenai video ini</string>
     <string name="splash">
 <![CDATA[
@@ -77,11 +76,5 @@
 		</html>
 		]]>
     </string>
-    <string name="title_activity_record">RecordActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_share_twitter">ShareTwitterActivity</string>
-    <string name="title_activity_upload">UploadActivity</string>
-    <string name="title_activity_stream">StreamActivity</string>
-    <string name="title_activity_splash_screen">SplashScreen</string>
 
 </resources>
