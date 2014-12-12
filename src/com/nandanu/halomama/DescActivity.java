@@ -1,5 +1,10 @@
 package com.nandanu.halomama;
 
+import it.fhab.aws.AmazonClientManager;
+import it.fhab.aws.DynamoDBRouter;
+import it.fhab.aws.dynamodb.tablerow.HaloMama;
+import it.fhab.aws.dynamodb.tablerow.People;
+import it.fhab.aws.dynamodb.tablerow.Question;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -80,7 +85,38 @@ public class DescActivity extends FragmentActivity {
 			// stop executing code by return
 			return;
 		}
-
+		
+//		AmazonClientManager acm = new AmazonClientManager(this);
+//		DynamoDBRouter router = new DynamoDBRouter(acm);
+//
+//		People p = new People(acm.getIdentityId(), "android version");
+//		p.prepareSignUp("username", "fullname");
+//		router.signUp(p);
+//		
+//		p.prepareSignIn("username", "fullname");
+//		router.signIn(p);
+//		
+//		p.prepareDeactivate("username", "fullname");
+//		router.deactive(p);
+//		
+//		router.queryQuestion();
+//		
+//		HaloMama hm = new HaloMama("username", "android OS version");
+//		
+//		hm.preparePostFhab(2);
+//		router.postFhab(hm);
+//		
+//		router.incrementSeen("username", hm.getCreatedDate());
+//		
+//		hm.preparePostHaloMama(hm.getCreatedDate(), "avatarURL", "twetId", 1, "description", "mp4");
+//		router.postHaloMama(hm);
+//		
+//		hm.prepareDeleteHaloMama();
+//		router.deleteHaloMama(hm);
+//		
+//		router.getLastHaloMama("username");
+//		router.getPopularHaloMama();
+		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(

@@ -16,11 +16,13 @@
 package it.fhab.aws;
 
 import it.fhab.aws.dynamodb.tablerow.DDBTableRow;
+import it.fhab.aws.dynamodb.tablerow.HaloMama;
+import it.fhab.aws.dynamodb.tablerow.HaloMamaStatusSeenIndex;
 import it.fhab.aws.dynamodb.tablerow.People;
 import it.fhab.aws.dynamodb.tablerow.Question;
-import it.fhab.aws.dynamodb.tablerow.Question2;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.util.Log;
 
@@ -31,6 +33,11 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpr
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.AttributeAction;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
+import com.amazonaws.services.dynamodbv2.model.Condition;
+import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 
 public class DynamoDBRouter {
 
@@ -46,57 +53,127 @@ public class DynamoDBRouter {
 		mapper = new DynamoDBMapper(dDBClient);
 	}
 
-//	public void signUp(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	
-//	public void signIn(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	
-//	public void deactive(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	public void postFhab(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	
-//	public void postHaloMama(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	
-//	public void deleteHaloMama(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//
-//	public void overideHaloMama(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	
-//	public void incrementSeen(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	
-//	public void getPopularHaloMama(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
-//	
-//	public void getLastHaloMama(DDBTableRow dDBModel){
-//		People p = (People) dDBModel;
-//		save(p);
-//	}
+	public void signUp(DDBTableRow dDBModel){
+		People p = (People) dDBModel;
+		save(p);
+	}
+	
+	public void signIn(DDBTableRow dDBModel){
+		People p = (People) dDBModel;
+		save(p);
+	}
+	
+	public void deactive(DDBTableRow dDBModel){
+		People p = (People) dDBModel;
+		save(p);
+	}
+	
+	public void postFhab(DDBTableRow dDBModel){
+		HaloMama hm = (HaloMama) dDBModel;
+		save(hm);
+	}
+	
+	public void postHaloMama(DDBTableRow dDBModel){
+		HaloMama hm = (HaloMama) dDBModel;
+		save(hm);
+	}
+	
+	public void deleteHaloMama(DDBTableRow dDBModel){
+		HaloMama hm = (HaloMama) dDBModel;
+		save(hm);
+	}
+
+	public void overideHaloMama(DDBTableRow dDBModel){
+		HaloMama hm = (HaloMama) dDBModel;
+		save(hm);
+	}
+	
+	public void incrementSeen(String userNameTwitter, String createdDate){
+		UpdateItemRequest upd = new UpdateItemRequest();
+		
+		upd.setTableName("Fhab-HaloMama-Production");
+		
+		AttributeValue unt = new AttributeValue();
+		unt.setS(userNameTwitter);
+		AttributeValue cd = new AttributeValue();
+		cd.setS(createdDate);
+		
+		upd.addKeyEntry("UserNameTwitter", unt);
+		upd.addKeyEntry("CreatedDate", cd);
+		
+		AttributeValue s = new AttributeValue();
+		s.setN("1");
+	
+		AttributeValueUpdate seen = new AttributeValueUpdate(s, AttributeAction.ADD);
+		
+		upd.addAttributeUpdatesEntry("Seen", seen);
+		
+		dDBClient.updateItem(upd);
+		
+	}
+	
+	public HaloMama getPopularHaloMama(){
+		DynamoDBQueryExpression<HaloMama> queryExpression = new DynamoDBQueryExpression<HaloMama>();
+		HaloMama hm = new HaloMama();
+		hm.setStatus("ok");
+		queryExpression.withHashKeyValues(hm);
+		queryExpression.withIndexName("Status-Seen-index");
+		queryExpression.setScanIndexForward(false);
+		queryExpression.setLimit(10);
+		
+		queryExpression.withConsistentRead(false);
+
+		
+		try {
+			PaginatedQueryList<HaloMama> result = mapper.query(
+					HaloMama.class, queryExpression);
+
+			if (!result.isEmpty()){
+				Random random = new Random(); 
+				int randomNumber = random.nextInt((result.size()-1) - 0) + 0;
+				HaloMama res = result.get(randomNumber);
+				return res;
+			}
+			else{
+				return null;
+			}
+		} catch (AmazonServiceException ex) {
+			amazonClientManager
+					.wipeCredentialsOnAuthError(ex);
+			return null;
+		}
+	}
+	
+	public HaloMama getLastHaloMama(String userNameTwitter){
+		DynamoDBQueryExpression<HaloMama> queryExpression = new DynamoDBQueryExpression<HaloMama>();
+		HaloMama hm = new HaloMama();
+		hm.setUserNameTwitter(userNameTwitter);
+		queryExpression.withHashKeyValues(hm);
+		queryExpression.setScanIndexForward(false);
+		queryExpression.setLimit(5);
+		
+		try {
+			PaginatedQueryList<HaloMama> result = mapper.query(
+					HaloMama.class, queryExpression);
+			hm = result.get(result.size()-1);
+			boolean first = true;
+			for (HaloMama up : result) {
+				if (!first && up.getStatus().equalsIgnoreCase("ok")) {
+					up.prepareOverideHaloMama();
+					overideHaloMama(up);					
+				}
+				first = false;
+			}
+			return hm;
+		} catch (AmazonServiceException ex) {
+			amazonClientManager
+					.wipeCredentialsOnAuthError(ex);
+			return null;
+		}
+	}
 		
 	/*
-	 * Inserts ten users with userNo from 1 to 10 and random names.
+	 * save data
 	 */
 	private void save(DDBTableRow dDBModel) {
 	//may be can be improved by received array of object, and iterating the call
@@ -112,34 +189,9 @@ public class DynamoDBRouter {
 	}
 
 	/*
-	 * Query the table and returns the list of users.
-	 */
-	public ArrayList<DDBTableRow> queryModels(DDBTableRow dDBModel) {
-		
-		DynamoDBQueryExpression queryExpression = dDBModel.getQueryExpression();
-		try {
-			PaginatedQueryList<DDBTableRow> result = mapper.query(
-					DDBTableRow.class, queryExpression);
-
-			ArrayList<DDBTableRow> resultList = new ArrayList<DDBTableRow>();
-			for (DDBTableRow up : result) {
-				resultList.add(up);
-			}
-			return resultList;
-
-		} catch (AmazonServiceException ex) {
-			amazonClientManager
-					.wipeCredentialsOnAuthError(ex);
-		}
-
-		return null;
-	}
-
-	/*
 	 * Scans the table and returns the list of users.
 	 */
 	public ArrayList<People> scanPeople() {
-//		DynamoDBScanExpression scanExpression = dDBModel.getScanExpression();
 		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
 		try {
 			PaginatedScanList<People> result = mapper.scan(
@@ -160,51 +212,36 @@ public class DynamoDBRouter {
 		return null;
 	}
 
-	public ArrayList<Question2> scanQuestion() {
-		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-		try {
-			PaginatedScanList<Question2> result = mapper.scan(
-					Question2.class, scanExpression);
-
-			ArrayList<Question2> resultList = new ArrayList<Question2>();
-			for (Question2 up : result) {
-				resultList.add(up);
-				System.out.println(up.getQuestion());
-			}
-			return resultList;
-
-		} catch (AmazonServiceException ex) {
-			amazonClientManager
-					.wipeCredentialsOnAuthError(ex);
-		}
-
-		return null;
-	}
-
-	public ArrayList<Question> queryQuestion() {
-//		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+	public Question queryQuestion() {
 		DynamoDBQueryExpression<Question> queryExpression = new DynamoDBQueryExpression<Question>();
 		Question q = new Question();
-		q.setEmotionId("5");
+		Random random = new Random(); 
+		int randomNumber = random.nextInt((8-1) - 0) + 0;
+		q.setEmotionId(""+randomNumber);
 		queryExpression.withHashKeyValues(q);
 		try {
 			PaginatedQueryList<Question> result = mapper.query(
 					Question.class, queryExpression);
 
-			ArrayList<Question> resultList = new ArrayList<Question>();
-			for (Question up : result) {
-				resultList.add(up);
-				System.out.println(up.getQuestion());
+			if (result.isEmpty()){
+				return null;
 			}
-			return resultList;
-
+			else{
+				if (result.size()==1){
+					return result.get(0);
+				}else{
+					Random random2 = new Random();
+					int randomNumber2 = random2.nextInt((result.size()-1) - 0) + 0;
+					return result.get(randomNumber2);
+				}
+			}
 		} catch (AmazonServiceException ex) {
 			amazonClientManager
 					.wipeCredentialsOnAuthError(ex);
-		}
-
-		return null;
+			return null;
+		}	
 	}
+	
 	public ArrayList<Question> scanQuestion2() {
 		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
 		try {
@@ -215,29 +252,6 @@ public class DynamoDBRouter {
 			for (Question up : result) {
 				resultList.add(up);
 				System.out.println(up.getQuestion());
-			}
-			return resultList;
-
-		} catch (AmazonServiceException ex) {
-			amazonClientManager
-					.wipeCredentialsOnAuthError(ex);
-		}
-
-		return null;
-	}
-	
-	/*
-	 * Scans the table and returns the list of users.
-	 */
-	public ArrayList<DDBTableRow> scanModels(DDBTableRow dDBModel) {
-		DynamoDBScanExpression scanExpression = dDBModel.getScanExpression();
-		try {
-			PaginatedScanList<DDBTableRow> result = mapper.scan(
-					DDBTableRow.class, scanExpression);
-
-			ArrayList<DDBTableRow> resultList = new ArrayList<DDBTableRow>();
-			for (DDBTableRow up : result) {
-				resultList.add(up);
 			}
 			return resultList;
 
@@ -266,62 +280,5 @@ public class DynamoDBRouter {
 
 		return null;
 	}
-	
-	
-	
-//	private enum DynamoDBRouterType {
-//		GET_TABLE_STATUS, CREATE_TABLE, INSERT_USER, LIST_USERS, CLEAN_UP
-//	}
-//	
-//	private class DynamoDBRouterTaskResult {
-//		private DynamoDBRouterType taskType;
-//		private DDBTableRow ddbtableRow;
-//		public DynamoDBRouterType getTaskType() {
-//			return taskType;
-//		}
-//		public void setTaskType(DynamoDBRouterType taskType) {
-//			this.taskType = taskType;
-//		}
-//		public DDBTableRow getDdbtableRow() {
-//			return ddbtableRow;
-//		}
-//		public void setDdbtableRow(DDBTableRow ddbtableRow) {
-//			this.ddbtableRow = ddbtableRow;
-//		}
-//	}
-//	
-//	
-//	//sample call async
-//	private class DynamoDBRouterTask extends
-//	AsyncTask<DynamoDBRouterType, Void, DynamoDBRouterTaskResult> {
-//
-//		protected DynamoDBRouterTaskResult doInBackground(
-//				DynamoDBRouterType... types) {
-//			DynamoDBRouterTaskResult result = new DynamoDBRouterTaskResult();
-//			result.setTaskType(types[0]);
-//		
-//			if (types[0] == DynamoDBRouterType.CREATE_TABLE) {
-//				HaloMama hm = new HaloMama();
-//				save(hm);
-//			}else{
-//				HaloMama hm = new HaloMama();
-//				save(hm);
-//			}
-//		
-//			return result;
-//		}
-//		
-//		protected void onPostExecute(DynamoDBRouterTaskResult result) {
-//		
-//			if (result.getTaskType() == DynamoDBRouterType.CREATE_TABLE) {
-//				//do something with activity
-//				// result.
-//			} else if (result.getTaskType() == DynamoDBRouterType.LIST_USERS) {
-//				
-//				//do something with activity
-//				// result.
-//			}
-//		}
-//	}
 	
 }

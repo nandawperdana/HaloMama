@@ -2,6 +2,8 @@ package it.fhab.aws.dynamodb.tablerow;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
@@ -10,14 +12,55 @@ public class HaloMama extends DDBTableRow {
 
 	private String userNameTwitter;
 	private String createdDate;
-	private String emotionId;
-	private Boolean seen;
-	private Boolean deviceOS;
-	private Boolean status;
+	private int emotionId;
+	private int seen;
+	private String deviceOS;
+	private String status;
 	private String tweetId;
-	private String questionId;
+	private int questionId;
 	private String avatarURL;
 	private String description;
+	private String videoType;
+	
+	public HaloMama(){
+		
+	}
+	
+	public HaloMama (HaloMamaStatusSeenIndex hmSSI){
+		this.createdDate = hmSSI.getCreatedDate();
+		this.userNameTwitter = hmSSI.getUserNameTwitter();
+		
+	}
+	
+	public HaloMama (String userNameTwitter, String deviceOS){
+		this.userNameTwitter = userNameTwitter;
+		this.deviceOS = deviceOS;
+	}
+	
+	public String preparePostFhab(int emotionId){
+		this.emotionId = emotionId;
+		this.createdDate = ""+System.currentTimeMillis();
+				
+		return createdDate;		
+	}
+	
+	public void preparePostHaloMama(String createdDate, String avatarURL, String tweetId, int questionId, String description, String videoType){
+		this.createdDate = createdDate;
+	    this.avatarURL = avatarURL;
+	    this.tweetId = tweetId;
+	    this.questionId = questionId;
+	    this.description = description;
+	    this.status = "ok";
+	    this.videoType = videoType;
+	}
+	
+	public void prepareDeleteHaloMama(){
+		this.status = "delete";
+	}
+
+	public void prepareOverideHaloMama(){
+		this.status= "overided"; 
+	}
 	
 	@DynamoDBHashKey(attributeName = "UserNameTwitter")
 	public String getUserNameTwitter() {
@@ -36,34 +79,34 @@ public class HaloMama extends DDBTableRow {
 	}
 	
 	@DynamoDBAttribute(attributeName = "EmotionId")
-	public String getEmotionId() {
+	public int getEmotionId() {
 		return emotionId;
 	}
-	public void setEmotionId(String emotionId) {
+	public void setEmotionId(int emotionId) {
 		this.emotionId = emotionId;
 	}
 	
-	@DynamoDBAttribute(attributeName = "Seen")
-	public Boolean getSeen() {
+	@DynamoDBIndexRangeKey(attributeName = "Seen", globalSecondaryIndexName = "Status-Seen-index")
+	public int getSeen() {
 		return seen;
 	}
-	public void setSeen(Boolean seen) {
+	public void setSeen(int seen) {
 		this.seen = seen;
 	}
 	
 	@DynamoDBAttribute(attributeName = "DeviceOS")
-	public Boolean getDeviceOS() {
+	public String getDeviceOS() {
 		return deviceOS;
 	}
-	public void setDeviceOS(Boolean deviceOS) {
+	public void setDeviceOS(String deviceOS) {
 		this.deviceOS = deviceOS;
 	}
 	
-	@DynamoDBAttribute(attributeName = "Status")
-	public Boolean getStatus() {
+	@DynamoDBIndexHashKey(attributeName = "Status", globalSecondaryIndexName = "Status-Seen-index")
+	public String getStatus() {
 		return status;
 	}
-	public void setStatus(Boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 	
@@ -75,11 +118,19 @@ public class HaloMama extends DDBTableRow {
 		this.tweetId = tweetId;
 	}
 	
+	@DynamoDBAttribute(attributeName = "VideoType")
+	public String getVideoType() {
+		return videoType;
+	}
+	public void setVideoType(String videoType) {
+		this.videoType = videoType;
+	}
+	
 	@DynamoDBAttribute(attributeName = "QuestionId")
-	public String getQuestionId() {
+	public int getQuestionId() {
 		return questionId;
 	}
-	public void setQuestionId(String questionId) {
+	public void setQuestionId(int questionId) {
 		this.questionId = questionId;
 	}
 	
@@ -91,7 +142,7 @@ public class HaloMama extends DDBTableRow {
 		this.avatarURL = avatarURL;
 	}
 	
-	@DynamoDBAttribute(attributeName = "description")
+	@DynamoDBAttribute(attributeName = "Description")
 	public String getDescription() {
 		return description;
 	}

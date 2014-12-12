@@ -6,7 +6,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 @DynamoDBTable(tableName = "Fhab-People")
-public class People {	
+public class People extends DDBTableRow {	
 	
 	private String cognitoId;
 	private String createdDate;
@@ -16,28 +16,28 @@ public class People {
 	private String deviceOS;
 	private String status;
 	
-//	public People(){
-//		
-//	}
+	public People(){
+		
+	}
 	
-//	public People (String cognitoId, String deviceOS){
-//		this.cognitoId = cognitoId;
-//		this.deviceOS = deviceOS;
-//	}
+	public People (String cognitoId, String deviceOS){
+		this.cognitoId = cognitoId;
+		this.deviceOS = deviceOS;
+	}
 
-	public void signUp(String userNameTwitter, String fullName){
+	public void prepareSignUp(String userNameTwitter, String fullName){
 		this.userNameTwitter = userNameTwitter;
 		this.fullName = fullName;
 		this.createdDate = ""+System.currentTimeMillis();
 		this.lastLogin = ""+System.currentTimeMillis();
 	}
 	
-	public void signIn(String userNameTwitter, String fullName){
+	public void prepareSignIn(String userNameTwitter, String fullName){
 		this.userNameTwitter = userNameTwitter;
 		this.lastLogin = ""+System.currentTimeMillis();
 	}
 	
-	public void deactivate(String userNameTwitter, String fullName){
+	public void prepareDeactivate(String userNameTwitter, String fullName){
 		this.userNameTwitter = userNameTwitter;
 		this.lastLogin = ""+System.currentTimeMillis();
 		this.status = "deactivate";
