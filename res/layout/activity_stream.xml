@@ -19,7 +19,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="8dp"
-            android:background="@drawable/icon_dismiss_mdpi" />
+            android:background="@drawable/icon_dismiss_hdpi" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/icon_retweet_small_mdpi" />
+                android:src="@drawable/icon_retweet_small_hdpi" />
 
             <com.nandanu.halomama.roboto.RobotoTextView
                 android:id="@+id/textViewRetweet"
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/icon_seen_small_mdpi" />
+                android:src="@drawable/icon_seen_small_hdpi" />
 
             <com.nandanu.halomama.roboto.RobotoTextView
                 android:id="@+id/textViewSeen"
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/icon_share_small_mdpi" />
+                android:src="@drawable/icon_share_small_hdpi" />
 
             <com.nandanu.halomama.roboto.RobotoTextView
                 android:id="@+id/textViewShare"
@@ -184,7 +184,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/fab_record_mdpi" />
+        android:background="@drawable/fab_record_hdpi" />
 
     <ImageButton
         android:id="@+id/buttonPlayVideo"
@@ -194,6 +194,6 @@
         android:layout_centerVertical="true"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/btn_play_mdpi" />
+        android:background="@drawable/btn_play_hdpi" />
 
 </RelativeLayout>

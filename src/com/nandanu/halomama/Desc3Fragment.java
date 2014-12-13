@@ -52,8 +52,11 @@ public class Desc3Fragment extends Fragment {
 	private ImageButton btnLogin;
 	private RobotoTextView tvPolicy, tvDesc3;
 
-	// Shared Preferences
+	/*
+	 * vars
+	 */
 	private SharedPreferences pref;
+	private String deviceOS = "Android ";
 
 	/*
 	 * twitter
@@ -102,6 +105,7 @@ public class Desc3Fragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				v.setAnimation(buttonClick);
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
 						.parse("http://www.fhab.it/policy"));
 				startActivity(browserIntent);
@@ -113,6 +117,8 @@ public class Desc3Fragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				v.setAnimation(buttonClick);
+				dialog.setCancelable(false);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(R.layout.permission_dialog);
 
@@ -248,6 +254,7 @@ public class Desc3Fragment extends Fragment {
 			progress.setMessage("Fetching Data ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
+			progress.setCancelable(false);
 			progress.show();
 		}
 
@@ -277,12 +284,12 @@ public class Desc3Fragment extends Fragment {
 				/*
 				 * sign up
 				 */
-				People p = new People(acm.getIdentityId(), "Android "
-						+ androidOS);
+				deviceOS += androidOS;
+				People p = new People(acm.getIdentityId(), deviceOS);
 				p.prepareSignUp(username, fullname);
 				router.signUp(p);
 
-				edit.putString(Constants.TAG_DEVICE_OS, androidOS);
+				edit.putString(Constants.TAG_DEVICE_OS, deviceOS);
 				edit.putString(Constants.TAG_TWITTER_IMG_URL, url);
 				edit.putString(Constants.TAG_TWITTER_FULLNAME, fullname);
 				edit.putString(Constants.TAG_TWITTER_USERNAME, username);
@@ -301,11 +308,11 @@ public class Desc3Fragment extends Fragment {
 		@Override
 		protected void onPostExecute(Boolean response) {
 			if (response) {
-				progress.hide();
+				progress.dismiss();
+				dialog.dismiss();
 				Intent i = new Intent(getActivity(), RecordActivity.class);
 				// Intent i = new Intent(getActivity(), UploadActivity.class);
 				startActivity(i);
-				dialog.dismiss();
 			}
 		}
 

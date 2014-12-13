@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-
-import com.nandanu.halomama.roboto.RobotoButton;
+import android.widget.ImageButton;
 
 public class DoneUploadActivity extends Activity {
 	/*
 	 * widgets
 	 */
-	private RobotoButton btnDone;
+	private ImageButton btnDone;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +19,7 @@ public class DoneUploadActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_done_upload);
 
-		btnDone = (RobotoButton) findViewById(R.id.buttonDone);
+		btnDone = (ImageButton) findViewById(R.id.buttonDone);
 		btnDone.setOnClickListener(new View.OnClickListener() {
 
 			@Override

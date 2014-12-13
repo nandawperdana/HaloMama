@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="45px"
             android:layout_marginTop="40px"
-            android:src="@drawable/fhab_logo_mdpi" />
+            android:src="@drawable/fhab_logo_hdpi" />
 
         <com.nandanu.halomama.roboto.RobotoTextView
             android:id="@+id/section_label2"

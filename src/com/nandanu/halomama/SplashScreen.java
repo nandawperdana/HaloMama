@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.nandanu.halomama.controller.AmazonClientManager;
@@ -51,6 +52,12 @@ public class SplashScreen extends Activity {
 				Context.MODE_PRIVATE);
 		splashText = (RobotoTextView) findViewById(R.id.textViewSplashLogo);
 		splashText.setText(Html.fromHtml(getString(R.string.splash)));
+
+		Toast.makeText(
+				SplashScreen.this,
+				pref.getString(Constants.TAG_TWITTER_USERNAME, "") + " device "
+						+ pref.getString(Constants.TAG_DEVICE_OS, ""),
+				Toast.LENGTH_LONG).show();
 		new ConnectToServer().execute();
 	}
 
@@ -72,11 +79,15 @@ public class SplashScreen extends Activity {
 			/*
 			 * sign in
 			 */
-			if (pref.contains(Constants.TAG_TWITTER_USERNAME)
-					&& pref.contains(Constants.TAG_TWITTER_FULLNAME)) {
-				People p = new People();
-				p.prepareSignIn(pref.getString(Constants.TAG_TWITTER_USERNAME,
-						""));
+			if (!pref.getString(Constants.TAG_TWITTER_USERNAME, "").isEmpty()
+					&& !pref.getString(Constants.TAG_TWITTER_FULLNAME, "")
+							.isEmpty()) {
+				String deviceOs = pref.getString(Constants.TAG_DEVICE_OS, "");
+				String username = pref.getString(
+						Constants.TAG_TWITTER_USERNAME, "");
+
+				People p = new People(acm.getIdentityId(), deviceOs);
+				p.prepareSignIn(username);
 				router.signIn(p);
 			}
 
