@@ -1,0 +1,129 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/lay_header1"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#3b3444"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/imageButtonBatalkan2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/icon_dismiss_mdpi" />
+
+        <com.nandanu.halomama.roboto.RobotoTextView
+            android:id="@+id/textViewBatalkan2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:text="BATALKAN"
+            android:textColor="#fdce31"
+            android:textSize="11dp"
+            app:typeface="roboto_medium" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/lay_header1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <FrameLayout
+            android:id="@+id/frame_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#a63b3444" >
+
+            <com.nandanu.halomama.roboto.RobotoTextView
+                android:id="@+id/textViewDescMama"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                android:layout_marginLeft="43dp"
+                android:layout_marginRight="43dp"
+                android:layout_marginTop="13dp"
+                android:gravity="center"
+                android:text="@string/fragment_upload_mama"
+                android:textColor="#FFFFFF"
+                android:textSize="18dp"
+                app:typeface="roboto_light" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/lay_mention"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frame_text"
+            android:background="#a6000000"
+            android:orientation="vertical" >
+
+            <com.nandanu.halomama.roboto.RobotoEditText
+                android:id="@+id/editTextNamaMama"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="18dp"
+                android:ems="10"
+                android:hint="Nama Mama Kamu..."
+                android:textColor="#fdce31"
+                android:textSize="16dp"
+                app:typeface="roboto_light" >
+
+                <requestFocus />
+            </com.nandanu.halomama.roboto.RobotoEditText>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/editTextNamaMama"
+                android:background="#fdce31" />
+
+            <com.nandanu.halomama.roboto.RobotoEditText
+                android:id="@+id/editTextMention"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="18dp"
+                android:ems="10"
+                android:hint="Mention teman di Twitter"
+                android:inputType="textMultiLine"
+                android:textColor="#fdce31"
+                android:textSize="16dp"
+                app:typeface="roboto_light" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/lay_null"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/lay_mention"
+            android:background="#a63b3444"
+            android:paddingBottom="34dp" >
+
+            <ImageButton
+                android:id="@+id/buttonLanjut"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@drawable/btn_lanjut_mdpi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            
+        </FrameLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
