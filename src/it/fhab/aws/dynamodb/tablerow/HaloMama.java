@@ -26,12 +26,6 @@ public class HaloMama extends DDBTableRow {
 		
 	}
 	
-	public HaloMama (HaloMamaStatusSeenIndex hmSSI){
-		this.createdDate = hmSSI.getCreatedDate();
-		this.userNameTwitter = hmSSI.getUserNameTwitter();
-		
-	}
-	
 	public HaloMama (String userNameTwitter, String deviceOS){
 		this.userNameTwitter = userNameTwitter;
 		this.deviceOS = deviceOS;

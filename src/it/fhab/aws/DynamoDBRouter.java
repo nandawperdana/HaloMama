@@ -17,7 +17,6 @@ package it.fhab.aws;
 
 import it.fhab.aws.dynamodb.tablerow.DDBTableRow;
 import it.fhab.aws.dynamodb.tablerow.HaloMama;
-import it.fhab.aws.dynamodb.tablerow.HaloMamaStatusSeenIndex;
 import it.fhab.aws.dynamodb.tablerow.People;
 import it.fhab.aws.dynamodb.tablerow.Question;
 

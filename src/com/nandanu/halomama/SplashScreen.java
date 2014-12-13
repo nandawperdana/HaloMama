@@ -75,9 +75,8 @@ public class SplashScreen extends Activity {
 			if (pref.contains(Constants.TAG_TWITTER_USERNAME)
 					&& pref.contains(Constants.TAG_TWITTER_FULLNAME)) {
 				People p = new People();
-				p.prepareSignIn(
-						pref.getString(Constants.TAG_TWITTER_USERNAME, ""),
-						pref.getString(Constants.TAG_TWITTER_FULLNAME, ""));
+				p.prepareSignIn(pref.getString(Constants.TAG_TWITTER_USERNAME,
+						""));
 				router.signIn(p);
 			}
 

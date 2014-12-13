@@ -32,7 +32,7 @@ public class People extends DDBTableRow {
 		this.lastLogin = "" + System.currentTimeMillis();
 	}
 
-	public void prepareSignIn(String userNameTwitter, String fullName) {
+	public void prepareSignIn(String userNameTwitter) {
 		this.userNameTwitter = userNameTwitter;
 		this.lastLogin = "" + System.currentTimeMillis();
 	}
