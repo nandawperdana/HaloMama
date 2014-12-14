@@ -129,7 +129,10 @@ public class DynamoDBRouter {
 
 			if (!result.isEmpty()) {
 				Random random = new Random();
-				int randomNumber = random.nextInt((result.size() - 1) - 0) + 0;
+				int randomNumber = 0;
+				if (result.size() > 1){
+					randomNumber = random.nextInt((result.size() - 1) - 0) + 0;					
+				}
 				HaloMama res = result.get(randomNumber);
 				return res;
 			} else {
@@ -221,12 +224,15 @@ public class DynamoDBRouter {
 			if (result.isEmpty()) {
 				return null;
 			} else {
-				if (result.size() == 1) {
+				if (result.size() <= 1) {
 					return result.get(0);
 				} else {
 					Random random2 = new Random();
-					int randomNumber2 = random2
+					int randomNumber2 = 0;
+					if (result.size() > 1){
+						 randomNumber2 = random2
 							.nextInt((result.size() - 1) - 0) + 0;
+					}
 					return result.get(randomNumber2);
 				}
 			}
