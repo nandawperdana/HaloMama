@@ -21,7 +21,7 @@
             android:layout_marginRight="8dp"
             android:background="@drawable/icon_dismiss_mdpi" />
 
-        <com.nandanu.halomama.roboto.RobotoTextView
+        <it.fhab.halomama.roboto.RobotoTextView
             android:id="@+id/textViewBatalkan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <com.nandanu.halomama.roboto.RobotoChronometer
+        <it.fhab.halomama.roboto.RobotoChronometer
             android:id="@+id/chronometer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/fab_record_hdpi" />
 
-    <com.nandanu.halomama.roboto.RobotoTextView
+    <it.fhab.halomama.roboto.RobotoTextView
         android:id="@+id/textViewRandomText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingLeft="40dp"
-    android:paddingRight="40dp"
+    android:background="#FFFFFF"
     android:paddingBottom="30dp"
-    android:background="#FFFFFF" >
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp" >
 
-    <com.nandanu.halomama.roboto.RobotoTextView
+    <it.fhab.halomama.roboto.RobotoTextView
         android:id="@+id/textViewPermissionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,37 +21,46 @@
         android:textSize="20dp"
         app:typeface="roboto_regular" />
 
-    <com.nandanu.halomama.roboto.RobotoTextView
+    <it.fhab.halomama.roboto.RobotoTextView
         android:id="@+id/textViewPermission"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textViewPermissionTitle"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="20dp"
         android:text="Kami..."
         android:textColor="#666666"
         android:textSize="16dp"
         app:typeface="roboto_regular" />
 
-    <com.nandanu.halomama.roboto.RobotoTextView
-        android:id="@+id/textViewTolak"
+    <View
+        android:id="@+id/viewLine"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/textViewPermission"
+        android:background="#4a90e2" />
+
+    <it.fhab.halomama.roboto.RobotoButton
+        android:id="@+id/buttonTolak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textViewPermission"
+        android:layout_below="@+id/viewLine"
+        android:background="#FFFFFFFF"
         android:text="TOLAK"
         android:textColor="#4D4D4E"
         android:textSize="14dp"
         app:typeface="roboto_medium" />
 
-    <com.nandanu.halomama.roboto.RobotoTextView
-        android:id="@+id/textViewIzinkan"
+    <it.fhab.halomama.roboto.RobotoButton
+        android:id="@+id/buttonIzinkan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textViewPermission"
+        android:layout_below="@+id/viewLine"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:background="#FFFFFFFF"
         android:text="IZINKAN"
         android:textColor="#4D4D4E"
         android:textSize="14dp"
