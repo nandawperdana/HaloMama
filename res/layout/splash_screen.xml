@@ -27,4 +27,13 @@
         android:textSize="16dp"
         app:typeface="roboto_light" />
 
+    <ProgressBar
+        android:id="@+id/progressBarSplash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewSplashLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="66dp"
+        android:progressDrawable="@drawable/progress_bar_circ" />
+
 </RelativeLayout>

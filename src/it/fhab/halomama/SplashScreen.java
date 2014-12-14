@@ -32,11 +32,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 public class SplashScreen extends Activity {
 	/*
@@ -50,6 +55,7 @@ public class SplashScreen extends Activity {
 	 * widgets
 	 */
 	private RobotoTextView splashText;
+	private ProgressBar pbSplash;
 
 	/*
 	 * vars
@@ -60,7 +66,6 @@ public class SplashScreen extends Activity {
 	public static boolean exists = false;
 	public static boolean checked = false;
 	private SharedPreferences pref;
-	private boolean firstRun;
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
 	private Bitmap bmpPop, bmpPref, bmpThumbPop;
@@ -77,7 +82,8 @@ public class SplashScreen extends Activity {
 		setContentView(R.layout.splash_screen);
 
 		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
-		firstRun = pref.getBoolean("FIRST_RUN", true);
+
+		pbSplash = (ProgressBar) findViewById(R.id.progressBarSplash);
 		splashText = (RobotoTextView) findViewById(R.id.textViewSplashLogo);
 		splashText.setText(Html.fromHtml(getString(R.string.splash)));
 
@@ -103,15 +109,16 @@ public class SplashScreen extends Activity {
 	 * 
 	 */
 	private class ConnectToServer extends AsyncTask<String, String, Boolean> {
-		// @Override
-		// protected void onPreExecute() {
-		// super.onPreExecute();
-		// progress = new ProgressDialog(SplashScreen.this);
-		// progress.setMessage("Koneksi ke server ...");
-		// progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		// progress.setIndeterminate(true);
-		// progress.show();
-		// }
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			Animation anim = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
+			anim.setFillAfter(true);
+			pbSplash = new ProgressBar(SplashScreen.this);
+			pbSplash.setVisibility(View.VISIBLE);
+			pbSplash.setIndeterminate(true);
+			pbSplash.startAnimation(anim);
+		}
 
 		@Override
 		protected Boolean doInBackground(String... params) {
@@ -121,6 +128,15 @@ public class SplashScreen extends Activity {
 					Util.getCredProvider(SplashScreen.this));
 
 			// publishProgress("start");
+			/*
+			 * checking bucket
+			 */
+			AmazonS3Client sS3Client = Util.getS3Client(SplashScreen.this);
+			// try {
+			// Thread.sleep(7000);
+			// } catch (InterruptedException e) {
+			// return null;
+			// }
 
 			/*
 			 * sign in
@@ -134,7 +150,9 @@ public class SplashScreen extends Activity {
 				p.prepareSignIn(username);
 				router.signIn(p);
 
-				// get popular
+				/*
+				 * get popular
+				 */
 				hm = router.getPopularHaloMama();
 
 				bmpPref = getAvatarImage(pref.getString(
@@ -144,13 +162,23 @@ public class SplashScreen extends Activity {
 				/*
 				 * get thumbnail
 				 */
-				String fileBucket = hm.getUserNameTwitter() + "-"
-						+ hm.getCreatedDate() + ".jpg";
-				DownloadModel dl = new DownloadModel(SplashScreen.this,
-						fileBucket, mManager);
+				try {
+					String fileBucket = Util.getPrefix(SplashScreen.this)
+							+ hm.getUserNameTwitter() + "-"
+							+ hm.getCreatedDate() + ".jpg";
+//					Log.e("nama file thumbnail ", fileBucket);
+					DownloadModel dl = new DownloadModel(SplashScreen.this,
+							fileBucket, mManager);
 
-				File file = dl.downloadThumbnail();
-				bmpThumbPop = BitmapFactory.decodeFile(file.getAbsolutePath());
+					File file = dl.downloadThumbnail();
+
+					if (file != null) {
+						bmpThumbPop = BitmapFactory.decodeFile(file
+								.getAbsolutePath());
+					}
+				} catch (AmazonS3Exception e) {
+
+				}
 
 				/*
 				 * twitter
@@ -183,15 +211,6 @@ public class SplashScreen extends Activity {
 					e.printStackTrace();
 				}
 			}
-			/*
-			 * checking bucket
-			 */
-			AmazonS3Client sS3Client = Util.getS3Client(SplashScreen.this);
-			// try {
-			// Thread.sleep(7000);
-			// } catch (InterruptedException e) {
-			// return null;
-			// }
 			// publishProgress("stop");
 			return Util.doesBucketExist();
 		}
@@ -201,17 +220,18 @@ public class SplashScreen extends Activity {
 			checked = true;
 			exists = result;
 			// progress.dismiss();
+			pbSplash.setVisibility(View.INVISIBLE);
 			if (exists) {
 				Intent i;
 				if (!pref.contains(Constants.TAG_TWITTER_USERNAME)) {
 					first_run = "pertama";
-					Log.d("First", "First run!");
+//					Log.d("First", "First run!");
 
 					i = new Intent(SplashScreen.this, DescActivity.class);
 					Toast.makeText(SplashScreen.this, "first",
 							Toast.LENGTH_LONG).show();
 				} else {
-					Log.d("Second...", "Second run...!");
+//					Log.d("Second...", "Second run...!");
 
 					i = new Intent(SplashScreen.this, StreamActivity.class);
 					i.putExtra("objhalomama", hm);
@@ -219,15 +239,6 @@ public class SplashScreen extends Activity {
 					i.putExtra("imgbmppref", bmpPref);
 					i.putExtra("retweet", retweetCountPop);
 					i.putExtra("imgthumb", bmpThumbPop);
-					Log.e("url pop", "" + hm.getAvatarURL());
-					Log.e("ava url twtier",
-							""
-									+ pref.getString(
-											Constants.TAG_TWITTER_IMG_URL, ""));
-					Log.e("gambar akun", "" + bmpPref);
-					Log.e("GAMBAR pop", "" + bmpPop);
-					Log.e("GAMBAR thumb", "" + bmpThumbPop);
-					Log.e("NAMA", hm.getUserNameTwitter());
 				}
 
 				pref.edit().putBoolean("FIRST_RUN", false);
@@ -277,12 +288,12 @@ public class SplashScreen extends Activity {
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			Log.e("error ambil", e.getMessage() + " url " + urlsrc);
+//			Log.e("error ambil", e.getMessage() + " url " + urlsrc);
 			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			Log.e("error ambil ioe", e.getMessage());
+//			Log.e("error ambil ioe", e.getMessage());
 			return null;
 		}
 

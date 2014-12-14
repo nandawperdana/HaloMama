@@ -119,19 +119,19 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="16dp" >
 
-            <ImageView
-                android:id="@+id/imageViewShare"
+            <ImageButton
+                android:id="@+id/buttonShareMedia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/icon_share_small_hdpi" />
+                android:background="@drawable/icon_share_small_hdpi" />
 
             <it.fhab.halomama.roboto.RobotoTextView
                 android:id="@+id/textViewShare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imageViewShare"
+                android:layout_below="@+id/buttonShareMedia"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="Bagikan"

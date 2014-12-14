@@ -34,10 +34,10 @@ public class StreamActivity extends Activity {
 	/*
 	 * widgets
 	 */
-	private ImageButton btnProfile, btnPlayVid;
+	private ImageButton btnProfile, btnPlayVid, btnShareMedia;
 	private RobotoTextView tvUsername, tvRetweet, tvSeen, tvVideoLainnya,
 			tvMood;
-	private ImageView imageUser, imageShare;
+	private ImageView imageUser;
 	private Dialog dialog;
 	private ProgressDialog progress;
 	private FrameLayout layMood, layVideo;
@@ -49,7 +49,6 @@ public class StreamActivity extends Activity {
 	private SharedPreferences pref;
 	private String usernamePop, usernamePref, deviceOSPop, deviceOsPref;
 	private int retweetCountPop, seenCountPop, emotionPop;
-
 	/*
 	 * dynamo DB
 	 */
@@ -89,10 +88,10 @@ public class StreamActivity extends Activity {
 		tvRetweet = (RobotoTextView) findViewById(R.id.textViewRetweet);
 		tvSeen = (RobotoTextView) findViewById(R.id.textViewSeen);
 		tvVideoLainnya = (RobotoTextView) findViewById(R.id.textViewVideoLainnya);
-		imageShare = (ImageView) findViewById(R.id.imageViewShare);
 		imageUser = (ImageView) findViewById(R.id.imageViewUserImagePopular);
 		btnPlayVid = (ImageButton) findViewById(R.id.buttonPlayVideo);
 		btnProfile = (ImageButton) findViewById(R.id.buttonUserImage);
+		btnShareMedia = (ImageButton) findViewById(R.id.buttonShareMedia);
 
 		tvRetweet.setText("" + retweetCountPop);
 		tvSeen.setText("" + seenCountPop);
@@ -109,6 +108,24 @@ public class StreamActivity extends Activity {
 		btnProfile.setImageBitmap(roundImgPref);
 
 		layMood.setBackgroundColor(Color.parseColor(getColorMood(emotionPop)));
+
+		btnShareMedia.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				v.startAnimation(buttonClick);
+				Intent shareIntent = new Intent(
+						android.content.Intent.ACTION_SEND);
+				shareIntent.setType("text/plain");
+				String shareMessage = "ikut charity #halomama yuk, ada video menarik tentang #hariibu "
+						+ "http://halo-mama.com/@" + usernamePop;
+				shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+						shareMessage);
+				startActivity(Intent.createChooser(shareIntent,
+						"Bagikan ke Sosial Media"));
+			}
+		});
 
 		tvVideoLainnya.setOnClickListener(new View.OnClickListener() {
 
@@ -156,8 +173,6 @@ public class StreamActivity extends Activity {
 						.findViewById(R.id.textViewRekamUlang);
 				RobotoTextView tvGantiAkun = (RobotoTextView) dialog
 						.findViewById(R.id.textViewGantiAkun);
-				RobotoTextView tvShareMedia = (RobotoTextView) dialog
-						.findViewById(R.id.textViewShareMedia);
 				RobotoTextView tvHapus = (RobotoTextView) dialog
 						.findViewById(R.id.textViewHapusVideo);
 
@@ -176,6 +191,7 @@ public class StreamActivity extends Activity {
 						// add new flag to start new activity
 						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(i);
+						dialog.dismiss();
 						StreamActivity.this.finish();
 
 					}
@@ -189,7 +205,10 @@ public class StreamActivity extends Activity {
 						v.startAnimation(buttonClick);
 						Intent i = new Intent(getApplicationContext(),
 								DescActivity.class);
-						pref.edit().clear();
+						pref.edit().remove(Constants.TAG_TWITTER_USERNAME);
+						pref.edit().remove(Constants.TAG_TWITTER_FULLNAME);
+						pref.edit().remove(Constants.TAG_TWITTER_IMG_URL);
+						pref.edit().remove(Constants.TAG_DEVICE_OS);
 						pref.edit().commit();
 
 						i.addCategory(Intent.CATEGORY_HOME);
@@ -199,19 +218,8 @@ public class StreamActivity extends Activity {
 						// add new flag to start new activity
 						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(i);
+						dialog.dismiss();
 						StreamActivity.this.finish();
-					}
-				});
-
-				tvShareMedia.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						v.startAnimation(buttonClick);
-						Intent i = new Intent(getApplicationContext(),
-								RecordActivity.class);
-						startActivity(i);
 					}
 				});
 
@@ -364,9 +372,11 @@ public class StreamActivity extends Activity {
 		protected Boolean doInBackground(String... params) {
 			acm = new AmazonClientManager(StreamActivity.this);
 			router = new DynamoDBRouter(acm);
-			// TODO Auto-generated method stub
+
 			HaloMama hm = new HaloMama(usernamePref, deviceOsPref);
+
 			// deleteHaloMama : called when user choose "hapus video"
+			hm.setCreatedDate(RecordActivity.createdDateVideo);
 			hm.prepareDeleteHaloMama();
 			router.deleteHaloMama(hm);
 			return true;
@@ -376,6 +386,17 @@ public class StreamActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
 			progress.dismiss();
+			Intent i = new Intent(StreamActivity.this, DescActivity.class);
+
+			i.addCategory(Intent.CATEGORY_HOME);
+			// closing all the activity
+			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+			// add new flag to start new activity
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(i);
+			dialog.dismiss();
+			StreamActivity.this.finish();
 		}
 	}
 

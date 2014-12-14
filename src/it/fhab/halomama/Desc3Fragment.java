@@ -143,20 +143,7 @@ public class Desc3Fragment extends Fragment {
 						/*
 						 * login to twitter
 						 */
-						// if (!pref.getString(Constants.TAG_TWITTER_USERNAME,
-						// "")
-						// .isEmpty()
-						// && !pref.getString(
-						// Constants.TAG_TWITTER_FULLNAME, "")
-						// .isEmpty()) {
 						new TokenGet().execute();
-						// } else {
-						// Intent i = new Intent(getActivity(),
-						// RecordActivity.class);
-						// // Intent i = new Intent(getActivity(),
-						// // UploadActivity.class);
-						// startActivity(i);
-						// }
 					}
 				});
 
@@ -167,6 +154,7 @@ public class Desc3Fragment extends Fragment {
 						// TODO Auto-generated method stub
 						tvTolak.setTextColor(Color.parseColor("#4a90e2"));
 						v.startAnimation(buttonClick);
+						web.clearCache(true);
 						dialog.dismiss();
 					}
 				});
@@ -220,6 +208,7 @@ public class Desc3Fragment extends Fragment {
 
 				auth_dialog.setContentView(R.layout.auth_dialog);
 				web = (WebView) auth_dialog.findViewById(R.id.webv);
+				web.clearCache(true);
 				web.getSettings().setJavaScriptEnabled(true);
 				web.loadUrl(oauth_url);
 				web.setWebViewClient(new WebViewClient() {
@@ -237,7 +226,7 @@ public class Desc3Fragment extends Fragment {
 						if (url.contains("oauth_verifier")
 								&& authComplete == false) {
 							authComplete = true;
-							Log.e("Url", url);
+//							Log.e("Url", url);
 							Uri uri = Uri.parse(url);
 							oauth_verifier = uri
 									.getQueryParameter("oauth_verifier");
@@ -315,7 +304,8 @@ public class Desc3Fragment extends Fragment {
 				deviceOS += androidOS;
 				People p = new People(acm.getIdentityId(), deviceOS);
 
-				p.prepareSignUp(username, fullname, DescActivity.createdDatePeople);
+				p.prepareSignUp(username, fullname,
+						DescActivity.createdDatePeople);
 				router.signUp(p);
 
 				edit.putString(Constants.TAG_DEVICE_OS, deviceOS);

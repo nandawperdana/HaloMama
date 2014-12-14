@@ -2,6 +2,7 @@ package it.fhab.halomama;
 
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
+import it.fhab.halomama.controller.Util;
 import it.fhab.halomama.model.Constants;
 import it.fhab.halomama.model.DownloadModel;
 import it.fhab.halomama.model.HaloMama;
@@ -15,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -143,13 +145,25 @@ public class DoneUploadActivity extends Activity {
 			/*
 			 * get thumbnail
 			 */
-			String fileBucket = hm.getUserNameTwitter() + "-"
-					+ hm.getCreatedDate() + ".jpg";
-			DownloadModel dl = new DownloadModel(DoneUploadActivity.this,
-					fileBucket, mManager);
+			try {
+				String fileBucket = Util.getPrefix(DoneUploadActivity.this)
+						+ hm.getUserNameTwitter() + "-" + hm.getCreatedDate()
+						+ ".jpg";
+//				Log.e("nama file thumbnail ", fileBucket);
+				DownloadModel dl = new DownloadModel(DoneUploadActivity.this,
+						fileBucket, mManager);
 
-			File file = dl.downloadThumbnail();
-			bmpThumbPop = BitmapFactory.decodeFile(file.getAbsolutePath());
+				File file = dl.downloadThumbnail();
+
+				if (file != null) {
+					bmpThumbPop = BitmapFactory.decodeFile(file
+							.getAbsolutePath());
+				}
+			} catch (AmazonS3Exception e) {
+
+			} catch (NullPointerException e) {
+
+			}
 
 			/*
 			 * twitter
@@ -205,8 +219,8 @@ public class DoneUploadActivity extends Activity {
 			i.putExtra("imgbmppref", bmpPref);
 			i.putExtra("retweet", retweetCountPop);
 			i.putExtra("imgthumb", bmpThumbPop);
-			Log.e("GAMBAR", "" + bmp);
-			Log.e("NAMA", hm.getUserNameTwitter());
+//			Log.e("GAMBAR", "" + bmp);
+//			Log.e("NAMA", hm.getUserNameTwitter());
 			startActivity(i);
 			DoneUploadActivity.this.finish();
 		}

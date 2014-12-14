@@ -1,7 +1,6 @@
 package it.fhab.halomama;
 
 import it.fhab.halomama.controller.AmazonClientManager;
-import it.fhab.halomama.controller.CameraPreview;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.model.Question;
 import it.fhab.halomama.roboto.RobotoTextView;
@@ -24,9 +23,6 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.ShutterCallback;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
@@ -45,34 +41,32 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-public class RecordActivity extends Activity implements SurfaceHolder.Callback {
+public class RecordActivity extends Activity {
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
 
 	/*
 	 * camera
 	 */
-	private CameraPreview mCameraPreview;
-	// private PictureCallback mPicture;
 	private SurfaceHolder surfaceHolder;
 	private SurfaceView surfaceView;
-	private PictureCallback rawCallback;
-	private ShutterCallback shutterCallback;
-	private PictureCallback jpegCallback;
 	private Camera mCamera;
 	private MediaRecorder mMediaRecorder = new MediaRecorder();
+	private boolean inPreview = false;
+	private boolean cameraConfigured = false;
+	CamcorderProfile profile;
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
 
 	/*
 	 * widgets
 	 */
-	private PopupWindow popupRecord;
 	private ProgressDialog progress, pRender;
 	private RobotoTextView tvRandom;
 	private ImageButton btnBatalkan, btnRecord, btnRandom, btnCeritaSendiri;
@@ -93,11 +87,10 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	private boolean cameraFront = false;
 	private boolean isRecording = false;
 	private ArrayList<Question> listQuestion = new ArrayList<Question>();
-	private String fileVideoPath, fileImagePath, filePathNoExt;
 	private Uri uriPath, uriThumb;
 	private static SharedPreferences pref;
 	private Point p;
-	private boolean KEY_RECORD;
+	private String KEY_RECORD = "";
 	public static final String createdDateVideo = ""
 			+ System.currentTimeMillis();
 
@@ -111,27 +104,29 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
-		KEY_RECORD = pref.getBoolean("KEY_RECORD", true);
+		KEY_RECORD = pref.getString("KEY_RECORD", "");
 		mChronometer = (Chronometer) findViewById(R.id.chronometer);
 		tvRandom = (RobotoTextView) findViewById(R.id.textViewRandomText);
 		btnRandom = (ImageButton) findViewById(R.id.buttonRandom);
 		btnBatalkan = (ImageButton) findViewById(R.id.imageButtonBatalkan1);
 		btnCeritaSendiri = (ImageButton) findViewById(R.id.buttonCeritaSendiri);
 		btnRecord = (ImageButton) findViewById(R.id.buttonRecord);
-		popupRecord = new PopupWindow(RecordActivity.this);
-		// if (KEY_RECORD) {// Open popup window
-		if (p != null)
-			showPopup(RecordActivity.this, p);
-		// }
+
+		if (!pref.contains("KEY_RECORD")) {// Open popup window
+			if (p != null) {
+				KEY_RECORD = "record";
+				showPopup(RecordActivity.this, p);
+			}
+		}
 
 		/*
 		 * camera init
 		 */
-		mCamera = getCameraInstance();
-		// mCameraPreview = new CameraPreview(RecordActivity.this, mCamera);
+		// mCamera = getCameraInstance();
+		profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
 		surfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 		surfaceHolder = surfaceView.getHolder();
-		surfaceHolder.addCallback(this);
+		surfaceHolder.addCallback((surfaceCallback));
 		surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
 		new GetQuestion().execute();
@@ -224,13 +219,13 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 								int end = path.length() - 4;
 								String thumbName = path.substring(
 										path.lastIndexOf("/") + 1, end);
-								Log.e("PATH GAMBAR", path);
-								Log.e("nama thumb", thumbName);
+//								Log.e("PATH GAMBAR", path);
+//								Log.e("nama thumb", thumbName);
 								Bitmap bmp = createThumbnail(path);
 								uriThumb = Uri.fromFile(saveThumbnail(
 										thumbName, bmp));
-								Log.e("uri", "" + uriThumb);
-								Log.e("bmp thumb", "" + bmp);
+//								Log.e("uri", "" + uriThumb);
+//								Log.e("bmp thumb", "" + bmp);
 							} catch (Exception e) {
 							}
 							pRender.dismiss();
@@ -258,13 +253,10 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 						btnRecord
 								.setBackgroundResource(R.drawable.fab_stop_mdpi);
 						mMediaRecorder.start();
-						// if (KEY_RECORD) {// Open popup window
-						if (p != null)
-							popupRecord.dismiss();
 
-						pref.edit().putBoolean("KEY_RECORD", false);
+						pref.edit().putString("KEY_RECORD", KEY_RECORD);
 						pref.edit().commit();
-						// }
+
 						mChronometer.setBase(SystemClock.elapsedRealtime());
 						mChronometer.start();
 
@@ -281,13 +273,30 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		});
 	}
 
+	SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
+		public void surfaceCreated(SurfaceHolder holder) {
+			// no-op -- wait until surfaceChanged()
+		}
+
+		public void surfaceChanged(SurfaceHolder holder, int format, int width,
+				int height) {
+			initPreview(width, height);
+			startPreview();
+		}
+
+		public void surfaceDestroyed(SurfaceHolder holder) {
+			// no-op
+		}
+	};
+
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		// TODO Auto-generated method stub
 		int[] location = new int[2];
+		ImageButton button = (ImageButton) findViewById(R.id.buttonRecord);
 		// Get the x, y location and store it in the location[] array
 		// location[0] = x, location[1] = y.
-		btnRecord.getLocationOnScreen(location);
+		button.getLocationOnScreen(location);
 
 		// Initialize the Point with x, and y positions
 		p = new Point();
@@ -297,7 +306,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 
 	// The method that displays the popup.
 	private void showPopup(final Activity context, Point p) {
-		int popupWidth = 200;
+		int popupWidth = 360;
 		int popupHeight = 150;
 
 		// Inflate the popup_layout.xml
@@ -308,9 +317,10 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		View layout = layoutInflater.inflate(R.layout.popup_record, viewGroup);
 
 		// Creating the PopupWindow
+		final PopupWindow popupRecord = new PopupWindow(RecordActivity.this);
 		popupRecord.setContentView(layout);
-		// popup.setWidth(popupWidth);
-		// popup.setHeight(popupHeight);
+		popupRecord.setWidth(popupWidth);
+		popupRecord.setHeight(popupHeight);
 		popupRecord.setFocusable(true);
 
 		// Some offset to align the popup a bit to the right, and a bit down,
@@ -324,12 +334,17 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		// Displaying the popup at the specified location, + offsets.
 		popupRecord.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X,
 				p.y + OFFSET_Y);
+
+		if (isRecording)
+			popupRecord.dismiss();
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+
+		mCamera = getCameraInstance();
 		if (!isDeviceSupportCamera()) {
 			Toast toast = Toast.makeText(RecordActivity.this,
 					"Maaf, gadget anda tidak memiliki kamera!",
@@ -337,6 +352,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 			toast.show();
 			finish();
 		}
+		// mCamera = Camera.open();
+		startPreview();
 	}
 
 	/**
@@ -383,6 +400,24 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		return cameraId;
 	}
 
+	/**
+	 * A safe way to get an instance of the Camera object.
+	 */
+	public Camera getCameraInstance() {
+		Camera c = null;
+		try {
+			c = Camera.open(findFrontFacingCamera()); // attempt to get a Camera
+														// instance
+			if (findFrontFacingCamera() == -1) {
+				c = Camera.open(findBackFacingCamera());
+			}
+			c.setDisplayOrientation(90);
+		} catch (Exception e) {
+			// Camera is not available (in use or does not exist)
+		}
+		return c; // returns null if camera is unavailable
+	}
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -399,23 +434,6 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 
 		startActivity(i);
 		RecordActivity.this.finish();
-	}
-
-	/**
-	 * A safe way to get an instance of the Camera object.
-	 */
-	public Camera getCameraInstance() {
-		Camera c = null;
-		try {
-			c = Camera.open(findFrontFacingCamera()); // attempt to get a Camera
-														// instance
-			if (findFrontFacingCamera() == -1) {
-				c = Camera.open(findBackFacingCamera());
-			}
-		} catch (Exception e) {
-			// Camera is not available (in use or does not exist)
-		}
-		return c; // returns null if camera is unavailable
 	}
 
 	/**
@@ -440,23 +458,19 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	private boolean prepareVideoRecorder() {
 
 		// Step 1: Unlock and set camera to MediaRecorder
-		mMediaRecorder = new MediaRecorder(); // Works well
+		if (mMediaRecorder == null)
+			mMediaRecorder = new MediaRecorder(); // Works well
 		mCamera.unlock();
 		mMediaRecorder.setCamera(mCamera);
 		mMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
 
 		// Step 2: Set sources
 		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-		mMediaRecorder.setMaxDuration(10000);
+		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
+		// mMediaRecorder.setMaxDuration(10000);
 
-		// Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-		if (CamcorderProfile.get(CamcorderProfile.QUALITY_LOW) == null) {
-			mMediaRecorder.setProfile(CamcorderProfile
-					.get(CamcorderProfile.QUALITY_HIGH));
-		} else
-			mMediaRecorder.setProfile(CamcorderProfile
-					.get(CamcorderProfile.QUALITY_LOW));
+		// Step 3: set camcoder profile
+		mMediaRecorder.setProfile(profile);
 
 		// Step 4: Set output file
 		uriPath = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
@@ -469,25 +483,58 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		try {
 			mMediaRecorder.prepare();
 		} catch (IllegalStateException e) {
-			Log.d("ERROR", "IllegalStateException preparing MediaRecorder: "
-					+ e.getMessage());
+//			Log.d("ERROR", "IllegalStateException preparing MediaRecorder: "
+//					+ e.getMessage());
 			releaseMediaRecorder();
 			return false;
 		} catch (IOException e) {
-			Log.d("ERROR",
-					"IOException preparing MediaRecorder: " + e.getMessage());
+//			Log.d("ERROR",
+//					"IOException preparing MediaRecorder: " + e.getMessage());
 			releaseMediaRecorder();
 			return false;
 		}
 		return true;
 	}
 
+	private void startPreview() {
+		if (cameraConfigured && mCamera != null) {
+			mCamera.startPreview();
+			inPreview = true;
+		}
+	}
+
+	private void initPreview(int width, int height) {
+		if (mCamera != null && surfaceHolder.getSurface() != null) {
+			try {
+				mCamera.setPreviewDisplay(surfaceHolder);
+			} catch (Throwable t) {
+//				Log.e("PreviewDemo-surfaceCallback",
+//						"Exception in setPreviewDisplay()", t);
+				Toast.makeText(RecordActivity.this, t.getMessage(),
+						Toast.LENGTH_LONG).show();
+			}
+
+			if (!cameraConfigured) {
+				Camera.Parameters parameters = mCamera.getParameters();
+
+				// parameters.setPreviewSize(size.width, size.height);
+				parameters.setPreviewSize(profile.videoFrameWidth,
+						profile.videoFrameHeight);
+				mCamera.setParameters(parameters);
+				cameraConfigured = true;
+			}
+		}
+	}
+
 	@Override
 	protected void onPause() {
-		super.onPause();
+		if (inPreview) {
+			mCamera.stopPreview();
+		}
 		releaseMediaRecorder(); // if you are using MediaRecorder, release it
 								// first
 		releaseCamera(); // release the camera immediately on pause event
+		super.onPause();
 	}
 
 	private void releaseMediaRecorder() {
@@ -495,7 +542,6 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 			mMediaRecorder.reset(); // clear recorder configuration
 			mMediaRecorder.release(); // release the recorder object
 			mMediaRecorder = null;
-			// mCamera.release();
 			// mCamera.lock(); // lock camera for later use
 		}
 	}
@@ -504,6 +550,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		if (mCamera != null) {
 			mCamera.release(); // release the camera for other applications
 			mCamera = null;
+			inPreview = false;
 		}
 	}
 
@@ -521,7 +568,6 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 				Environment
 						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
 				"HaloMama");
-		// File mediaStorageDir = new File("/sdcard/", "HaloMama");
 
 		// This location works best if you want the created images to be shared
 		// between applications and persist after your app has been uninstalled.
@@ -529,7 +575,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		// Create the storage directory if it does not exist
 		if (!mediaStorageDir.exists()) {
 			if (!mediaStorageDir.mkdirs()) {
-				Log.d("HaloMama", "gagal membuat direktori");
+//				Log.d("HaloMama", "gagal membuat direktori");
 				return null;
 			}
 		}
@@ -540,41 +586,17 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		File mediaFile;
 		if (type == MEDIA_TYPE_IMAGE) {
 			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ pref.getString("USERNAME", "") + "-" + createdDateVideo + ".jpg");
+					+ pref.getString("USERNAME", "") + "-" + createdDateVideo
+					+ ".jpg");
 		} else if (type == MEDIA_TYPE_VIDEO) {
 			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ pref.getString("USERNAME", "") + "-" + createdDateVideo + ".mp4");
+					+ pref.getString("USERNAME", "") + "-" + createdDateVideo
+					+ ".mp4");
 		} else {
 			return null;
 		}
 
 		return mediaFile;
-	}
-
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
-		if (mCamera != null) {
-			Parameters params = mCamera.getParameters();
-			mCamera.setParameters(params);
-		} else {
-			Toast.makeText(getApplicationContext(), "Kamera tidak tersedia!",
-					Toast.LENGTH_LONG).show();
-			finish();
-		}
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
-		finish();
 	}
 
 	/**
@@ -619,7 +641,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		// Create the storage directory if it does not exist
 		if (!mediaStorageDir.exists()) {
 			if (!mediaStorageDir.mkdirs()) {
-				Log.d("HaloMama", "gagal membuat direktori");
+//				Log.d("HaloMama", "gagal membuat direktori");
 				return null;
 			}
 		}

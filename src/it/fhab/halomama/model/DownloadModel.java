@@ -118,13 +118,13 @@ public class DownloadModel extends TransferModel {
 		File file = new File(
 				Environment
 						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				"HaloMama/Thumbnail");
+				"HaloMama/Thumbnail/");
 
 		File mediaFile = new File(file.getPath() + getFileName());
 		mUri = Uri.fromFile(mediaFile);
 
 		mDownload = getTransferManager().download(
-				Constants.BUCKET_NAME.toLowerCase(Locale.US), mKey, file);
+				Constants.BUCKET_NAME.toLowerCase(Locale.US), mKey, mediaFile);
 		if (mListener != null) {
 			mDownload.addProgressListener(mListener);
 		}

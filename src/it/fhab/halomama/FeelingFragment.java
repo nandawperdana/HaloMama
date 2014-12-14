@@ -96,8 +96,8 @@ public class FeelingFragment extends Fragment {
 		namaMama = bundle.getString("NAMA_MAMA", "");
 		mentionTeman = bundle.getString("NAMA_TEMAN", "");
 
-		Toast.makeText(getActivity(), "" + deviceOS + " thumb " + uriThumb,
-				Toast.LENGTH_LONG).show();
+		// Toast.makeText(getActivity(), "" + deviceOS + " thumb " + uriThumb,
+		// Toast.LENGTH_LONG).show();
 		// Log.e("URI thumb", "" + Uri.parse(new
 		// File(fileImagePath).toString()));
 
@@ -122,7 +122,7 @@ public class FeelingFragment extends Fragment {
 				.findViewById(R.id.imageButtonBatalkan3);
 		btnUpload = (ImageButton) rootView.findViewById(R.id.buttonUpload);
 		if (!feeling)
-			btnUpload.setVisibility(View.GONE);
+			btnUpload.setEnabled(false);
 		btnRekamUlang = (ImageButton) rootView.findViewById(R.id.buttonUlang);
 
 		btnBatalkan.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +192,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 
@@ -212,7 +212,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 
@@ -232,7 +232,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 
@@ -252,7 +252,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 
@@ -272,7 +272,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 
@@ -292,7 +292,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 
@@ -312,7 +312,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_selected_hdpi); // sel
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 
@@ -332,7 +332,7 @@ public class FeelingFragment extends Fragment {
 				ivPercaya
 						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
 				ivSenang.setImageResource(R.drawable.emotion_button_senang_selected_hdpi); // sel
-				btnUpload.setVisibility(View.VISIBLE);
+				btnUpload.setEnabled(true);
 			}
 		});
 		return rootView;
