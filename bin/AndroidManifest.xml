@@ -46,7 +46,7 @@
         </activity>
         <activity
             android:name=".SplashScreen"
-            android:label="Halo Mama" >
+            android:label="Fhab" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

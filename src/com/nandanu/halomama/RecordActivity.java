@@ -1,12 +1,8 @@
 package com.nandanu.halomama;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Random;
 
 import android.app.Activity;
@@ -40,6 +36,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.nandanu.halomama.controller.AmazonClientManager;
+import com.nandanu.halomama.controller.CameraPreview;
 import com.nandanu.halomama.controller.DynamoDBRouter;
 import com.nandanu.halomama.model.Question;
 import com.nandanu.halomama.roboto.RobotoTextView;
@@ -50,7 +47,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	/*
 	 * camera
 	 */
-	// private CameraPreview mCameraPreview;
+	private CameraPreview mCameraPreview;
 	// private PictureCallback mPicture;
 	private SurfaceHolder surfaceHolder;
 	private SurfaceView surfaceView;
@@ -65,7 +62,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	/*
 	 * widgets
 	 */
-	private ProgressDialog progress;
+	private ProgressDialog progress, pRender;
 	private RobotoTextView tvRandom;
 	private ImageButton btnBatalkan;
 	private Chronometer mChronometer;
@@ -113,7 +110,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		 * camera init
 		 */
 		mCamera = getCameraInstance();
-		// mCameraPreview = new CameraPreview(myContext, mCamera);
+		// mCameraPreview = new CameraPreview(RecordActivity.this, mCamera);
 		surfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback(this);
@@ -121,45 +118,45 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 
 		new GetQuestion().execute();
 
-		rawCallback = new PictureCallback() {
-
-			@Override
-			public void onPictureTaken(byte[] data, Camera camera) {
-				// TODO Auto-generated method stub
-				Log.d("Log", "onPictureTaken - raw");
-			}
-		};
-
-		shutterCallback = new ShutterCallback() {
-
-			@Override
-			public void onShutter() {
-				// TODO Auto-generated method stub
-				Log.i("Log", "onShutter'd");
-			}
-		};
-
-		jpegCallback = new PictureCallback() {
-
-			@Override
-			public void onPictureTaken(byte[] data, Camera camera) {
-				// TODO Auto-generated method stub
-				FileOutputStream outStream = null;
-				try {
-					File fileImage = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-					fileImagePath = fileImage.toString();
-					outStream = new FileOutputStream(fileImage);
-					outStream.write(data);
-					outStream.close();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
+		// rawCallback = new PictureCallback() {
+		//
+		// @Override
+		// public void onPictureTaken(byte[] data, Camera camera) {
+		// // TODO Auto-generated method stub
+		// Log.d("Log", "onPictureTaken - raw");
+		// }
+		// };
+		//
+		// shutterCallback = new ShutterCallback() {
+		//
+		// @Override
+		// public void onShutter() {
+		// // TODO Auto-generated method stub
+		// Log.i("Log", "onShutter'd");
+		// }
+		// };
+		//
+		// jpegCallback = new PictureCallback() {
+		//
+		// @Override
+		// public void onPictureTaken(byte[] data, Camera camera) {
+		// // TODO Auto-generated method stub
+		// FileOutputStream outStream = null;
+		// try {
+		// File fileImage = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+		// fileImagePath = fileImage.toString();
+		// outStream = new FileOutputStream(fileImage);
+		// outStream.write(data);
+		// outStream.close();
+		// } catch (FileNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// }
+		// };
 
 		// Checking camera availability
 		if (!isDeviceSupportCamera()) {
@@ -176,11 +173,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 			public void onClick(View v) {
 				v.startAnimation(buttonClick);
 				// TODO Auto-generated method stub
-				Random rand = new Random();
-				int max = listQuestion.size() - 1;
-				int r = rand.nextInt((max - 0) + 1) + 0;
-				String txt = listQuestion.get(r).getQuestion();
-				// String text = randomText[r];
+				String txt = randomizeQuestion(listQuestion);
 				tvRandom.setText(txt);
 			}
 		});
@@ -224,21 +217,37 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 					// inform the user that recording has stopped
 					// setCaptureButtonText("Capture");
 					isRecording = false;
-					Intent i = new Intent(RecordActivity.this,
+					final Intent i = new Intent(RecordActivity.this,
 							UploadActivity.class);
 
 					i.putExtra("VIDEO_PATH", fileVideoPath);
 					i.putExtra("IMAGE_PATH", fileImagePath);
 					i.putExtra("VIDEO_URI", uriPath);
 
-					i.addCategory(Intent.CATEGORY_HOME);
-					// closing all the activity
-					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					pRender = new ProgressDialog(RecordActivity.this);
+					progress.setMessage("Render video ...");
+					progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					progress.setIndeterminate(true);
+					pRender.show();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								Thread.sleep(4000);
+							} catch (Exception e) {
+							}
+							pRender.dismiss();
 
-					// add new flag to start new activity
-					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							i.addCategory(Intent.CATEGORY_HOME);
+							// closing all the activity
+							i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-					startActivity(i);
+							// add new flag to start new activity
+							i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+							startActivity(i);
+						}
+					}).start();
 				} else {
 					// initialize video camera
 					if (prepareVideoRecorder()) {
@@ -393,16 +402,19 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		// Step 2: Set sources
 		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-		// mMediaRecorder.setMaxDuration(10000);
+		mMediaRecorder.setMaxDuration(10000);
 
 		// Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-		mMediaRecorder.setProfile(CamcorderProfile
-				.get(CamcorderProfile.QUALITY_HIGH));
+		if (CamcorderProfile.get(CamcorderProfile.QUALITY_LOW) == null) {
+			mMediaRecorder.setProfile(CamcorderProfile
+					.get(CamcorderProfile.QUALITY_HIGH));
+		} else
+			mMediaRecorder.setProfile(CamcorderProfile
+					.get(CamcorderProfile.QUALITY_LOW));
 
 		// Step 4: Set output file
 		uriPath = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
-		fileVideoPath = getOutputMediaFile(MEDIA_TYPE_VIDEO).toString();
-		mMediaRecorder.setOutputFile(fileVideoPath);
+		mMediaRecorder.setOutputFile(new File(uriPath.getPath()).toString());
 
 		// Step 5: Set the preview output
 		mMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
@@ -520,6 +532,26 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		finish();
 	}
 
+	/**
+	 * randomize question from arraylist of question
+	 * 
+	 * @param q
+	 * @return
+	 */
+	public String randomizeQuestion(ArrayList<Question> q) {
+		Random rand = new Random();
+		int max = q.size() - 1;
+		int r = rand.nextInt((max - 0) + 1) + 0;
+		String txt = q.get(r).getQuestion();
+		return txt;
+	}
+
+	/**
+	 * get question
+	 * 
+	 * @author Aslab-NWP
+	 * 
+	 */
 	private class GetQuestion extends AsyncTask<String, String, String> {
 
 		@Override
@@ -546,6 +578,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		@Override
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
+			String txt = randomizeQuestion(listQuestion);
+			tvRandom.setText(txt);
 			progress.dismiss();
 		}
 	}

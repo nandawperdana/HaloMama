@@ -272,29 +272,4 @@ public class DynamoDBRouter {
 		return null;
 	}
 
-	public HaloMama getTweetId(String username) {
-		DynamoDBQueryExpression<HaloMama> queryExpression = new DynamoDBQueryExpression<HaloMama>();
-		HaloMama hm = new HaloMama();
-		hm.setUserNameTwitter(username);
-		hm.setStatus("ok");
-		queryExpression.withHashKeyValues(hm);
-		queryExpression.withIndexName(Constants.TABLE_NAME);
-		queryExpression.setScanIndexForward(false);
-		queryExpression.setLimit(1);
-		try {
-			PaginatedQueryList<HaloMama> result = mapper.query(HaloMama.class,
-					queryExpression);
-
-			if (result.isEmpty()) {
-				return null;
-			} else {
-				return result.get(0);
-			}
-		} catch (AmazonServiceException ex) {
-			amazonClientManager.wipeCredentialsOnAuthError(ex);
-			return null;
-		}
-
-	}
-
 }

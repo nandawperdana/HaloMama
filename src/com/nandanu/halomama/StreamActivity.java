@@ -303,7 +303,7 @@ public class StreamActivity extends Activity {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			progress = new ProgressDialog(StreamActivity.this);
-			progress.setMessage("Meng-update ...");
+			progress.setMessage("Menghapus video ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
 			progress.show();
@@ -311,6 +311,8 @@ public class StreamActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
+			acm = new AmazonClientManager(StreamActivity.this);
+			router = new DynamoDBRouter(acm);
 			// TODO Auto-generated method stub
 			HaloMama hm = new HaloMama(usernamePref, deviceOsPref);
 			// deleteHaloMama : called when user choose "hapus video"

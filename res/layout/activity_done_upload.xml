@@ -59,7 +59,7 @@
             android:layout_height="90dp"
             android:background="#33000000" >
 
-            <com.nandanu.halomama.roboto.RobotoButton
+            <ImageButton
                 android:id="@+id/buttonDone"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -67,10 +67,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="25dp"
-                android:background="#fdce31"
-                android:text="SELESAI"
-                android:textColor="#000000"
-                app:typeface="roboto_medium" />
+                android:background="@drawable/btn_selesai_hdpi" />
         </FrameLayout>
     </LinearLayout>
 

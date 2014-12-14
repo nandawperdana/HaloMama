@@ -70,7 +70,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/fab_record_mdpi" />
+        android:background="@drawable/fab_record_hdpi" />
 
     <com.nandanu.halomama.roboto.RobotoTextView
         android:id="@+id/textViewRandomText"
@@ -79,6 +79,7 @@
         android:layout_below="@+id/lay_header"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
+        android:gravity="center"
         android:text="Random Text"
         android:textColor="#FFFFFF"
         android:textSize="18dp"
@@ -91,8 +92,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/lay_header"
         android:layout_marginLeft="80dp"
-        android:layout_marginTop="80dp"
-        android:background="@drawable/fab_record_mdpi" />
+        android:layout_marginTop="100dp"
+        android:background="@drawable/btn_pertanyaan_random_hdpi" />
 
     <ImageButton
         android:id="@+id/buttonCeritaSendiri"
@@ -101,7 +102,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/lay_header"
         android:layout_marginRight="80dp"
-        android:layout_marginTop="80dp"
-        android:background="@drawable/icon_dismiss_mdpi" />
+        android:layout_marginTop="100dp"
+        android:background="@drawable/btn_cerita_sendiri_hdpi" />
 
 </RelativeLayout>

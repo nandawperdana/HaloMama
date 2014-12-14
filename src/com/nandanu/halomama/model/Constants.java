@@ -8,21 +8,23 @@ public class Constants {
 	 * consumer key and secret
 	 * */
 	// Preference Constants
-	// public static String TWITTER_CONSUMER_KEY = "gtKIdPEwHcHfZPYHszOYDnWIx";
-	// public static String TWITTER_CONSUMER_SECRET =
-	// "Rz4Wi3z1SiTkkldJmfUfOjyS09WiQ0jY7RXAeibfByxumdiryr";
-	public static String TWITTER_CONSUMER_KEY = "gtKIdPEwHcHfZPYHszOYDnWIx";
-	public static String TWITTER_CONSUMER_SECRET = "Rz4Wi3z1SiTkkldJmfUfOjyS09WiQ0jY7RXAeibfByxumdiryr";
+	 public static String TWITTER_CONSUMER_KEY = "gtKIdPEwHcHfZPYHszOYDnWIx";
+	 public static String TWITTER_CONSUMER_SECRET =
+	 "Rz4Wi3z1SiTkkldJmfUfOjyS09WiQ0jY7RXAeibfByxumdiryr";
+//	public static String TWITTER_CONSUMER_KEY = "MvmzHmV1Sld81CZyx9CEhA";
+//	public static String TWITTER_CONSUMER_SECRET = "W2yNRgnflsIl5r4ZofbSXY9kbEfvfyly1NZMv2dN9Sw";
 	public static String PREFERENCE_NAME = "twitter_oauth";
 
+	 public static String TWITTER_ACCESS_TOKEN =
+	 "2836304648-zPC3xjentjb1o7BhWcAkVqd2IE6XxlXZV4t6utK";
+	 public static String TWITTER_ACCESS_TOKEN_SECRET =
+	 "AJyPvkIJmFyo4OOueYKqxKR1HEsuSygGREPR8HhEPRMYu";
 	// public static String TWITTER_ACCESS_TOKEN =
-	// "2836304648-zPC3xjentjb1o7BhWcAkVqd2IE6XxlXZV4t6utK";
+	// "78867849-doHTy2OqkIVEaQ1xs25IlSc7p0dd5qjMdMq57c7JK";
 	// public static String TWITTER_ACCESS_TOKEN_SECRET =
-	// "AJyPvkIJmFyo4OOueYKqxKR1HEsuSygGREPR8HhEPRMYu";
-	public static String TWITTER_ACCESS_TOKEN = "2836304648-zPC3xjentjb1o7BhWcAkVqd2IE6XxlXZV4t6utK";
-	public static String TWITTER_ACCESS_TOKEN_SECRET = "AJyPvkIJmFyo4OOueYKqxKR1HEsuSygGREPR8HhEPRMYu";
+	// "Et5hKeix501EKYlRV3jGRTh6sgsvCprMEsGQL8sCIG3Ks";
 
-//	public static final String TWITTER_CALLBACK_URL = "http://www.google.com";
+	public static final String TWITTER_CALLBACK_URL = "http://www.google.com";
 
 	// twitter shared preferences
 	public static final String TAG_TWITTER_CONSUMER_KEY = "CONSUMER_KEY";

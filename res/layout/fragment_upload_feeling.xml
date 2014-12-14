@@ -71,25 +71,25 @@
                     android:id="@+id/imageViewSedih"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_sedih_hdpi" />
 
                 <ImageView
                     android:id="@+id/imageViewBosan"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_bosan_hdpi" />
 
                 <ImageView
                     android:id="@+id/imageViewMarah"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_marah_hdpi" />
 
                 <ImageView
                     android:id="@+id/imageViewWasWas"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_waswas_hdpi" />
             </TableRow>
 
             <TableRow
@@ -142,25 +142,25 @@
                     android:id="@+id/imageViewKaget"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_kaget_hdpi" />
 
                 <ImageView
                     android:id="@+id/imageViewTakut"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_takut_hdpi" />
 
                 <ImageView
                     android:id="@+id/imageViewPercaya"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_percaya_hdpi" />
 
                 <ImageView
                     android:id="@+id/imageViewSenang"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/emotion_button_white_mdpi" />
+                    android:src="@drawable/emotion_button_senang_hdpi" />
             </TableRow>
 
             <TableRow
@@ -227,7 +227,7 @@
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="@drawable/btn_kirim_mdpi" />
+            android:background="@drawable/btn_upload_dan_bagikan_hdpi" />
 
         <ImageButton
             android:id="@+id/buttonUlang"
@@ -236,7 +236,7 @@
             android:layout_marginBottom="23dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="@drawable/btn_rekam_ulang_mdpi" />
+            android:background="@drawable/btn_rekam_ulang_hdpi" />
     </LinearLayout>
 
 </RelativeLayout>

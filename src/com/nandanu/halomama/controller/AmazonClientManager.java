@@ -67,7 +67,7 @@ public class AmazonClientManager {
 
 		CognitoCachingCredentialsProvider credentials = new CognitoCachingCredentialsProvider(
 				context, Constants.AWS_ACCOUNT_ID, Constants.COGNITO_POOL_ID,
-				Constants.COGNITO_ROLE_UNAUTH, null, Regions.US_EAST_1);
+				Constants.COGNITO_ROLE_UNAUTH, null, Constants.COGNITO_REGION);
 
 		ddb = new AmazonDynamoDBClient(credentials);
 		ddb.setRegion(Region.getRegion(Constants.DDB_REGION));

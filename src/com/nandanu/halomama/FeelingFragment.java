@@ -18,6 +18,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ import com.nandanu.halomama.roboto.RobotoTextView;
  */
 @SuppressLint("NewApi")
 public class FeelingFragment extends Fragment {
+	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
 	/*
 	 * widgets
 	 */
@@ -87,6 +89,8 @@ public class FeelingFragment extends Fragment {
 		deviceOS = pref.getString(Constants.TAG_DEVICE_OS, "");
 		avatarUrl = pref.getString(Constants.TAG_AVATAR_URL, "");
 
+		Toast.makeText(getActivity(), "" + deviceOS, Toast.LENGTH_LONG).show();
+
 		Bundle bundle = this.getArguments();
 		uriPath = bundle.getParcelable("VIDEO_URI");
 		namaMama = bundle.getString("NAMA_MAMA", "");
@@ -121,6 +125,7 @@ public class FeelingFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				v.startAnimation(buttonClick);
 				Intent i = new Intent(getActivity(), DescActivity.class);
 
 				i.addCategory(Intent.CATEGORY_HOME);
@@ -138,6 +143,7 @@ public class FeelingFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				v.startAnimation(buttonClick);
 				// TODO Auto-generated method stub
 				/**
 				 * upload video
@@ -150,6 +156,7 @@ public class FeelingFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				v.startAnimation(buttonClick);
 				// TODO Auto-generated method stub
 				Intent i = new Intent(getActivity(), RecordActivity.class);
 
@@ -171,15 +178,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 0;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_selected_hdpi); // sel
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_hdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_hdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_hdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_hdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_hdpi);
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -191,15 +198,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 1;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_hdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_selected_hdpi); // sel
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_hdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_hdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_hdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_hdpi);
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -211,15 +218,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 2;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_hdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_hdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_selected_hdpi); // sel
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_hdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_hdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_hdpi);
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -231,15 +238,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 3;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_hdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_hdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_hdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_selected_hdpi); // sel
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_hdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_hdpi);
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -251,15 +258,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 4;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_hdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_hdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_hdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_hdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_selected_hdpi); // sel
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_hdpi);
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -271,15 +278,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 5;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_hdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_hdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_hdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_hdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_hdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_selected_hdpi); // sel
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -291,15 +298,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 6;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_hdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_hdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_hdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_hdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_hdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_hdpi);
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
-				ivSenang.setImageResource(R.drawable.emotion_button_white_mdpi);
+						.setImageResource(R.drawable.emotion_button_percaya_selected_hdpi); // sel
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_hdpi);
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -311,15 +318,15 @@ public class FeelingFragment extends Fragment {
 				// TODO Auto-generated method stub
 				feeling = true;
 				feel = 7;
-				ivSedih.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivBosan.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivMarah.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivWasWas.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivKaget.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivTakut.setImageResource(R.drawable.emotion_button_white_mdpi);
+				ivSedih.setImageResource(R.drawable.emotion_button_sedih_hdpi);
+				ivBosan.setImageResource(R.drawable.emotion_button_bosan_hdpi);
+				ivMarah.setImageResource(R.drawable.emotion_button_marah_hdpi);
+				ivWasWas.setImageResource(R.drawable.emotion_button_waswas_hdpi);
+				ivKaget.setImageResource(R.drawable.emotion_button_kaget_hdpi);
+				ivTakut.setImageResource(R.drawable.emotion_button_takut_hdpi);
 				ivPercaya
-						.setImageResource(R.drawable.emotion_button_white_mdpi);
-				ivSenang.setImageResource(R.drawable.emotion_button_white_selected_mdpi); // sel
+						.setImageResource(R.drawable.emotion_button_percaya_hdpi);
+				ivSenang.setImageResource(R.drawable.emotion_button_senang_selected_hdpi); // sel
 				btnUpload.setVisibility(View.VISIBLE);
 			}
 		});
@@ -344,9 +351,6 @@ public class FeelingFragment extends Fragment {
 		}
 
 		protected String doInBackground(String... args) {
-			acm = new AmazonClientManager(getActivity());
-			new DynamoDBRouter(acm);
-
 			ConfigurationBuilder builder = new ConfigurationBuilder();
 			builder.setOAuthConsumerKey(pref.getString("CONSUMER_KEY",
 					Constants.TWITTER_CONSUMER_KEY));
@@ -368,16 +372,10 @@ public class FeelingFragment extends Fragment {
 						+ " selamat #hariibu! http://fhab.it/halomama/@"
 						+ username + " cc:@" + mentionTeman;
 				String text = tweetText;
-				tweet = twitter.updateStatus(text);
+				twitter4j.Status response = twitter.updateStatus(text);
+				tweet = response;
 
-				/*
-				 * upload to s3
-				 */
-				UploadModel model = new UploadModel(getActivity(), uriPath,
-						mManager);
-				model.upload();
-
-				return tweet.toString();
+				return response.toString();
 			} catch (TwitterException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -391,10 +389,8 @@ public class FeelingFragment extends Fragment {
 				progress.dismiss();
 				Toast.makeText(getActivity(), "Tweet Posted",
 						Toast.LENGTH_SHORT).show();
-				/*
-				 * update db
-				 */
-				new UpdateVideoData().execute();
+
+				new UploadVideo().execute();
 
 				Intent i = new Intent(getActivity(), DoneUploadActivity.class);
 
@@ -407,11 +403,97 @@ public class FeelingFragment extends Fragment {
 
 				startActivity(i);
 			} else {
+//				Toast.makeText(getActivity(), "res, " + tweet.toString(),
+//						Toast.LENGTH_SHORT).show();
 				progress.dismiss();
 				Toast.makeText(getActivity(), "Error while tweeting !",
 						Toast.LENGTH_SHORT).show();
 			}
 
+		}
+	}
+
+	/**
+	 * async task to update DB
+	 * 
+	 * @author Aslab-NWP
+	 * 
+	 */
+	private class UploadVideo extends AsyncTask<String, String, Boolean> {
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			progress = new ProgressDialog(getActivity());
+			progress.setMessage("Mengunggah ...");
+			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progress.setIndeterminate(true);
+			progress.show();
+		}
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			/*
+			 * upload to s3
+			 */
+			UploadModel model = new UploadModel(getActivity(), uriPath,
+					mManager);
+			model.upload();
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// TODO Auto-generated method stub
+			/*
+			 * update db
+			 */
+			new CreateInitialData().execute();
+			progress.dismiss();
+		}
+	}
+
+	/**
+	 * async task to update DB
+	 * 
+	 * @author Aslab-NWP
+	 * 
+	 */
+	private class CreateInitialData extends AsyncTask<String, String, Boolean> {
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			progress = new ProgressDialog(getActivity());
+			progress.setMessage("Meng-update ...");
+			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progress.setIndeterminate(true);
+			progress.show();
+		}
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			acm = new AmazonClientManager(getActivity());
+			router = new DynamoDBRouter(acm);
+			/*
+			 * postfhab : create initial data after video is uploaded to s3
+			 */
+			HaloMama hm = new HaloMama(username, deviceOS);
+			hm.preparePostFhab(feel);
+			router.postFhab(hm);
+
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// TODO Auto-generated method stub
+			progress.dismiss();
+			new UpdateVideoData().execute();
 		}
 	}
 
@@ -437,12 +519,10 @@ public class FeelingFragment extends Fragment {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			/*
-			 * postfhab : create initial data after video is uploaded to s3
-			 */
+			acm = new AmazonClientManager(getActivity());
+			router = new DynamoDBRouter(acm);
+
 			HaloMama hm = new HaloMama(username, deviceOS);
-			hm.preparePostFhab(feel);
-			router.postFhab(hm);
 
 			/*
 			 * postHaloMama : updating the video data, called after posting to
