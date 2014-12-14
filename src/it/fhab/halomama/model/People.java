@@ -25,10 +25,10 @@ public class People extends DDBTableRow {
 		this.deviceOS = deviceOS;
 	}
 
-	public void prepareSignUp(String userNameTwitter, String fullName) {
+	public void prepareSignUp(String userNameTwitter, String fullName, String createdDate) {
 		this.userNameTwitter = userNameTwitter;
 		this.fullName = fullName;
-		this.createdDate = "" + System.currentTimeMillis();
+		this.createdDate = createdDate;
 		this.lastLogin = "" + System.currentTimeMillis();
 	}
 

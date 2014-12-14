@@ -505,7 +505,7 @@ public class FeelingFragment extends Fragment {
 			 * postfhab : create initial data after video is uploaded to s3
 			 */
 			hm = new HaloMama(username, deviceOS);
-			hm.preparePostFhab(feel);
+			hm.preparePostFhab(feel, RecordActivity.createdDateVideo);
 			router.postFhab(hm);
 
 			return true;

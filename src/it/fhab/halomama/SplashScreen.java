@@ -6,10 +6,12 @@ import it.fhab.halomama.controller.ConnectionDetector;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.controller.Util;
 import it.fhab.halomama.model.Constants;
+import it.fhab.halomama.model.DownloadModel;
 import it.fhab.halomama.model.HaloMama;
 import it.fhab.halomama.model.People;
 import it.fhab.halomama.roboto.RobotoTextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -33,6 +35,7 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 public class SplashScreen extends Activity {
@@ -60,8 +63,9 @@ public class SplashScreen extends Activity {
 	private boolean firstRun;
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
-	private Bitmap bmpPop, bmpPref;
+	private Bitmap bmpPop, bmpPref, bmpThumbPop;
 	private static String first_run = "";
+	private TransferManager mManager;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -113,6 +117,8 @@ public class SplashScreen extends Activity {
 		protected Boolean doInBackground(String... params) {
 			acm = new AmazonClientManager(SplashScreen.this);
 			router = new DynamoDBRouter(acm);
+			mManager = new TransferManager(
+					Util.getCredProvider(SplashScreen.this));
 
 			// publishProgress("start");
 
@@ -130,9 +136,21 @@ public class SplashScreen extends Activity {
 
 				// get popular
 				hm = router.getPopularHaloMama();
+
 				bmpPref = getAvatarImage(pref.getString(
 						Constants.TAG_TWITTER_IMG_URL, ""));
 				bmpPop = getAvatarImage(hm.getAvatarURL());
+
+				/*
+				 * get thumbnail
+				 */
+				String fileBucket = hm.getUserNameTwitter() + "-"
+						+ hm.getCreatedDate() + ".jpg";
+				DownloadModel dl = new DownloadModel(SplashScreen.this,
+						fileBucket, mManager);
+
+				File file = dl.downloadThumbnail();
+				bmpThumbPop = BitmapFactory.decodeFile(file.getAbsolutePath());
 
 				/*
 				 * twitter
@@ -200,6 +218,7 @@ public class SplashScreen extends Activity {
 					i.putExtra("imgbmppop", bmpPop);
 					i.putExtra("imgbmppref", bmpPref);
 					i.putExtra("retweet", retweetCountPop);
+					i.putExtra("imgthumb", bmpThumbPop);
 					Log.e("url pop", "" + hm.getAvatarURL());
 					Log.e("ava url twtier",
 							""
@@ -207,6 +226,7 @@ public class SplashScreen extends Activity {
 											Constants.TAG_TWITTER_IMG_URL, ""));
 					Log.e("gambar akun", "" + bmpPref);
 					Log.e("GAMBAR pop", "" + bmpPop);
+					Log.e("GAMBAR thumb", "" + bmpThumbPop);
 					Log.e("NAMA", hm.getUserNameTwitter());
 				}
 

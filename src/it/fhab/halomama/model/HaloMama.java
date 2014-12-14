@@ -10,7 +10,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 @DynamoDBTable(tableName = Constants.TABLE_NAME)
-public class HaloMama extends DDBTableRow implements Serializable{
+public class HaloMama extends DDBTableRow implements Serializable {
 
 	private String userNameTwitter;
 	private String createdDate;
@@ -39,9 +39,9 @@ public class HaloMama extends DDBTableRow implements Serializable{
 		this.deviceOS = deviceOS;
 	}
 
-	public String preparePostFhab(int emotionId) {
+	public String preparePostFhab(int emotionId, String createdDate) {
 		this.emotionId = emotionId;
-		this.createdDate = "" + System.currentTimeMillis();
+		this.createdDate = createdDate;
 
 		return createdDate;
 	}

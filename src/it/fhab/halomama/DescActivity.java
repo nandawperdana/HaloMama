@@ -14,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 
-
 public class DescActivity extends FragmentActivity {
 	public Context ctx = DescActivity.this;
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
@@ -41,6 +40,7 @@ public class DescActivity extends FragmentActivity {
 	private SharedPreferences pref;
 	public static boolean exists = false;
 	public static boolean checked = false;
+	public static final String createdDatePeople = "" + System.currentTimeMillis();
 
 	/**
 	 * Twitter
@@ -59,7 +59,6 @@ public class DescActivity extends FragmentActivity {
 			StrictMode.setThreadPolicy(policy);
 		}
 
-		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -73,7 +72,6 @@ public class DescActivity extends FragmentActivity {
 
 		// pref = getPreferences(0);
 		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
-		
 
 		SharedPreferences.Editor edit = pref.edit();
 		edit.putString("CONSUMER_KEY", Constants.TWITTER_CONSUMER_KEY);
