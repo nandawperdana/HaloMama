@@ -314,7 +314,8 @@ public class Desc3Fragment extends Fragment {
 				 */
 				deviceOS += androidOS;
 				People p = new People(acm.getIdentityId(), deviceOS);
-				p.prepareSignUp(username, fullname);
+
+				p.prepareSignUp(username, fullname, DescActivity.createdDatePeople);
 				router.signUp(p);
 
 				edit.putString(Constants.TAG_DEVICE_OS, deviceOS);

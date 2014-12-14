@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -40,102 +41,120 @@ import com.amazonaws.services.s3.model.ProgressListener;
  * underlying Download and TransferManager
  */
 public class DownloadModel extends TransferModel {
-    private static final String TAG = "DownloadModel";
+	private static final String TAG = "DownloadModel";
 
-    private Download mDownload;
-    private PersistableDownload mPersistableDownload;
-    private ProgressListener mListener;
-    private String mKey;
-    private Status mStatus;
-    private Uri mUri;
+	private Download mDownload;
+	private PersistableDownload mPersistableDownload;
+	private ProgressListener mListener;
+	private String mKey;
+	private Status mStatus;
+	private Uri mUri;
 
-    public DownloadModel(Context context, String key, TransferManager manager) {
-        super(context, Uri.parse(key), manager);
-        mKey = key;
-        mStatus = Status.IN_PROGRESS;
-        mListener = new ProgressListener() {
-            @Override
-            public void progressChanged(ProgressEvent event) {
-                if (event.getEventCode() == ProgressEvent.COMPLETED_EVENT_CODE) {
+	public DownloadModel(Context context, String key, TransferManager manager) {
+		super(context, Uri.parse(key), manager);
+		mKey = key;
+		mStatus = Status.IN_PROGRESS;
+		mListener = new ProgressListener() {
+			@Override
+			public void progressChanged(ProgressEvent event) {
+				if (event.getEventCode() == ProgressEvent.COMPLETED_EVENT_CODE) {
 
-                    Intent mediaScanIntent = new Intent(
-                            Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                    mediaScanIntent.setData(mUri);
-                    getContext().sendBroadcast(mediaScanIntent);
+					Intent mediaScanIntent = new Intent(
+							Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+					mediaScanIntent.setData(mUri);
+					getContext().sendBroadcast(mediaScanIntent);
 
-                    mStatus = Status.COMPLETED;
+					mStatus = Status.COMPLETED;
 
-                }
-            }
-        };
-    }
+				}
+			}
+		};
+	}
 
-    @Override
-    public Status getStatus() {
-        return mStatus;
-    }
+	@Override
+	public Status getStatus() {
+		return mStatus;
+	}
 
-    @Override
-    public Transfer getTransfer() {
-        return mDownload;
-    }
+	@Override
+	public Transfer getTransfer() {
+		return mDownload;
+	}
 
-    @Override
-    public Uri getUri() {
-        return mUri;
-    }
+	@Override
+	public Uri getUri() {
+		return mUri;
+	}
 
-    @Override
-    public void abort() {
-        if (mDownload != null) {
-            mStatus = Status.CANCELED;
-            try {
-                mDownload.abort();
-            } catch (IOException e) {
-                Log.e(TAG, "", e);
-            }
-        }
-    }
+	@Override
+	public void abort() {
+		if (mDownload != null) {
+			mStatus = Status.CANCELED;
+			try {
+				mDownload.abort();
+			} catch (IOException e) {
+				Log.e(TAG, "", e);
+			}
+		}
+	}
 
-    public void download() {
-        mStatus = Status.IN_PROGRESS;
-        File file = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES),
-                getFileName());
-        mUri = Uri.fromFile(file);
+	public void download() {
+		mStatus = Status.IN_PROGRESS;
+		File file = new File(
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				getFileName());
+		mUri = Uri.fromFile(file);
 
-        mDownload = getTransferManager().download(
-                Constants.BUCKET_NAME.toLowerCase(Locale.US), mKey, file);
-        if (mListener != null) {
-            mDownload.addProgressListener(mListener);
-        }
-    }
+		mDownload = getTransferManager().download(
+				Constants.BUCKET_NAME.toLowerCase(Locale.US), mKey, file);
+		if (mListener != null) {
+			mDownload.addProgressListener(mListener);
+		}
+	}
 
-    @Override
-    public void pause() {
-        if (mStatus == Status.IN_PROGRESS) {
-            mStatus = Status.PAUSED;
-            try {
-                mPersistableDownload = mDownload.pause();
-            } catch (PauseException e) {
-                Log.d(TAG, "", e);
-            }
-        }
-    }
+	public File downloadThumbnail() {
+		mStatus = Status.IN_PROGRESS;
+		File file = new File(
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				"HaloMama/Thumbnail");
 
-    @Override
-    public void resume() {
-        if (mStatus == Status.PAUSED) {
-            mStatus = Status.IN_PROGRESS;
-            if (mPersistableDownload != null) {
-                mDownload = getTransferManager().resumeDownload(
-                        mPersistableDownload);
-                mDownload.addProgressListener(mListener);
-                mPersistableDownload = null;
-            } else {
-                download();
-            }
-        }
-    }
+		File mediaFile = new File(file.getPath() + getFileName());
+		mUri = Uri.fromFile(mediaFile);
+
+		mDownload = getTransferManager().download(
+				Constants.BUCKET_NAME.toLowerCase(Locale.US), mKey, file);
+		if (mListener != null) {
+			mDownload.addProgressListener(mListener);
+		}
+		return mediaFile;
+	}
+
+	@Override
+	public void pause() {
+		if (mStatus == Status.IN_PROGRESS) {
+			mStatus = Status.PAUSED;
+			try {
+				mPersistableDownload = mDownload.pause();
+			} catch (PauseException e) {
+				Log.d(TAG, "", e);
+			}
+		}
+	}
+
+	@Override
+	public void resume() {
+		if (mStatus == Status.PAUSED) {
+			mStatus = Status.IN_PROGRESS;
+			if (mPersistableDownload != null) {
+				mDownload = getTransferManager().resumeDownload(
+						mPersistableDownload);
+				mDownload.addProgressListener(mListener);
+				mPersistableDownload = null;
+			} else {
+				download();
+			}
+		}
+	}
 }

@@ -3,14 +3,18 @@ package it.fhab.halomama;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.model.Constants;
+import it.fhab.halomama.model.DownloadModel;
 import it.fhab.halomama.model.HaloMama;
 import it.fhab.halomama.roboto.RobotoTextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -49,7 +53,8 @@ public class DoneUploadActivity extends Activity {
 	private String url = "http://halo-mama.com/@";
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
-	private Bitmap bmp = null, bmpPref = null;;
+	private Bitmap bmp = null, bmpPref = null, bmpThumbPop;
+	private TransferManager mManager;
 
 	/*
 	 * dynamo DB
@@ -135,6 +140,16 @@ public class DoneUploadActivity extends Activity {
 			bmp = getAvatarImage(hm.getAvatarURL());
 			bmpPref = getAvatarImage(pref.getString(
 					Constants.TAG_TWITTER_IMG_URL, ""));
+			/*
+			 * get thumbnail
+			 */
+			String fileBucket = hm.getUserNameTwitter() + "-"
+					+ hm.getCreatedDate() + ".jpg";
+			DownloadModel dl = new DownloadModel(DoneUploadActivity.this,
+					fileBucket, mManager);
+
+			File file = dl.downloadThumbnail();
+			bmpThumbPop = BitmapFactory.decodeFile(file.getAbsolutePath());
 
 			/*
 			 * twitter
@@ -189,6 +204,7 @@ public class DoneUploadActivity extends Activity {
 			i.putExtra("imgbmppop", bmp);
 			i.putExtra("imgbmppref", bmpPref);
 			i.putExtra("retweet", retweetCountPop);
+			i.putExtra("imgthumb", bmpThumbPop);
 			Log.e("GAMBAR", "" + bmp);
 			Log.e("NAMA", hm.getUserNameTwitter());
 			startActivity(i);

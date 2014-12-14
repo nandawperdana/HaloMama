@@ -40,12 +40,12 @@ public class StreamActivity extends Activity {
 	private ImageView imageUser, imageShare;
 	private Dialog dialog;
 	private ProgressDialog progress;
-	private FrameLayout layMood;
+	private FrameLayout layMood, layVideo;
 
 	/*
 	 * vars
 	 */
-	private Bitmap bitmapPop, bitmapPref;
+	private Bitmap bitmapPop, bitmapPref, bitmapThumb;
 	private SharedPreferences pref;
 	private String usernamePop, usernamePref, deviceOSPop, deviceOsPref;
 	private int retweetCountPop, seenCountPop, emotionPop;
@@ -69,6 +69,7 @@ public class StreamActivity extends Activity {
 		hm = (HaloMama) i.getSerializableExtra("objhalomama");
 		bitmapPop = (Bitmap) i.getParcelableExtra("imgbmppop");
 		bitmapPref = (Bitmap) i.getParcelableExtra("imgbmppref");
+		bitmapThumb = (Bitmap) i.getParcelableExtra("imgthumb");
 		retweetCountPop = i.getIntExtra("retweet", 0);
 
 		// get shared pref
@@ -82,6 +83,7 @@ public class StreamActivity extends Activity {
 		emotionPop = hm.getEmotionId();
 
 		layMood = (FrameLayout) findViewById(R.id.lay_mood);
+		layVideo = (FrameLayout) findViewById(R.id.video_preview);
 		tvMood = (RobotoTextView) findViewById(R.id.textViewMoodStream);
 		tvUsername = (RobotoTextView) findViewById(R.id.textViewUsernamePopular);
 		tvRetweet = (RobotoTextView) findViewById(R.id.textViewRetweet);
@@ -99,6 +101,8 @@ public class StreamActivity extends Activity {
 
 		Bitmap roundImgPop = roundImgBitmap(bitmapPop);
 		Bitmap roundImgPref = roundImgBitmap(bitmapPref);
+		layVideo.setBackgroundDrawable(new BitmapDrawable(bitmapThumb));
+
 		if (roundImgPop != null) {
 			imageUser.setBackgroundDrawable(new BitmapDrawable(roundImgPop));
 		}

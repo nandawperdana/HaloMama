@@ -98,6 +98,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	private static SharedPreferences pref;
 	private Point p;
 	private boolean KEY_RECORD;
+	public static final String createdDateVideo = ""
+			+ System.currentTimeMillis();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -133,46 +135,6 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
 		new GetQuestion().execute();
-
-		// rawCallback = new PictureCallback() {
-		//
-		// @Override
-		// public void onPictureTaken(byte[] data, Camera camera) {
-		// // TODO Auto-generated method stub
-		// Log.d("Log", "onPictureTaken - raw");
-		// }
-		// };
-		//
-		// shutterCallback = new ShutterCallback() {
-		//
-		// @Override
-		// public void onShutter() {
-		// // TODO Auto-generated method stub
-		// Log.i("Log", "onShutter'd");
-		// }
-		// };
-		//
-		// jpegCallback = new PictureCallback() {
-		//
-		// @Override
-		// public void onPictureTaken(byte[] data, Camera camera) {
-		// // TODO Auto-generated method stub
-		// FileOutputStream outStream = null;
-		// try {
-		// File fileImage = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-		// fileImagePath = fileImage.toString();
-		// outStream = new FileOutputStream(fileImage);
-		// outStream.write(data);
-		// outStream.close();
-		// } catch (FileNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		// };
 
 		// Checking camera availability
 		if (!isDeviceSupportCamera()) {
@@ -362,14 +324,6 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		// Displaying the popup at the specified location, + offsets.
 		popupRecord.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X,
 				p.y + OFFSET_Y);
-	}
-
-	/**
-	 * capture image
-	 */
-	private void captureImage() {
-		// TODO Auto-generated method stub
-		mCamera.takePicture(shutterCallback, rawCallback, jpegCallback);
 	}
 
 	@Override
@@ -583,14 +537,13 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		// Create a media file name
 		// String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 		// .format(new Date());
-		long timestamp = System.currentTimeMillis();
 		File mediaFile;
 		if (type == MEDIA_TYPE_IMAGE) {
 			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ pref.getString("USERNAME", "") + "-" + timestamp + ".jpg");
+					+ pref.getString("USERNAME", "") + "-" + createdDateVideo + ".jpg");
 		} else if (type == MEDIA_TYPE_VIDEO) {
 			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ pref.getString("USERNAME", "") + "-" + timestamp + ".mp4");
+					+ pref.getString("USERNAME", "") + "-" + createdDateVideo + ".mp4");
 		} else {
 			return null;
 		}
