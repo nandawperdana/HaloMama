@@ -155,6 +155,7 @@ public class Desc3Fragment extends Fragment {
 						tvTolak.setTextColor(Color.parseColor("#4a90e2"));
 						v.startAnimation(buttonClick);
 						web.clearCache(true);
+						web.clearHistory();
 						dialog.dismiss();
 					}
 				});
@@ -234,6 +235,17 @@ public class Desc3Fragment extends Fragment {
 							auth_dialog.dismiss();
 							if (!pref.contains(Constants.TAG_TWITTER_USERNAME)) {
 								new AccessTokenGet().execute();
+							}
+							else{
+								Intent i = new Intent(getActivity(), RecordActivity.class);
+								i.addCategory(Intent.CATEGORY_HOME);
+								// closing all the activity
+								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+								// add new flag to start new activity
+								i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								startActivity(i);
+								getActivity().finish();
 							}
 						} else if (url.contains("denied")) {
 							auth_dialog.dismiss();

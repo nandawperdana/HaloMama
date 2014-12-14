@@ -392,13 +392,27 @@ public class FeelingFragment extends Fragment {
 				/*
 				 * tweet
 				 */
-				tweetText = "#HaloMama " + namaMama
+
+				String namaMamaArray[] = namaMama.split(" ");
+				String nm = "";
+				if (namaMamaArray != null){
+					nm = namaMamaArray[0];
+					if (nm.length() > 10){
+						nm.substring(0, 10);
+					}
+				}
+				
+				tweetText = "#HaloMama " + nm
 						+ " selamat #hariibu! http://fhab.it/halomama/@"
 						+ username + " cc:@" + mentionTeman;
 				String text = tweetText;
+				
+				if (text.length() > 140){
+					text.substring(0, 140);
+				}
+				
 				twitter4j.Status response = twitter.updateStatus(text);
 				tweet = response;
-
 				return response.toString();
 			} catch (TwitterException e) {
 				// TODO Auto-generated catch block
