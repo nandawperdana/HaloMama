@@ -96,7 +96,6 @@ public class Desc3Fragment extends Fragment {
 		tvDesc3.setText(Html.fromHtml(getString(R.string.fragment3_desc)));
 		tvPolicy = (RobotoTextView) rootView
 				.findViewById(R.id.section_labelPolicy);
-		dialog = new Dialog(getActivity());
 		btnLogin = (ImageButton) rootView.findViewById(R.id.buttonLogin);
 
 		tvPolicy.setText(Html.fromHtml(getString(R.string.fragment3_policy)));
@@ -118,8 +117,9 @@ public class Desc3Fragment extends Fragment {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				v.setAnimation(buttonClick);
-				dialog.setCancelable(false);
+				dialog = new Dialog(getActivity());
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setCancelable(false);
 				dialog.setContentView(R.layout.permission_dialog);
 
 				final RobotoTextView tvTitle = (RobotoTextView) dialog
@@ -186,6 +186,18 @@ public class Desc3Fragment extends Fragment {
 	public class TokenGet extends AsyncTask<String, String, String> {
 
 		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			progress = new ProgressDialog(getActivity());
+			progress.setMessage("Twitter ...");
+			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progress.setIndeterminate(true);
+			progress.setCancelable(false);
+			progress.show();
+		}
+
+		@Override
 		protected String doInBackground(String... args) {
 
 			try {
@@ -202,6 +214,7 @@ public class Desc3Fragment extends Fragment {
 		protected void onPostExecute(String oauth_url) {
 			if (oauth_url != null) {
 				Log.e("URL", oauth_url);
+				progress.hide();
 				auth_dialog = new Dialog(getActivity());
 				auth_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -245,7 +258,7 @@ public class Desc3Fragment extends Fragment {
 				auth_dialog.show();
 				auth_dialog.setCancelable(true);
 			} else {
-
+				progress.dismiss();
 				Toast.makeText(getActivity(),
 						"Sorry ! Network Error or Invalid Credentials",
 						Toast.LENGTH_SHORT).show();
@@ -327,7 +340,14 @@ public class Desc3Fragment extends Fragment {
 				dialog.dismiss();
 				Intent i = new Intent(getActivity(), RecordActivity.class);
 				// Intent i = new Intent(getActivity(), UploadActivity.class);
+				i.addCategory(Intent.CATEGORY_HOME);
+				// closing all the activity
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+				// add new flag to start new activity
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
+				getActivity().finish();
 			}
 		}
 

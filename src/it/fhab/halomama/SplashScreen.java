@@ -1,11 +1,5 @@
 package it.fhab.halomama;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import it.fhab.halomama.controller.AlertDialogManager;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.ConnectionDetector;
@@ -15,8 +9,14 @@ import it.fhab.halomama.model.Constants;
 import it.fhab.halomama.model.HaloMama;
 import it.fhab.halomama.model.People;
 import it.fhab.halomama.roboto.RobotoTextView;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
@@ -89,13 +89,6 @@ public class SplashScreen extends Activity {
 			// stop executing code by return
 			return;
 		}
-
-		Toast.makeText(
-				SplashScreen.this,
-				pref.getString(Constants.TAG_TWITTER_USERNAME, "") + " device "
-						+ pref.getString(Constants.TAG_DEVICE_OS, "") + "ava "
-						+ pref.getString(Constants.TAG_TWITTER_IMG_URL, ""),
-				Toast.LENGTH_LONG).show();
 		new ConnectToServer().execute();
 	}
 
@@ -121,6 +114,8 @@ public class SplashScreen extends Activity {
 			acm = new AmazonClientManager(SplashScreen.this);
 			router = new DynamoDBRouter(acm);
 
+			// publishProgress("start");
+
 			/*
 			 * sign in
 			 */
@@ -135,8 +130,9 @@ public class SplashScreen extends Activity {
 
 				// get popular
 				hm = router.getPopularHaloMama();
+				bmpPref = getAvatarImage(pref.getString(
+						Constants.TAG_TWITTER_IMG_URL, ""));
 				bmpPop = getAvatarImage(hm.getAvatarURL());
-				bmpPref = getAvatarImage(Constants.TAG_TWITTER_IMG_URL);
 
 				/*
 				 * twitter
@@ -159,19 +155,26 @@ public class SplashScreen extends Activity {
 				twitter4j.Status status;
 				try {
 					status = twitter.showStatus(Long.parseLong(tweetId));
-					retweetCountPop = status.getRetweetedStatus()
-							.getRetweetCount();
+					if (status.getRetweetedStatus() == null) {
+						retweetCountPop = 0;
+					} else
+						retweetCountPop = status.getRetweetedStatus()
+								.getRetweetCount();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-
 			/*
 			 * checking bucket
 			 */
-			AmazonS3Client sS3Client = Util
-					.getS3Client(getApplicationContext());
+			AmazonS3Client sS3Client = Util.getS3Client(SplashScreen.this);
+			// try {
+			// Thread.sleep(7000);
+			// } catch (InterruptedException e) {
+			// return null;
+			// }
+			// publishProgress("stop");
 			return Util.doesBucketExist();
 		}
 
@@ -179,35 +182,53 @@ public class SplashScreen extends Activity {
 		protected void onPostExecute(Boolean result) {
 			checked = true;
 			exists = result;
-			Intent i;
-			if (!pref.contains(Constants.TAG_TWITTER_USERNAME)) {
-				first_run = "pertama";
-				Log.d("First", "First run!");
+			// progress.dismiss();
+			if (exists) {
+				Intent i;
+				if (!pref.contains(Constants.TAG_TWITTER_USERNAME)) {
+					first_run = "pertama";
+					Log.d("First", "First run!");
 
-				i = new Intent(SplashScreen.this, DescActivity.class);
-				Toast.makeText(SplashScreen.this, "first", Toast.LENGTH_LONG)
-						.show();
+					i = new Intent(SplashScreen.this, DescActivity.class);
+					Toast.makeText(SplashScreen.this, "first",
+							Toast.LENGTH_LONG).show();
+				} else {
+					Log.d("Second...", "Second run...!");
+
+					i = new Intent(SplashScreen.this, StreamActivity.class);
+					i.putExtra("objhalomama", hm);
+					i.putExtra("imgbmppop", bmpPop);
+					i.putExtra("imgbmppref", bmpPref);
+					i.putExtra("retweet", retweetCountPop);
+					Log.e("url pop", "" + hm.getAvatarURL());
+					Log.e("ava url twtier",
+							""
+									+ pref.getString(
+											Constants.TAG_TWITTER_IMG_URL, ""));
+					Log.e("gambar akun", "" + bmpPref);
+					Log.e("GAMBAR pop", "" + bmpPop);
+					Log.e("NAMA", hm.getUserNameTwitter());
+				}
+
+				pref.edit().putBoolean("FIRST_RUN", false);
+				pref.edit().putString("first_run", first_run);
+				pref.edit().commit();
+				i.addCategory(Intent.CATEGORY_HOME);
+				// closing all the activity
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+				// add new flag to start new activity
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+
+				// close this activity
+				SplashScreen.this.finish();
 			} else {
-				Log.d("Second...", "Second run...!");
-
-				i = new Intent(SplashScreen.this, StreamActivity.class);
-				i.putExtra("objhalomama", hm);
-				i.putExtra("imgbmppop", bmpPop);
-				i.putExtra("imgbmppref", bmpPref);
-				i.putExtra("retweet", retweetCountPop);
-				Log.e("GAMBAR", "" + bmpPop);
-				Log.e("NAMA", hm.getUserNameTwitter());
+				alert.showAlertDialog(SplashScreen.this,
+						"Kesalahan koneksi server", "Koneksi server gagal",
+						false);
 			}
 
-			pref.edit().putBoolean("FIRST_RUN", false);
-			pref.edit().putString("first_run", first_run);
-			pref.edit().commit();
-			startActivity(i);
-
-			// progress.dismiss();
-
-			// close this activity
-			SplashScreen.this.finish();
 		}
 	}
 
@@ -236,10 +257,12 @@ public class SplashScreen extends Activity {
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Log.e("error ambil", e.getMessage() + " url " + urlsrc);
 			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Log.e("error ambil ioe", e.getMessage());
 			return null;
 		}
 

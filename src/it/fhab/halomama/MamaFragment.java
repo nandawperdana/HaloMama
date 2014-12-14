@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
 
-
 /**
  * A placeholder fragment containing a first description.
  */
@@ -35,7 +34,7 @@ public class MamaFragment extends Fragment {
 	 * vars
 	 */
 	private SharedPreferences pref;
-	private Uri uriPath;
+	private Uri uriPath, uriThumb;
 
 	public MamaFragment() {
 	}
@@ -49,7 +48,7 @@ public class MamaFragment extends Fragment {
 				Context.MODE_PRIVATE);
 
 		Bundle bundle = this.getArguments();
-		fileVideoPath = bundle.getString("VIDEO_PATH", "");
+		uriThumb = bundle.getParcelable("THUMB_URI");
 		uriPath = bundle.getParcelable("VIDEO_URI");
 
 		/*
@@ -62,7 +61,7 @@ public class MamaFragment extends Fragment {
 		btnBatalkan = (ImageButton) rootView
 				.findViewById(R.id.imageButtonBatalkan2);
 		buttonLanjut = (ImageButton) rootView.findViewById(R.id.buttonLanjut);
-		
+
 		/*
 		 * listeners
 		 */
@@ -97,7 +96,7 @@ public class MamaFragment extends Fragment {
 				Fragment feeling = new FeelingFragment();
 				Bundle bundle = new Bundle();
 				bundle.putParcelable("VIDEO_URI", uriPath);
-				bundle.putString("VIDEO_PATH", fileVideoPath);
+				bundle.putParcelable("THUMB_URI", uriThumb);
 				bundle.putString("NAMA_MAMA", namaMama);
 				bundle.putString("NAMA_TEMAN", mentionTeman);
 				feeling.setArguments(bundle);

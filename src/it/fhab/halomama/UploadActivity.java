@@ -23,14 +23,12 @@ public class UploadActivity extends FragmentActivity {
 
 		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
 		Intent i = getIntent();
-		String fileVideoPath = i.getStringExtra("VIDEO_PATH");
-		String fileImagePath = i.getStringExtra("IMAGE_PATH");
+		Uri UriThumb = i.getParcelableExtra("THUMB_URI");
 		Uri uriPath = i.getParcelableExtra("VIDEO_URI");
 
 		Fragment mama = new MamaFragment();
 		Bundle bundle = new Bundle();
-		bundle.putString("VIDEO_PATH", fileVideoPath);
-		bundle.putString("IMAGE_PATH", fileImagePath);
+		bundle.putParcelable("THUMB_URI", UriThumb);
 		bundle.putParcelable("VIDEO_URI", uriPath);
 		mama.setArguments(bundle);
 
@@ -56,5 +54,6 @@ public class UploadActivity extends FragmentActivity {
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 		startActivity(i);
+		UploadActivity.this.finish();
 	}
 }

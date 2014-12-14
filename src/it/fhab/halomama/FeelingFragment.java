@@ -62,7 +62,7 @@ public class FeelingFragment extends Fragment {
 	/*
 	 * transfer s3 vars
 	 */
-	private Uri uriPath;
+	private Uri uriPath, uriThumb;
 	private TransferManager mManager;
 
 	/*
@@ -90,12 +90,16 @@ public class FeelingFragment extends Fragment {
 		deviceOS = pref.getString(Constants.TAG_DEVICE_OS, "");
 		avatarUrl = pref.getString(Constants.TAG_TWITTER_IMG_URL, "");
 
-		Toast.makeText(getActivity(), "" + deviceOS, Toast.LENGTH_LONG).show();
-
 		Bundle bundle = this.getArguments();
 		uriPath = bundle.getParcelable("VIDEO_URI");
+		uriThumb = bundle.getParcelable("THUMB_URI");
 		namaMama = bundle.getString("NAMA_MAMA", "");
 		mentionTeman = bundle.getString("NAMA_TEMAN", "");
+
+		Toast.makeText(getActivity(), "" + deviceOS + " thumb " + uriThumb,
+				Toast.LENGTH_LONG).show();
+		// Log.e("URI thumb", "" + Uri.parse(new
+		// File(fileImagePath).toString()));
 
 		mManager = new TransferManager(Util.getCredProvider(getActivity()));
 
@@ -334,6 +338,24 @@ public class FeelingFragment extends Fragment {
 		return rootView;
 	}
 
+	// public String getRealPathFromURI(final Uri contentURI) {
+	// Cursor cursor = getContentResolver().query(contentURI, null, null,
+	// null, null);
+	// if (cursor == null) { // Source is Dropbox or other similar local file
+	// // path
+	// return contentURI.getPath();
+	// } else {
+	// cursor.moveToFirst();
+	// int idx = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+	// if (idx == -1) {
+	// return contentURI.getPath();
+	// }
+	// String rvalue = cursor.getString(idx);
+	// cursor.close();
+	// return rvalue;
+	// }
+	// }
+
 	/**
 	 * asynctask to post tweet and upload video to s3
 	 * 
@@ -387,27 +409,17 @@ public class FeelingFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String res) {
-			if (res != null) {
+			if ((progress != null) && progress.isShowing()) {
 				progress.dismiss();
+			}
+			if (res != null) {
 				Toast.makeText(getActivity(), "Tweet Posted",
 						Toast.LENGTH_SHORT).show();
 
 				new UploadVideo().execute();
-
-				Intent i = new Intent(getActivity(), DoneUploadActivity.class);
-
-				i.addCategory(Intent.CATEGORY_HOME);
-				// closing all the activity
-				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-				// add new flag to start new activity
-				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-				startActivity(i);
 			} else {
 				// Toast.makeText(getActivity(), "res, " + tweet.toString(),
 				// Toast.LENGTH_SHORT).show();
-				progress.dismiss();
 				Toast.makeText(getActivity(), "Error while tweeting !",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -441,9 +453,13 @@ public class FeelingFragment extends Fragment {
 			/*
 			 * upload to s3
 			 */
-			UploadModel model = new UploadModel(getActivity(), uriPath,
+			UploadModel modelVideo = new UploadModel(getActivity(), uriPath,
 					mManager);
-			model.upload();
+			UploadModel modelThumb = new UploadModel(getActivity(), uriThumb,
+					mManager);
+
+			modelVideo.upload();
+			modelThumb.upload();
 			return true;
 		}
 
@@ -453,8 +469,10 @@ public class FeelingFragment extends Fragment {
 			/*
 			 * update db
 			 */
+			if ((progress != null) && progress.isShowing()) {
+				progress.dismiss();
+			}
 			new CreateInitialData().execute();
-			progress.dismiss();
 		}
 	}
 
@@ -496,7 +514,9 @@ public class FeelingFragment extends Fragment {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
-			progress.dismiss();
+			if ((progress != null) && progress.isShowing()) {
+				progress.dismiss();
+			}
 			new UpdateVideoData().execute();
 		}
 	}
@@ -544,7 +564,21 @@ public class FeelingFragment extends Fragment {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
-			progress.dismiss();
+			if ((progress != null) && progress.isShowing()) {
+				progress.dismiss();
+			}
+
+			Intent i = new Intent(getActivity(), DoneUploadActivity.class);
+
+			i.addCategory(Intent.CATEGORY_HOME);
+			// closing all the activity
+			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+			// add new flag to start new activity
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+			startActivity(i);
+			getActivity().finish();
 		}
 	}
 }

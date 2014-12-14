@@ -7,6 +7,7 @@ import it.fhab.halomama.model.Question;
 import it.fhab.halomama.roboto.RobotoTextView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
@@ -27,22 +29,22 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.provider.MediaStore.Video.Thumbnails;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -91,8 +93,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	private boolean cameraFront = false;
 	private boolean isRecording = false;
 	private ArrayList<Question> listQuestion = new ArrayList<Question>();
-	private String fileVideoPath, fileImagePath;
-	private Uri uriPath;
+	private String fileVideoPath, fileImagePath, filePathNoExt;
+	private Uri uriPath, uriThumb;
 	private static SharedPreferences pref;
 	private Point p;
 	private boolean KEY_RECORD;
@@ -115,10 +117,10 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		btnCeritaSendiri = (ImageButton) findViewById(R.id.buttonCeritaSendiri);
 		btnRecord = (ImageButton) findViewById(R.id.buttonRecord);
 		popupRecord = new PopupWindow(RecordActivity.this);
-//		if (KEY_RECORD) {// Open popup window
-			if (p != null)
-				showPopup(RecordActivity.this, p);
-//		}
+		// if (KEY_RECORD) {// Open popup window
+		if (p != null)
+			showPopup(RecordActivity.this, p);
+		// }
 
 		/*
 		 * camera init
@@ -220,6 +222,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 				startActivity(i);
+				RecordActivity.this.finish();
 			}
 		});
 
@@ -230,6 +233,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 					v.startAnimation(buttonClick);
 					// stop recording and release camera
 					// captureImage();
+
 					mMediaRecorder.stop(); // stop the recording
 					releaseMediaRecorder(); // release the MediaRecorder object
 					// mCamera.lock(); // take camera access back from
@@ -243,12 +247,9 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 					final Intent i = new Intent(RecordActivity.this,
 							UploadActivity.class);
 
-					i.putExtra("VIDEO_PATH", fileVideoPath);
-					i.putExtra("IMAGE_PATH", fileImagePath);
-					i.putExtra("VIDEO_URI", uriPath);
-
 					pRender = new ProgressDialog(RecordActivity.this);
-					pRender.setMessage("Render video ...");
+					pRender.setMessage("Render video ..."
+							+ uriPath.getPath().toString());
 					pRender.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 					pRender.setIndeterminate(true);
 					pRender.show();
@@ -257,9 +258,23 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 						public void run() {
 							try {
 								Thread.sleep(2500);
+								String path = uriPath.getPath().toString();
+								int end = path.length() - 4;
+								String thumbName = path.substring(
+										path.lastIndexOf("/") + 1, end);
+								Log.e("PATH GAMBAR", path);
+								Log.e("nama thumb", thumbName);
+								Bitmap bmp = createThumbnail(path);
+								uriThumb = Uri.fromFile(saveThumbnail(
+										thumbName, bmp));
+								Log.e("uri", "" + uriThumb);
+								Log.e("bmp thumb", "" + bmp);
 							} catch (Exception e) {
 							}
 							pRender.dismiss();
+
+							i.putExtra("THUMB_URI", uriThumb);
+							i.putExtra("VIDEO_URI", uriPath);
 
 							i.addCategory(Intent.CATEGORY_HOME);
 							// closing all the activity
@@ -269,6 +284,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 							i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 							startActivity(i);
+							RecordActivity.this.finish();
 						}
 					}).start();
 				} else {
@@ -280,13 +296,13 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 						btnRecord
 								.setBackgroundResource(R.drawable.fab_stop_mdpi);
 						mMediaRecorder.start();
-//						if (KEY_RECORD) {// Open popup window
-							if (p != null)
-								popupRecord.dismiss();
+						// if (KEY_RECORD) {// Open popup window
+						if (p != null)
+							popupRecord.dismiss();
 
-							pref.edit().putBoolean("KEY_RECORD", false);
-							pref.edit().commit();
-//						}
+						pref.edit().putBoolean("KEY_RECORD", false);
+						pref.edit().commit();
+						// }
 						mChronometer.setBase(SystemClock.elapsedRealtime());
 						mChronometer.start();
 
@@ -319,8 +335,8 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 
 	// The method that displays the popup.
 	private void showPopup(final Activity context, Point p) {
-		// int popupWidth = 200;
-		// int popupHeight = 150;
+		int popupWidth = 200;
+		int popupHeight = 150;
 
 		// Inflate the popup_layout.xml
 		LinearLayout viewGroup = (LinearLayout) context
@@ -346,9 +362,6 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		// Displaying the popup at the specified location, + offsets.
 		popupRecord.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X,
 				p.y + OFFSET_Y);
-
-		// Getting a reference to Close button, and close the popup when
-		// clicked.
 	}
 
 	/**
@@ -431,6 +444,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 		startActivity(i);
+		RecordActivity.this.finish();
 	}
 
 	/**
@@ -611,6 +625,17 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 	}
 
 	/**
+	 * create thumbnail
+	 * 
+	 * @param filePath
+	 * @return
+	 */
+	public Bitmap createThumbnail(String filePath) {
+		return ThumbnailUtils.createVideoThumbnail(filePath,
+				Thumbnails.FULL_SCREEN_KIND);
+	}
+
+	/**
 	 * randomize question from arraylist of question
 	 * 
 	 * @param q
@@ -622,6 +647,42 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 		int r = rand.nextInt((max - 0) + 1) + 0;
 		String txt = q.get(r).getQuestion();
 		return txt;
+	}
+
+	/**
+	 * save the thumbnail
+	 * 
+	 * @param filename
+	 * @return
+	 */
+	public File saveThumbnail(String filename, Bitmap bmp) {
+		File mediaStorageDir = new File(
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				"HaloMama");
+		// This location works best if you want the created images to be shared
+		// between applications and persist after your app has been uninstalled.
+
+		// Create the storage directory if it does not exist
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				Log.d("HaloMama", "gagal membuat direktori");
+				return null;
+			}
+		}
+
+		File mediaFile = new File(mediaStorageDir.getPath() + File.separator
+				+ filename + ".jpg");
+		try {
+			FileOutputStream out = new FileOutputStream(mediaFile);
+			bmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
+			out.flush();
+			out.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mediaFile;
 	}
 
 	/**
@@ -640,6 +701,7 @@ public class RecordActivity extends Activity implements SurfaceHolder.Callback {
 			progress.setMessage("Mengunduh pertanyaan ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
+			progress.setCancelable(false);
 			progress.show();
 		}
 

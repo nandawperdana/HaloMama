@@ -1,5 +1,11 @@
 package it.fhab.halomama;
 
+import it.fhab.halomama.controller.AmazonClientManager;
+import it.fhab.halomama.controller.DynamoDBRouter;
+import it.fhab.halomama.model.Constants;
+import it.fhab.halomama.model.HaloMama;
+import it.fhab.halomama.roboto.RobotoTextView;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -11,11 +17,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
-import it.fhab.halomama.controller.AmazonClientManager;
-import it.fhab.halomama.controller.DynamoDBRouter;
-import it.fhab.halomama.model.Constants;
-import it.fhab.halomama.model.HaloMama;
-import it.fhab.halomama.roboto.RobotoTextView;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,10 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Shader.TileMode;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,7 +32,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 public class DoneUploadActivity extends Activity {
 	/*
@@ -53,7 +49,7 @@ public class DoneUploadActivity extends Activity {
 	private String url = "http://halo-mama.com/@";
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
-	private Bitmap bmp = null;
+	private Bitmap bmp = null, bmpPref = null;;
 
 	/*
 	 * dynamo DB
@@ -82,7 +78,7 @@ public class DoneUploadActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
+				v.setAnimation(buttonClick);
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
 						.parse(url));
 				startActivity(browserIntent);
@@ -98,6 +94,14 @@ public class DoneUploadActivity extends Activity {
 				new PrepareStream().execute();
 			}
 		});
+	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		DoneUploadActivity.this.finish();
+		System.exit(1);
 	}
 
 	/**
@@ -116,6 +120,7 @@ public class DoneUploadActivity extends Activity {
 			progress.setMessage("Harap tunggu ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
+			progress.setCancelable(false);
 			progress.show();
 		}
 
@@ -128,6 +133,8 @@ public class DoneUploadActivity extends Activity {
 			// get popular
 			hm = router.getPopularHaloMama();
 			bmp = getAvatarImage(hm.getAvatarURL());
+			bmpPref = getAvatarImage(pref.getString(
+					Constants.TAG_TWITTER_IMG_URL, ""));
 
 			/*
 			 * twitter
@@ -147,10 +154,14 @@ public class DoneUploadActivity extends Activity {
 
 			String tweetId = hm.getTweetId();
 
-			twitter4j.Status status;
+			twitter4j.Status status = null;
 			try {
 				status = twitter.showStatus(Long.parseLong(tweetId));
-				retweetCountPop = status.getRetweetedStatus().getRetweetCount();
+				if (status.getRetweetedStatus() == null) {
+					retweetCountPop = 0;
+				} else
+					retweetCountPop = status.getRetweetedStatus()
+							.getRetweetCount();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -167,13 +178,21 @@ public class DoneUploadActivity extends Activity {
 			progress.dismiss();
 			Intent i = new Intent(DoneUploadActivity.this, StreamActivity.class);
 
+			i.addCategory(Intent.CATEGORY_HOME);
+			// closing all the activity
+			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+			// add new flag to start new activity
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
 			i.putExtra("objhalomama", hm);
-			i.putExtra("imgbmp", bmp);
+			i.putExtra("imgbmppop", bmp);
+			i.putExtra("imgbmppref", bmpPref);
 			i.putExtra("retweet", retweetCountPop);
 			Log.e("GAMBAR", "" + bmp);
 			Log.e("NAMA", hm.getUserNameTwitter());
 			startActivity(i);
-
+			DoneUploadActivity.this.finish();
 		}
 	}
 

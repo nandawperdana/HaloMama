@@ -5,13 +5,6 @@ import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.model.Constants;
 import it.fhab.halomama.model.HaloMama;
 import it.fhab.halomama.roboto.RobotoTextView;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -19,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,7 +27,6 @@ import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class StreamActivity extends Activity {
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
@@ -143,7 +134,7 @@ public class StreamActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				v.startAnimation(buttonClick);
-
+				new IncrementSeen().execute();
 			}
 		});
 
@@ -174,7 +165,14 @@ public class StreamActivity extends Activity {
 						v.startAnimation(buttonClick);
 						Intent i = new Intent(getApplicationContext(),
 								RecordActivity.class);
+						i.addCategory(Intent.CATEGORY_HOME);
+						// closing all the activity
+						i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+						// add new flag to start new activity
+						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(i);
+						StreamActivity.this.finish();
 
 					}
 				});
@@ -187,8 +185,17 @@ public class StreamActivity extends Activity {
 						v.startAnimation(buttonClick);
 						Intent i = new Intent(getApplicationContext(),
 								DescActivity.class);
-						startActivity(i);
+						pref.edit().clear();
+						pref.edit().commit();
 
+						i.addCategory(Intent.CATEGORY_HOME);
+						// closing all the activity
+						i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+						// add new flag to start new activity
+						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(i);
+						StreamActivity.this.finish();
 					}
 				});
 
@@ -222,6 +229,14 @@ public class StreamActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		StreamActivity.this.finish();
+		System.exit(1);
 	}
 
 	/**
@@ -357,6 +372,45 @@ public class StreamActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
 			progress.dismiss();
+		}
+	}
+
+	/**
+	 * async task to delete video
+	 * 
+	 * @author Aslab-NWP
+	 * 
+	 */
+	private class IncrementSeen extends AsyncTask<String, String, Boolean> {
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			progress = new ProgressDialog(StreamActivity.this);
+			progress.setMessage("Mohon tunggu ...");
+			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progress.setIndeterminate(true);
+			progress.show();
+		}
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			acm = new AmazonClientManager(StreamActivity.this);
+			router = new DynamoDBRouter(acm);
+
+			router.incrementSeen(usernamePop, hm.getCreatedDate());
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// TODO Auto-generated method stub
+			progress.dismiss();
+			String url = "http://halo-mama.com/@" + usernamePop;
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+					Uri.parse(url));
+			startActivity(browserIntent);
 		}
 	}
 }
