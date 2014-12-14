@@ -22,7 +22,7 @@
             android:layout_marginTop="40dp"
             android:src="@drawable/ic_launcher" />
 
-        <com.nandanu.halomama.roboto.RobotoTextView
+        <it.fhab.halomama.roboto.RobotoTextView
             android:id="@+id/section_label4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,8 +39,8 @@
             android:layout_height="36dp"
             android:background="#33000000" >
 
-            <com.nandanu.halomama.roboto.RobotoTextView
-                android:id="@+id/textViewURL"
+            <it.fhab.halomama.roboto.RobotoTextView
+                android:id="@+id/textViewURLStream"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"

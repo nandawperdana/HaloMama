@@ -19,7 +19,7 @@
             android:layout_marginLeft="16dp"
             android:background="@drawable/icon_dismiss_mdpi" />
 
-        <com.nandanu.halomama.roboto.RobotoTextView
+        <it.fhab.halomama.roboto.RobotoTextView
             android:id="@+id/textViewBatalkan3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         android:background="#a63b3444"
         android:orientation="vertical" >
 
-        <com.nandanu.halomama.roboto.RobotoTextView
+        <it.fhab.halomama.roboto.RobotoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
@@ -98,37 +98,37 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp" >
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel1"
                     android:gravity="center"
                     android:text="sedih"
                     android:textColor="#69ccf0"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel2"
                     android:gravity="center"
                     android:text="bosan"
                     android:textColor="#ce80ae"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel3"
                     android:gravity="center"
                     android:text="marah"
                     android:textColor="#ec68aa"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel4"
                     android:gravity="center"
                     android:text="was-was"
                     android:textColor="#fad08c"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
             </TableRow>
 
             <TableRow
@@ -169,37 +169,37 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp" >
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel5"
                     android:gravity="center"
                     android:text="kaget"
                     android:textColor="#83c7b0"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel6"
                     android:gravity="center"
                     android:text="takut"
                     android:textColor="#b9d37f"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel7"
                     android:gravity="center"
                     android:text="percaya"
                     android:textColor="#dbdc71"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
 
-                <com.nandanu.halomama.roboto.RobotoTextView
+                <it.fhab.halomama.roboto.RobotoTextView
                     android:id="@+id/TextViewFeel8"
                     android:gravity="center"
                     android:text="senang"
                     android:textColor="#f6e85a"
                     app:typeface="roboto_medium" >
-                </com.nandanu.halomama.roboto.RobotoTextView>
+                </it.fhab.halomama.roboto.RobotoTextView>
             </TableRow>
         </TableLayout>
 
@@ -208,7 +208,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1" >
 
-            <com.nandanu.halomama.roboto.RobotoTextView
+            <it.fhab.halomama.roboto.RobotoTextView
                 android:id="@+id/textViewFeelingDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

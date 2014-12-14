@@ -15,7 +15,7 @@
         android:layout_marginBottom="20dp"
         android:src="@drawable/splash_screen_fhab_logo_hdpi" />
 
-    <com.nandanu.halomama.roboto.RobotoTextView
+    <it.fhab.halomama.roboto.RobotoTextView
         android:id="@+id/textViewSplashLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,6 +24,7 @@
         android:layout_centerVertical="true"
         android:text="halomama"
         android:textColor="#FFFFFF"
+        android:textSize="16dp"
         app:typeface="roboto_light" />
 
 </RelativeLayout>

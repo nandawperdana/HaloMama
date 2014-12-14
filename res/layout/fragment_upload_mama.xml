@@ -19,7 +19,7 @@
             android:layout_marginLeft="16dp"
             android:background="@drawable/icon_dismiss_mdpi" />
 
-        <com.nandanu.halomama.roboto.RobotoTextView
+        <it.fhab.halomama.roboto.RobotoTextView
             android:id="@+id/textViewBatalkan2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:background="#a63b3444" >
 
-            <com.nandanu.halomama.roboto.RobotoTextView
+            <it.fhab.halomama.roboto.RobotoTextView
                 android:id="@+id/textViewDescMama"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             android:background="#a6000000"
             android:orientation="vertical" >
 
-            <com.nandanu.halomama.roboto.RobotoEditText
+            <it.fhab.halomama.roboto.RobotoEditText
                 android:id="@+id/editTextNamaMama"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 app:typeface="roboto_light" >
 
                 <requestFocus />
-            </com.nandanu.halomama.roboto.RobotoEditText>
+            </it.fhab.halomama.roboto.RobotoEditText>
 
             <View
                 android:layout_width="fill_parent"
@@ -91,7 +91,7 @@
                 android:layout_below="@+id/editTextNamaMama"
                 android:background="#fdce31" />
 
-            <com.nandanu.halomama.roboto.RobotoEditText
+            <it.fhab.halomama.roboto.RobotoEditText
                 android:id="@+id/editTextMention"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -118,11 +118,10 @@
 
             <ImageButton
                 android:id="@+id/buttonLanjut"
-                android:layout_gravity="bottom|center_horizontal"
-                android:background="@drawable/btn_lanjut_hdpi"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@drawable/btn_lanjut_hdpi" />
         </FrameLayout>
     </RelativeLayout>
 
