@@ -142,6 +142,8 @@ public class DoneUploadActivity extends Activity {
 			try {
 				acm = new AmazonClientManager(DoneUploadActivity.this);
 				router = new DynamoDBRouter(acm);
+				mManager = new TransferManager(
+						Util.getCredProvider(DoneUploadActivity.this));
 
 				// get popular
 				hm = router.getPopularHaloMama();
