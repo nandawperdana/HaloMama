@@ -139,9 +139,9 @@ public class DoneUploadActivity extends Activity {
 			// getLastHaloMama - clean up expired one
 			hm = router.getLastHaloMama(pref.getString(
 					Constants.TAG_TWITTER_USERNAME, ""));
+//			// get popular
+//			hm = router.getPopularHaloMama();
 			
-			// get popular
-			hm = router.getPopularHaloMama();
 			bmp = getAvatarImage(hm.getAvatarURL());
 			bmpPref = getAvatarImage(pref.getString(
 					Constants.TAG_TWITTER_IMG_URL, ""));

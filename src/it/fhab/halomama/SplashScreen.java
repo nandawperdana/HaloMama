@@ -31,13 +31,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -228,8 +226,8 @@ public class SplashScreen extends Activity {
 //					Log.d("First", "First run!");
 
 					i = new Intent(SplashScreen.this, DescActivity.class);
-					Toast.makeText(SplashScreen.this, "first",
-							Toast.LENGTH_LONG).show();
+//					Toast.makeText(SplashScreen.this, "first",
+//							Toast.LENGTH_LONG).show();
 				} else {
 //					Log.d("Second...", "Second run...!");
 

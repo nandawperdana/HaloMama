@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore.Video.Thumbnails;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -41,7 +40,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -123,7 +121,14 @@ public class RecordActivity extends Activity {
 		 * camera init
 		 */
 		// mCamera = getCameraInstance();
-		profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+		
+		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_HIGH))
+		{
+			profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+		}else{
+			profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+		}
+		
 		surfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback((surfaceCallback));
