@@ -1,5 +1,8 @@
 package it.fhab.halomama;
 
+import com.amazonaws.AmazonClientException;
+
+import it.fhab.halomama.controller.AlertDialogManager;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.model.Constants;
@@ -12,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -46,9 +50,11 @@ public class StreamActivity extends Activity {
 	 * vars
 	 */
 	private Bitmap bitmapPop, bitmapPref, bitmapThumb;
+	private byte[] bytePop, bytePref, byteThumbPop;
 	private SharedPreferences pref;
 	private String usernamePop, usernamePref, deviceOSPop, deviceOsPref;
 	private int retweetCountPop, seenCountPop, emotionPop;
+	private AlertDialogManager alert = new AlertDialogManager();
 	/*
 	 * dynamo DB
 	 */
@@ -66,9 +72,21 @@ public class StreamActivity extends Activity {
 
 		Intent i = getIntent();
 		hm = (HaloMama) i.getSerializableExtra("objhalomama");
-		bitmapPop = (Bitmap) i.getParcelableExtra("imgbmppop");
-		bitmapPref = (Bitmap) i.getParcelableExtra("imgbmppref");
-		bitmapThumb = (Bitmap) i.getParcelableExtra("imgthumb");
+
+		bytePop = i.getByteArrayExtra("imgbmppop");
+		bytePref = i.getByteArrayExtra("imgbmppref");
+		byteThumbPop = i.getByteArrayExtra("imgthumb");
+
+		bitmapPop = BitmapFactory.decodeByteArray(bytePop, 0, bytePop.length);
+		bitmapPref = BitmapFactory
+				.decodeByteArray(bytePref, 0, bytePref.length);
+		if (byteThumbPop != null)
+			bitmapThumb = BitmapFactory.decodeByteArray(byteThumbPop, 0,
+					byteThumbPop.length);
+
+		// bitmapPop = (Bitmap) i.getParcelableExtra("imgbmppop");
+		// bitmapPref = (Bitmap) i.getParcelableExtra("imgbmppref");
+		// bitmapThumb = (Bitmap) i.getParcelableExtra("imgthumb");
 		retweetCountPop = i.getIntExtra("retweet", 0);
 
 		// get shared pref
@@ -100,7 +118,8 @@ public class StreamActivity extends Activity {
 
 		Bitmap roundImgPop = roundImgBitmap(bitmapPop);
 		Bitmap roundImgPref = roundImgBitmap(bitmapPref);
-		layVideo.setBackgroundDrawable(new BitmapDrawable(bitmapThumb));
+		if (bitmapThumb != null)
+			layVideo.setBackgroundDrawable(new BitmapDrawable(bitmapThumb));
 
 		if (roundImgPop != null) {
 			imageUser.setBackgroundDrawable(new BitmapDrawable(roundImgPop));
@@ -205,6 +224,12 @@ public class StreamActivity extends Activity {
 						v.startAnimation(buttonClick);
 						Intent i = new Intent(getApplicationContext(),
 								DescActivity.class);
+						pref.edit().clear();
+						pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN);
+						pref.edit().remove(
+								Constants.TWITTER_ACCESS_TOKEN_SECRET);
+						pref.edit().remove(Constants.TWITTER_CONSUMER_KEY);
+						pref.edit().remove(Constants.TWITTER_CONSUMER_SECRET);
 						pref.edit().remove(Constants.TAG_TWITTER_USERNAME);
 						pref.edit().remove(Constants.TAG_TWITTER_FULLNAME);
 						pref.edit().remove(Constants.TAG_TWITTER_IMG_URL);
@@ -370,33 +395,44 @@ public class StreamActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			acm = new AmazonClientManager(StreamActivity.this);
-			router = new DynamoDBRouter(acm);
+			try {
+				acm = new AmazonClientManager(StreamActivity.this);
+				router = new DynamoDBRouter(acm);
 
-			HaloMama hm = new HaloMama(usernamePref, deviceOsPref);
+				HaloMama hm = new HaloMama(usernamePref, deviceOsPref);
 
-			// deleteHaloMama : called when user choose "hapus video"
-			hm.setCreatedDate(RecordActivity.createdDateVideo);
-			hm.prepareDeleteHaloMama();
-			router.deleteHaloMama(hm);
-			return true;
+				// deleteHaloMama : called when user choose "hapus video"
+				hm.setCreatedDate(RecordActivity.createdDateVideo);
+				hm.prepareDeleteHaloMama();
+				router.deleteHaloMama(hm);
+				return true;
+			} catch (AmazonClientException e) {
+				// TODO: handle exception
+				return false;
+			}
 		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
 			progress.dismiss();
-			Intent i = new Intent(StreamActivity.this, DescActivity.class);
+			if (result) {
+				Intent i = new Intent(StreamActivity.this, DescActivity.class);
 
-			i.addCategory(Intent.CATEGORY_HOME);
-			// closing all the activity
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				i.addCategory(Intent.CATEGORY_HOME);
+				// closing all the activity
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-			// add new flag to start new activity
-			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(i);
-			dialog.dismiss();
-			StreamActivity.this.finish();
+				// add new flag to start new activity
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+				dialog.dismiss();
+				StreamActivity.this.finish();
+			} else {
+				alert.showAlertDialog(StreamActivity.this,
+						"Kesalahan koneksi server", "Koneksi server gagal",
+						false);
+			}
 		}
 	}
 
@@ -421,21 +457,33 @@ public class StreamActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			acm = new AmazonClientManager(StreamActivity.this);
-			router = new DynamoDBRouter(acm);
+			try {
+				acm = new AmazonClientManager(StreamActivity.this);
+				router = new DynamoDBRouter(acm);
+				router.incrementSeen(usernamePop, hm.getCreatedDate());
+				return true;
+			} catch (AmazonClientException e) {
+				// TODO: handle exception
+				return false;
+			}
 
-			router.incrementSeen(usernamePop, hm.getCreatedDate());
-			return true;
 		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
 			progress.dismiss();
-			String url = "http://halo-mama.com/@" + usernamePop;
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-					Uri.parse(url));
-			startActivity(browserIntent);
+			if (result) {
+				String url = "http://halo-mama.com/@" + usernamePop;
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+						Uri.parse(url));
+				tvSeen.setText("" + (seenCountPop + 1));
+				startActivity(browserIntent);
+			} else {
+				alert.showAlertDialog(StreamActivity.this,
+						"Kesalahan koneksi server", "Koneksi server gagal",
+						false);
+			}
 		}
 	}
 }

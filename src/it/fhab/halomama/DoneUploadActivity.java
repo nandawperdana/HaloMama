@@ -1,5 +1,6 @@
 package it.fhab.halomama;
 
+import it.fhab.halomama.controller.AlertDialogManager;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.controller.Util;
@@ -8,6 +9,7 @@ import it.fhab.halomama.model.DownloadModel;
 import it.fhab.halomama.model.HaloMama;
 import it.fhab.halomama.roboto.RobotoTextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +37,7 @@ import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 
@@ -55,6 +58,8 @@ public class DoneUploadActivity extends Activity {
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
 	private Bitmap bmp = null, bmpPref = null, bmpThumbPop;
+	private byte[] bytePop, bytePref, byteThumbPop;
+	private AlertDialogManager alert = new AlertDialogManager();
 	private TransferManager mManager;
 
 	/*
@@ -133,26 +138,31 @@ public class DoneUploadActivity extends Activity {
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			acm = new AmazonClientManager(DoneUploadActivity.this);
-			router = new DynamoDBRouter(acm);
 
-			// getLastHaloMama - clean up expired one
-			hm = router.getLastHaloMama(pref.getString(
-					Constants.TAG_TWITTER_USERNAME, ""));
-//			// get popular
-//			hm = router.getPopularHaloMama();
-			
-			bmp = getAvatarImage(hm.getAvatarURL());
-			bmpPref = getAvatarImage(pref.getString(
-					Constants.TAG_TWITTER_IMG_URL, ""));
-			/*
-			 * get thumbnail
-			 */
 			try {
+				acm = new AmazonClientManager(DoneUploadActivity.this);
+				router = new DynamoDBRouter(acm);
+				mManager = new TransferManager(
+						Util.getCredProvider(DoneUploadActivity.this));
+
+				// getLastHaloMama - clean up expired one
+				hm = router.getLastHaloMama(pref.getString(
+						Constants.TAG_TWITTER_USERNAME, ""));
+				// bmpPref = getAvatarImage(pref.getString(
+				// Constants.TAG_TWITTER_IMG_URL, ""));
+
+				bytePref = getAvatarImage(pref.getString(
+						Constants.TAG_TWITTER_IMG_URL, ""));
+				// bmpPop = getAvatarImage(hm.getAvatarURL());
+				bytePop = getAvatarImage(hm.getAvatarURL());
+
+				/*
+				 * get thumbnail
+				 */
 				String fileBucket = Util.getPrefix(DoneUploadActivity.this)
 						+ hm.getUserNameTwitter() + "-" + hm.getCreatedDate()
 						+ ".jpg";
-//				Log.e("nama file thumbnail ", fileBucket);
+				// Log.e("nama file thumbnail ", fileBucket);
 				DownloadModel dl = new DownloadModel(DoneUploadActivity.this,
 						fileBucket, mManager);
 
@@ -161,11 +171,18 @@ public class DoneUploadActivity extends Activity {
 				if (file != null) {
 					bmpThumbPop = BitmapFactory.decodeFile(file
 							.getAbsolutePath());
+					if (bmpThumbPop != null)
+						byteThumbPop = compressBitmap(bmpThumbPop);
+					else
+						byteThumbPop = null;
 				}
 			} catch (AmazonS3Exception e) {
-
+				return null;
 			} catch (NullPointerException e) {
-
+				return null;
+			} catch (AmazonClientException e) {
+				// TODO: handle exception
+				return null;
 			}
 
 			/*
@@ -194,6 +211,7 @@ public class DoneUploadActivity extends Activity {
 				} else
 					retweetCountPop = status.getRetweetedStatus()
 							.getRetweetCount();
+				return status.toString();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -208,24 +226,35 @@ public class DoneUploadActivity extends Activity {
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			progress.dismiss();
-			Intent i = new Intent(DoneUploadActivity.this, StreamActivity.class);
+			if (result != null) {
+				Intent i = new Intent(DoneUploadActivity.this,
+						StreamActivity.class);
 
-			i.addCategory(Intent.CATEGORY_HOME);
-			// closing all the activity
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				i.addCategory(Intent.CATEGORY_HOME);
+				// closing all the activity
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-			// add new flag to start new activity
-			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				// add new flag to start new activity
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-			i.putExtra("objhalomama", hm);
-			i.putExtra("imgbmppop", bmp);
-			i.putExtra("imgbmppref", bmpPref);
-			i.putExtra("retweet", retweetCountPop);
-			i.putExtra("imgthumb", bmpThumbPop);
-//			Log.e("GAMBAR", "" + bmp);
-//			Log.e("NAMA", hm.getUserNameTwitter());
-			startActivity(i);
-			DoneUploadActivity.this.finish();
+				i.putExtra("objhalomama", hm);
+				// i.putExtra("imgbmppop", bmp);
+				// i.putExtra("imgbmppref", bmpPref);
+				i.putExtra("imgbmppop", bytePop);
+				i.putExtra("imgbmppref", bytePref);
+				i.putExtra("retweet", retweetCountPop);
+				// i.putExtra("imgthumb", bmpThumbPop);
+				i.putExtra("imgthumb", byteThumbPop);
+				// Log.e("GAMBAR", "" + bmp);
+				// Log.e("NAMA", hm.getUserNameTwitter());
+				startActivity(i);
+				DoneUploadActivity.this.finish();
+			} else {
+				alert.showAlertDialog(DoneUploadActivity.this,
+						"Kesalahan koneksi server", "Koneksi server gagal",
+						false);
+			}
+
 		}
 	}
 
@@ -235,7 +264,7 @@ public class DoneUploadActivity extends Activity {
 	 * @param url
 	 * @return bitmap
 	 */
-	private Bitmap getAvatarImage(String urlsrc) {
+	private byte[] getAvatarImage(String urlsrc) {
 		// get bitmap
 
 		Bitmap result = null;
@@ -247,7 +276,9 @@ public class DoneUploadActivity extends Activity {
 			connection.connect();
 			InputStream input = connection.getInputStream();
 			result = BitmapFactory.decodeStream(input);
-			return result;
+
+			byte[] bytes = compressBitmap(result);
+			return bytes;
 
 			// result = BitmapFactory.decodeStream((InputStream) new URL(urlsrc)
 			// .getContent());
@@ -261,5 +292,12 @@ public class DoneUploadActivity extends Activity {
 			return null;
 		}
 
+	}
+
+	private byte[] compressBitmap(Bitmap bmp) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+		byte[] bytes = stream.toByteArray();
+		return bytes;
 	}
 }
