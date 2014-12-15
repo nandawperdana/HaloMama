@@ -66,11 +66,6 @@ public class DescActivity extends FragmentActivity {
 				"halomama", Context.MODE_PRIVATE);
 		settings.edit().clear().commit();
 
-		// CookieSyncManager.createInstance(this);
-		// CookieManager cookieManager = CookieManager.getInstance();
-		// cookieManager.removeAllCookie();
-		// cookieManager.setAcceptCookie(false);
-
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(

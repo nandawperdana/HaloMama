@@ -432,8 +432,6 @@ public class FeelingFragment extends Fragment {
 
 				new UploadVideo().execute();
 			} else {
-				// Toast.makeText(getActivity(), "res, " + tweet.toString(),
-				// Toast.LENGTH_SHORT).show();
 				Toast.makeText(getActivity(),
 						"Kesalahan ketika men-tweet " + res, Toast.LENGTH_SHORT)
 						.show();

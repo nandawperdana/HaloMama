@@ -41,6 +41,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -177,6 +179,12 @@ public class RecordActivity extends Activity {
 				v.startAnimation(buttonClick);
 				// TODO Auto-generated method stub
 				Intent i = new Intent(RecordActivity.this, DescActivity.class);
+				/*
+				 * clear cookie for sign out from twitter
+				 */
+				CookieSyncManager.createInstance(RecordActivity.this);
+				CookieManager cookieManager = CookieManager.getInstance();
+				cookieManager.removeAllCookie();
 
 				i.putExtra("batalkan", true);
 				i.addCategory(Intent.CATEGORY_HOME);

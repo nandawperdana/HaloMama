@@ -90,7 +90,6 @@ public class Desc3Fragment extends Fragment {
 		 */
 		pref = getActivity().getSharedPreferences("halomama",
 				Context.MODE_PRIVATE);
-		pref.edit().clear().commit();
 
 		twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(pref.getString("CONSUMER_KEY",
@@ -160,19 +159,17 @@ public class Desc3Fragment extends Fragment {
 						// TODO Auto-generated method stub
 						// tvTolak.setTextColor(Color.parseColor("#4a90e2"));
 						v.startAnimation(buttonClick);
-						pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN);
-						pref.edit().remove(
-								Constants.TWITTER_ACCESS_TOKEN_SECRET);
-						pref.edit().remove(Constants.TWITTER_CONSUMER_KEY);
-						pref.edit().remove(Constants.TWITTER_CONSUMER_SECRET);
-						pref.edit().remove(Constants.TAG_TWITTER_USERNAME);
-						pref.edit().remove(Constants.TAG_TWITTER_FULLNAME);
-						pref.edit().remove(Constants.TAG_TWITTER_IMG_URL);
-						pref.edit().remove(Constants.TAG_DEVICE_OS);
-						web.clearCache(true);
-						// web.clearHistory();
-						web.clearFormData();
-						pref.edit().commit();
+
+						SharedPreferences.Editor edit = pref.edit();
+						edit.remove(Constants.TWITTER_ACCESS_TOKEN);
+						edit.remove(Constants.TWITTER_ACCESS_TOKEN_SECRET);
+						edit.remove(Constants.TWITTER_CONSUMER_KEY);
+						edit.remove(Constants.TWITTER_CONSUMER_SECRET);
+						edit.remove(Constants.TAG_TWITTER_USERNAME);
+						edit.remove(Constants.TAG_TWITTER_FULLNAME);
+						edit.remove(Constants.TAG_TWITTER_IMG_URL);
+						edit.remove(Constants.TAG_DEVICE_OS);
+						edit.commit();
 						dialog.dismiss();
 					}
 				});
@@ -223,7 +220,6 @@ public class Desc3Fragment extends Fragment {
 				// Log.e("URL", oauth_url);
 				auth_dialog = new Dialog(getActivity());
 				auth_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
 				auth_dialog.setContentView(R.layout.auth_dialog);
 				web = (WebView) auth_dialog.findViewById(R.id.webv);
 

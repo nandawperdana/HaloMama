@@ -175,35 +175,26 @@ public class DoneUploadActivity extends Activity {
 					else
 						byteThumbPop = null;
 				}
-			} catch (AmazonS3Exception e) {
-				return null;
-			} catch (NullPointerException e) {
-				return null;
-			} catch (AmazonClientException e) {
-				// TODO: handle exception
-				return null;
-			}
 
-			/*
-			 * twitter
-			 */
-			ConfigurationBuilder builder = new ConfigurationBuilder();
-			builder.setOAuthConsumerKey(pref.getString("CONSUMER_KEY",
-					Constants.TWITTER_CONSUMER_KEY));
-			builder.setOAuthConsumerSecret(pref.getString("CONSUMER_SECRET",
-					Constants.TWITTER_CONSUMER_SECRET));
+				/*
+				 * twitter
+				 */
+				ConfigurationBuilder builder = new ConfigurationBuilder();
+				builder.setOAuthConsumerKey(pref.getString("CONSUMER_KEY",
+						Constants.TWITTER_CONSUMER_KEY));
+				builder.setOAuthConsumerSecret(pref.getString(
+						"CONSUMER_SECRET", Constants.TWITTER_CONSUMER_SECRET));
 
-			AccessToken accessToken = new AccessToken(pref.getString(
-					"ACCESS_TOKEN", Constants.TWITTER_ACCESS_TOKEN),
-					pref.getString("ACCESS_TOKEN_SECRET",
-							Constants.TWITTER_ACCESS_TOKEN_SECRET));
-			Twitter twitter = new TwitterFactory(builder.build())
-					.getInstance(accessToken);
+				AccessToken accessToken = new AccessToken(pref.getString(
+						"ACCESS_TOKEN", Constants.TWITTER_ACCESS_TOKEN),
+						pref.getString("ACCESS_TOKEN_SECRET",
+								Constants.TWITTER_ACCESS_TOKEN_SECRET));
+				Twitter twitter = new TwitterFactory(builder.build())
+						.getInstance(accessToken);
 
-			String tweetId = hm.getTweetId();
+				String tweetId = hm.getTweetId();
 
-			twitter4j.Status status = null;
-			try {
+				twitter4j.Status status = null;
 				status = twitter.showStatus(Long.parseLong(tweetId));
 				if (status.getRetweetedStatus() == null) {
 					retweetCountPop = 0;
@@ -211,16 +202,18 @@ public class DoneUploadActivity extends Activity {
 					retweetCountPop = status.getRetweetedStatus()
 							.getRetweetCount();
 				return true;
-			} catch (TwitterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return false;
 			} catch (AmazonS3Exception e) {
 				return false;
-			} catch (AmazonClientException e) {
+			}  catch (AmazonClientException e) {
 				// TODO: handle exception
 				return false;
-			}
+			}catch (TwitterException e) {
+				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				return false;
+				//maybe tweet deleted
+				return true;
+			}  
 		}
 
 		@Override

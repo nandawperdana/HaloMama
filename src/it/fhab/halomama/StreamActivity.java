@@ -28,6 +28,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -224,17 +226,26 @@ public class StreamActivity extends Activity {
 						v.startAnimation(buttonClick);
 						Intent i = new Intent(getApplicationContext(),
 								DescActivity.class);
-						pref.edit().clear();
-						pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN);
-						pref.edit().remove(
-								Constants.TWITTER_ACCESS_TOKEN_SECRET);
-						pref.edit().remove(Constants.TWITTER_CONSUMER_KEY);
-						pref.edit().remove(Constants.TWITTER_CONSUMER_SECRET);
-						pref.edit().remove(Constants.TAG_TWITTER_USERNAME);
-						pref.edit().remove(Constants.TAG_TWITTER_FULLNAME);
-						pref.edit().remove(Constants.TAG_TWITTER_IMG_URL);
-						pref.edit().remove(Constants.TAG_DEVICE_OS);
-						pref.edit().commit();
+
+						/*
+						 * clear cookie for sign out from twitter
+						 */
+						CookieSyncManager.createInstance(StreamActivity.this);
+						CookieManager cookieManager = CookieManager
+								.getInstance();
+						cookieManager.removeAllCookie();
+
+						SharedPreferences.Editor edit = pref.edit();
+						edit.clear();
+						edit.remove(Constants.TWITTER_ACCESS_TOKEN);
+						edit.remove(Constants.TWITTER_ACCESS_TOKEN_SECRET);
+						edit.remove(Constants.TWITTER_CONSUMER_KEY);
+						edit.remove(Constants.TWITTER_CONSUMER_SECRET);
+						edit.remove(Constants.TAG_TWITTER_USERNAME);
+						edit.remove(Constants.TAG_TWITTER_FULLNAME);
+						edit.remove(Constants.TAG_TWITTER_IMG_URL);
+						edit.remove(Constants.TAG_DEVICE_OS);
+						edit.commit();
 
 						i.addCategory(Intent.CATEGORY_HOME);
 						// closing all the activity
@@ -418,6 +429,24 @@ public class StreamActivity extends Activity {
 			progress.dismiss();
 			if (result) {
 				Intent i = new Intent(StreamActivity.this, DescActivity.class);
+				/*
+				 * clear cookie for sign out from twitter
+				 */
+				CookieSyncManager.createInstance(StreamActivity.this);
+				CookieManager cookieManager = CookieManager.getInstance();
+				cookieManager.removeAllCookie();
+
+				SharedPreferences.Editor edit = pref.edit();
+				edit.clear();
+				edit.remove(Constants.TWITTER_ACCESS_TOKEN);
+				edit.remove(Constants.TWITTER_ACCESS_TOKEN_SECRET);
+				edit.remove(Constants.TWITTER_CONSUMER_KEY);
+				edit.remove(Constants.TWITTER_CONSUMER_SECRET);
+				edit.remove(Constants.TAG_TWITTER_USERNAME);
+				edit.remove(Constants.TAG_TWITTER_FULLNAME);
+				edit.remove(Constants.TAG_TWITTER_IMG_URL);
+				edit.remove(Constants.TAG_DEVICE_OS);
+				edit.commit();
 
 				i.addCategory(Intent.CATEGORY_HOME);
 				// closing all the activity
