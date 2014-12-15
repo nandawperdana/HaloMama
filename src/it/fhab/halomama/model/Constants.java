@@ -44,7 +44,7 @@ public class Constants {
 	public static final String COGNITO_ROLE_AUTH = "arn:aws:iam::326820369316:role/Cognito_fhabBackendAuth_DefaultRole";
 	public static final String COGNITO_ROLE_UNAUTH = "arn:aws:iam::326820369316:role/Cognito_fhabBackendUnauth_DefaultRole";
 	public static final String BUCKET_NAME = "fhab-store-data-us";
-	public static final String TABLE_NAME = "Fhab-HaloMama-Production";
+	public static final String TABLE_NAME = "Fhab-HaloMamas";
 
 	public static final Regions COGNITO_REGION = Regions.US_EAST_1;
 	public static final Regions DDB_REGION = Regions.US_EAST_1;

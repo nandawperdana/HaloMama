@@ -15,9 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -33,11 +30,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
+
+import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 public class DoneUploadActivity extends Activity {
 	/*
@@ -137,6 +136,10 @@ public class DoneUploadActivity extends Activity {
 			acm = new AmazonClientManager(DoneUploadActivity.this);
 			router = new DynamoDBRouter(acm);
 
+			// getLastHaloMama - clean up expired one
+			hm = router.getLastHaloMama(pref.getString(
+					Constants.TAG_TWITTER_USERNAME, ""));
+			
 			// get popular
 			hm = router.getPopularHaloMama();
 			bmp = getAvatarImage(hm.getAvatarURL());

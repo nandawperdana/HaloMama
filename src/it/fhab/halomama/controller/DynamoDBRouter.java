@@ -24,8 +24,6 @@ import it.fhab.halomama.model.Question;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.util.Log;
-
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
@@ -178,11 +176,11 @@ public class DynamoDBRouter {
 		// may be can be improved by received array of object, and iterating the
 		// call
 		try {
-			Log.d(TAG, "Inserting users");
+//			Log.d(TAG, "Inserting users");
 			mapper.save(dDBModel);
-			Log.d(TAG, "Users inserted");
+//			Log.d(TAG, "Users inserted");
 		} catch (AmazonServiceException ex) {
-			Log.e(TAG, "Error inserting users");
+//			Log.e(TAG, "Error inserting users");
 			amazonClientManager.wipeCredentialsOnAuthError(ex);
 		}
 	}
