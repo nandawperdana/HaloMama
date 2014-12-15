@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -32,8 +31,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
@@ -92,6 +90,7 @@ public class Desc3Fragment extends Fragment {
 		 */
 		pref = getActivity().getSharedPreferences("halomama",
 				Context.MODE_PRIVATE);
+		pref.edit().clear().commit();
 
 		twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(pref.getString("CONSUMER_KEY",
@@ -227,12 +226,11 @@ public class Desc3Fragment extends Fragment {
 
 				auth_dialog.setContentView(R.layout.auth_dialog);
 				web = (WebView) auth_dialog.findViewById(R.id.webv);
+
 				web.clearCache(true);
-				// web.clearFormData();
+				web.clearFormData();
 				web.clearHistory();
 				web.getSettings().setJavaScriptEnabled(true);
-				String urlSignOut = "http://twitter.com/oauth/authorize?force_login=true";
-				web.loadUrl(urlSignOut);
 				web.loadUrl(oauth_url);
 				web.setWebViewClient(new WebViewClient() {
 					boolean authComplete = false;

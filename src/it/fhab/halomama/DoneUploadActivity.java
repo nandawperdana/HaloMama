@@ -17,6 +17,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -36,10 +40,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
-
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 public class DoneUploadActivity extends Activity {
 	/*
@@ -121,7 +121,7 @@ public class DoneUploadActivity extends Activity {
 	 * @author Aslab-NWP
 	 * 
 	 */
-	private class PrepareStream extends AsyncTask<String, String, String> {
+	private class PrepareStream extends AsyncTask<String, String, Boolean> {
 
 		@Override
 		protected void onPreExecute() {
@@ -136,9 +136,8 @@ public class DoneUploadActivity extends Activity {
 		}
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
-
 			try {
 				acm = new AmazonClientManager(DoneUploadActivity.this);
 				router = new DynamoDBRouter(acm);
@@ -211,22 +210,24 @@ public class DoneUploadActivity extends Activity {
 				} else
 					retweetCountPop = status.getRetweetedStatus()
 							.getRetweetCount();
-				return status.toString();
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return true;
 			} catch (TwitterException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return false;
+			} catch (AmazonS3Exception e) {
+				return false;
+			} catch (AmazonClientException e) {
+				// TODO: handle exception
+				return false;
 			}
-			return null;
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
 			progress.dismiss();
-			if (result != null) {
+			if (result) {
 				Intent i = new Intent(DoneUploadActivity.this,
 						StreamActivity.class);
 

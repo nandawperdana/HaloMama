@@ -474,7 +474,7 @@ public class RecordActivity extends Activity {
 
 		// Step 2: Set sources
 		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
+		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 		// mMediaRecorder.setMaxDuration(10000);
 
 		// Step 3: set camcoder profile

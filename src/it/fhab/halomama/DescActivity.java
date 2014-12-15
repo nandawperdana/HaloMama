@@ -62,6 +62,15 @@ public class DescActivity extends FragmentActivity {
 			StrictMode.setThreadPolicy(policy);
 		}
 
+		SharedPreferences settings = DescActivity.this.getSharedPreferences(
+				"halomama", Context.MODE_PRIVATE);
+		settings.edit().clear().commit();
+
+		// CookieSyncManager.createInstance(this);
+		// CookieManager cookieManager = CookieManager.getInstance();
+		// cookieManager.removeAllCookie();
+		// cookieManager.setAcceptCookie(false);
+
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -72,24 +81,6 @@ public class DescActivity extends FragmentActivity {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		mIndicator.setViewPager(mViewPager);
-
-		// pref = getPreferences(0);
-		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
-
-		pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN);
-		pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN_SECRET);
-		pref.edit().remove(Constants.TWITTER_CONSUMER_KEY);
-		pref.edit().remove(Constants.TWITTER_CONSUMER_SECRET);
-		pref.edit().remove(Constants.TAG_TWITTER_USERNAME);
-		pref.edit().remove(Constants.TAG_TWITTER_FULLNAME);
-		pref.edit().remove(Constants.TAG_TWITTER_IMG_URL);
-		pref.edit().remove(Constants.TAG_DEVICE_OS);
-		// pref.edit().putString("CONSUMER_KEY",
-		// Constants.TWITTER_CONSUMER_KEY);
-		// pref.edit().putString("CONSUMER_SECRET",
-		// Constants.TWITTER_CONSUMER_SECRET);
-		pref.edit().clear();
-		pref.edit().commit();
 	}
 
 	protected void onResume() {
