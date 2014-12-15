@@ -13,6 +13,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 
 public class DescActivity extends FragmentActivity {
 	public Context ctx = DescActivity.this;
@@ -40,7 +42,8 @@ public class DescActivity extends FragmentActivity {
 	private SharedPreferences pref;
 	public static boolean exists = false;
 	public static boolean checked = false;
-	public static final String createdDatePeople = "" + System.currentTimeMillis();
+	public static final String createdDatePeople = ""
+			+ System.currentTimeMillis();
 
 	/**
 	 * Twitter
@@ -73,10 +76,20 @@ public class DescActivity extends FragmentActivity {
 		// pref = getPreferences(0);
 		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
 
-		SharedPreferences.Editor edit = pref.edit();
-		edit.putString("CONSUMER_KEY", Constants.TWITTER_CONSUMER_KEY);
-		edit.putString("CONSUMER_SECRET", Constants.TWITTER_CONSUMER_SECRET);
-		edit.commit();
+		pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN);
+		pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN_SECRET);
+		pref.edit().remove(Constants.TWITTER_CONSUMER_KEY);
+		pref.edit().remove(Constants.TWITTER_CONSUMER_SECRET);
+		pref.edit().remove(Constants.TAG_TWITTER_USERNAME);
+		pref.edit().remove(Constants.TAG_TWITTER_FULLNAME);
+		pref.edit().remove(Constants.TAG_TWITTER_IMG_URL);
+		pref.edit().remove(Constants.TAG_DEVICE_OS);
+		// pref.edit().putString("CONSUMER_KEY",
+		// Constants.TWITTER_CONSUMER_KEY);
+		// pref.edit().putString("CONSUMER_SECRET",
+		// Constants.TWITTER_CONSUMER_SECRET);
+		pref.edit().clear();
+		pref.edit().commit();
 	}
 
 	protected void onResume() {

@@ -2,6 +2,7 @@ package it.fhab.halomama;
 
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
+import it.fhab.halomama.model.Constants;
 import it.fhab.halomama.model.Question;
 import it.fhab.halomama.roboto.RobotoTextView;
 
@@ -10,8 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-
-import com.amazonaws.AmazonClientException;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -34,7 +33,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore.Video.Thumbnails;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -43,12 +41,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
+import com.amazonaws.AmazonClientException;
 
 public class RecordActivity extends Activity {
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
@@ -107,6 +106,7 @@ public class RecordActivity extends Activity {
 
 		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
 		KEY_RECORD = pref.getString("KEY_RECORD", "");
+
 		mChronometer = (Chronometer) findViewById(R.id.chronometer);
 		tvRandom = (RobotoTextView) findViewById(R.id.textViewRandomText);
 		btnRandom = (ImageButton) findViewById(R.id.buttonRandom);
@@ -169,7 +169,6 @@ public class RecordActivity extends Activity {
 			public void onClick(View v) {
 				v.startAnimation(buttonClick);
 				// TODO Auto-generated method stub
-
 				Intent i = new Intent(RecordActivity.this, DescActivity.class);
 
 				i.putExtra("batalkan", true);

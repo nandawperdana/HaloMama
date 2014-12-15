@@ -1,7 +1,5 @@
 package it.fhab.halomama;
 
-import com.amazonaws.AmazonClientException;
-
 import it.fhab.halomama.controller.AlertDialogManager;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
@@ -28,17 +26,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.amazonaws.AmazonClientException;
 
 public class Desc3Fragment extends Fragment {
 	/**
@@ -91,10 +92,12 @@ public class Desc3Fragment extends Fragment {
 		 */
 		pref = getActivity().getSharedPreferences("halomama",
 				Context.MODE_PRIVATE);
+
 		twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(pref.getString("CONSUMER_KEY",
 				Constants.TWITTER_CONSUMER_KEY), pref.getString(
 				"CONSUMER_SECRET", Constants.TWITTER_CONSUMER_SECRET));
+		twitter.setOAuthAccessToken(null);
 
 		tvDesc3 = (RobotoTextView) rootView.findViewById(R.id.section_label3);
 		tvDesc3.setText(Html.fromHtml(getString(R.string.fragment3_desc)));
@@ -156,10 +159,21 @@ public class Desc3Fragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						tvTolak.setTextColor(Color.parseColor("#4a90e2"));
+						// tvTolak.setTextColor(Color.parseColor("#4a90e2"));
 						v.startAnimation(buttonClick);
+						pref.edit().remove(Constants.TWITTER_ACCESS_TOKEN);
+						pref.edit().remove(
+								Constants.TWITTER_ACCESS_TOKEN_SECRET);
+						pref.edit().remove(Constants.TWITTER_CONSUMER_KEY);
+						pref.edit().remove(Constants.TWITTER_CONSUMER_SECRET);
+						pref.edit().remove(Constants.TAG_TWITTER_USERNAME);
+						pref.edit().remove(Constants.TAG_TWITTER_FULLNAME);
+						pref.edit().remove(Constants.TAG_TWITTER_IMG_URL);
+						pref.edit().remove(Constants.TAG_DEVICE_OS);
 						web.clearCache(true);
-						web.clearHistory();
+						// web.clearHistory();
+						web.clearFormData();
+						pref.edit().commit();
 						dialog.dismiss();
 					}
 				});
@@ -214,9 +228,11 @@ public class Desc3Fragment extends Fragment {
 				auth_dialog.setContentView(R.layout.auth_dialog);
 				web = (WebView) auth_dialog.findViewById(R.id.webv);
 				web.clearCache(true);
-				web.clearFormData();
+				// web.clearFormData();
 				web.clearHistory();
 				web.getSettings().setJavaScriptEnabled(true);
+				String urlSignOut = "http://twitter.com/oauth/authorize?force_login=true";
+				web.loadUrl(urlSignOut);
 				web.loadUrl(oauth_url);
 				web.setWebViewClient(new WebViewClient() {
 					boolean authComplete = false;
@@ -241,17 +257,6 @@ public class Desc3Fragment extends Fragment {
 							auth_dialog.dismiss();
 							if (!pref.contains(Constants.TAG_TWITTER_USERNAME)) {
 								new AccessTokenGet().execute();
-							}
-							else{
-								Intent i = new Intent(getActivity(), RecordActivity.class);
-								i.addCategory(Intent.CATEGORY_HOME);
-								// closing all the activity
-								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-								// add new flag to start new activity
-								i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-								startActivity(i);
-								getActivity().finish();
 							}
 						} else if (url.contains("denied")) {
 							auth_dialog.dismiss();

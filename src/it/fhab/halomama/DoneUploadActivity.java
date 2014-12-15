@@ -9,6 +9,7 @@ import it.fhab.halomama.model.DownloadModel;
 import it.fhab.halomama.model.HaloMama;
 import it.fhab.halomama.roboto.RobotoTextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +59,7 @@ public class DoneUploadActivity extends Activity {
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
 	private Bitmap bmp = null, bmpPref = null, bmpThumbPop;
+	private byte[] bytePop, bytePref, byteThumbPop;
 	private AlertDialogManager alert = new AlertDialogManager();
 	private TransferManager mManager;
 
@@ -143,9 +145,14 @@ public class DoneUploadActivity extends Activity {
 
 				// get popular
 				hm = router.getPopularHaloMama();
-				bmp = getAvatarImage(hm.getAvatarURL());
-				bmpPref = getAvatarImage(pref.getString(
+				// bmpPref = getAvatarImage(pref.getString(
+				// Constants.TAG_TWITTER_IMG_URL, ""));
+
+				bytePref = getAvatarImage(pref.getString(
 						Constants.TAG_TWITTER_IMG_URL, ""));
+				// bmpPop = getAvatarImage(hm.getAvatarURL());
+				bytePop = getAvatarImage(hm.getAvatarURL());
+
 				/*
 				 * get thumbnail
 				 */
@@ -161,6 +168,10 @@ public class DoneUploadActivity extends Activity {
 				if (file != null) {
 					bmpThumbPop = BitmapFactory.decodeFile(file
 							.getAbsolutePath());
+					if (bmpThumbPop != null)
+						byteThumbPop = compressBitmap(bmpThumbPop);
+					else
+						byteThumbPop = null;
 				}
 			} catch (AmazonS3Exception e) {
 				return null;
@@ -224,10 +235,13 @@ public class DoneUploadActivity extends Activity {
 				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 				i.putExtra("objhalomama", hm);
-				i.putExtra("imgbmppop", bmp);
-				i.putExtra("imgbmppref", bmpPref);
+				// i.putExtra("imgbmppop", bmp);
+				// i.putExtra("imgbmppref", bmpPref);
+				i.putExtra("imgbmppop", bytePop);
+				i.putExtra("imgbmppref", bytePref);
 				i.putExtra("retweet", retweetCountPop);
-				i.putExtra("imgthumb", bmpThumbPop);
+				// i.putExtra("imgthumb", bmpThumbPop);
+				i.putExtra("imgthumb", byteThumbPop);
 				// Log.e("GAMBAR", "" + bmp);
 				// Log.e("NAMA", hm.getUserNameTwitter());
 				startActivity(i);
@@ -247,7 +261,7 @@ public class DoneUploadActivity extends Activity {
 	 * @param url
 	 * @return bitmap
 	 */
-	private Bitmap getAvatarImage(String urlsrc) {
+	private byte[] getAvatarImage(String urlsrc) {
 		// get bitmap
 
 		Bitmap result = null;
@@ -259,7 +273,9 @@ public class DoneUploadActivity extends Activity {
 			connection.connect();
 			InputStream input = connection.getInputStream();
 			result = BitmapFactory.decodeStream(input);
-			return result;
+
+			byte[] bytes = compressBitmap(result);
+			return bytes;
 
 			// result = BitmapFactory.decodeStream((InputStream) new URL(urlsrc)
 			// .getContent());
@@ -273,5 +289,12 @@ public class DoneUploadActivity extends Activity {
 			return null;
 		}
 
+	}
+
+	private byte[] compressBitmap(Bitmap bmp) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+		byte[] bytes = stream.toByteArray();
+		return bytes;
 	}
 }

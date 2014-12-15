@@ -11,14 +11,13 @@ import it.fhab.halomama.model.HaloMama;
 import it.fhab.halomama.model.People;
 import it.fhab.halomama.roboto.RobotoTextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -70,6 +69,7 @@ public class SplashScreen extends Activity {
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
 	private Bitmap bmpPop, bmpPref, bmpThumbPop;
+	private byte[] bytePop, bytePref, byteThumbPop;
 	private static String first_run = "";
 	private TransferManager mManager;
 
@@ -124,7 +124,6 @@ public class SplashScreen extends Activity {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			try {
-
 				acm = new AmazonClientManager(SplashScreen.this);
 				router = new DynamoDBRouter(acm);
 				mManager = new TransferManager(
@@ -155,9 +154,12 @@ public class SplashScreen extends Activity {
 				 */
 				hm = router.getPopularHaloMama();
 
-				bmpPref = getAvatarImage(pref.getString(
+				// bmpPref = getAvatarImage(pref.getString(
+				// Constants.TAG_TWITTER_IMG_URL, ""));
+				bytePref = getAvatarImage(pref.getString(
 						Constants.TAG_TWITTER_IMG_URL, ""));
-				bmpPop = getAvatarImage(hm.getAvatarURL());
+				// bmpPop = getAvatarImage(hm.getAvatarURL());
+				bytePop = getAvatarImage(hm.getAvatarURL());
 
 				/*
 				 * get thumbnail
@@ -175,6 +177,10 @@ public class SplashScreen extends Activity {
 					if (file != null) {
 						bmpThumbPop = BitmapFactory.decodeFile(file
 								.getAbsolutePath());
+						if (bmpThumbPop != null)
+							byteThumbPop = compressBitmap(bmpThumbPop);
+						else
+							byteThumbPop = null;
 					}
 				} catch (AmazonS3Exception e) {
 					return false;
@@ -235,10 +241,13 @@ public class SplashScreen extends Activity {
 
 					i = new Intent(SplashScreen.this, StreamActivity.class);
 					i.putExtra("objhalomama", hm);
-					i.putExtra("imgbmppop", bmpPop);
-					i.putExtra("imgbmppref", bmpPref);
+					// i.putExtra("imgbmppop", bmpPop);
+					// i.putExtra("imgbmppref", bmpPref);
+					i.putExtra("imgbmppop", bytePop);
+					i.putExtra("imgbmppref", bytePref);
 					i.putExtra("retweet", retweetCountPop);
-					i.putExtra("imgthumb", bmpThumbPop);
+					// i.putExtra("imgthumb", bmpThumbPop);
+					i.putExtra("imgthumb", byteThumbPop);
 				}
 
 				pref.edit().putBoolean("FIRST_RUN", false);
@@ -255,9 +264,10 @@ public class SplashScreen extends Activity {
 				// close this activity
 				SplashScreen.this.finish();
 			} else {
-				alert.showAlertDialog(SplashScreen.this,
-						"Kesalahan koneksi server", "Koneksi server gagal",
-						false);
+				pbSplash.setVisibility(View.INVISIBLE);
+				// alert.showAlertDialog(SplashScreen.this,
+				// "Kesalahan koneksi server", "Koneksi server gagal",
+				// false);
 				SplashScreen.this.finish();
 			}
 
@@ -270,7 +280,7 @@ public class SplashScreen extends Activity {
 	 * @param url
 	 * @return bitmap
 	 */
-	private Bitmap getAvatarImage(String urlsrc) {
+	private byte[] getAvatarImage(String urlsrc) {
 		// get bitmap
 
 		Bitmap result = null;
@@ -282,7 +292,13 @@ public class SplashScreen extends Activity {
 			connection.connect();
 			InputStream input = connection.getInputStream();
 			result = BitmapFactory.decodeStream(input);
-			return result;
+
+			/*
+			 * compress
+			 */
+			byte[] bytes = compressBitmap(result);
+
+			return bytes;
 
 			// result = BitmapFactory.decodeStream((InputStream) new URL(urlsrc)
 			// .getContent());
@@ -298,5 +314,12 @@ public class SplashScreen extends Activity {
 			return null;
 		}
 
+	}
+
+	private byte[] compressBitmap(Bitmap bmp) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+		byte[] bytes = stream.toByteArray();
+		return bytes;
 	}
 }
