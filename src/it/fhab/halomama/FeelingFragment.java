@@ -1,5 +1,6 @@
 package it.fhab.halomama;
 
+import it.fhab.halomama.controller.AlertDialogManager;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.controller.Util;
@@ -30,7 +31,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 /**
  * A placeholder fragment containing a first description.
@@ -58,6 +61,7 @@ public class FeelingFragment extends Fragment {
 	private int feel;
 	private twitter4j.Status tweet;
 	private HaloMama hm;
+	private AlertDialogManager alert = new AlertDialogManager();
 
 	/*
 	 * transfer s3 vars
@@ -417,9 +421,8 @@ public class FeelingFragment extends Fragment {
 			} catch (TwitterException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return e.getErrorMessage();
 			}
-
-			return null;
 		}
 
 		protected void onPostExecute(String res) {
@@ -434,8 +437,9 @@ public class FeelingFragment extends Fragment {
 			} else {
 				// Toast.makeText(getActivity(), "res, " + tweet.toString(),
 				// Toast.LENGTH_SHORT).show();
-				Toast.makeText(getActivity(), "Error while tweeting !",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(),
+						"Kesalahan ketika men-tweet " + res, Toast.LENGTH_SHORT)
+						.show();
 			}
 
 		}
@@ -464,29 +468,40 @@ public class FeelingFragment extends Fragment {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			/*
-			 * upload to s3
-			 */
-			UploadModel modelVideo = new UploadModel(getActivity(), uriPath,
-					mManager);
-			UploadModel modelThumb = new UploadModel(getActivity(), uriThumb,
-					mManager);
+			try {
+				/*
+				 * upload to s3
+				 */
+				UploadModel modelVideo = new UploadModel(getActivity(),
+						uriPath, mManager);
+				UploadModel modelThumb = new UploadModel(getActivity(),
+						uriThumb, mManager);
 
-			modelVideo.upload();
-			modelThumb.upload();
-			return true;
+				modelVideo.upload();
+				modelThumb.upload();
+				return true;
+			} catch (AmazonS3Exception e) {
+				// TODO: handle exception
+				return false;
+			}
 		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
-			/*
-			 * update db
-			 */
-			if ((progress != null) && progress.isShowing()) {
-				progress.dismiss();
+			if (result) {
+				/*
+				 * update db
+				 */
+				if ((progress != null) && progress.isShowing()) {
+					progress.dismiss();
+				}
+				new CreateInitialData().execute();
+			} else {
+				alert.showAlertDialog(getActivity(),
+						"Kesalahan koneksi server", "Koneksi server gagal",
+						false);
 			}
-			new CreateInitialData().execute();
 		}
 	}
 
@@ -513,16 +528,20 @@ public class FeelingFragment extends Fragment {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			acm = new AmazonClientManager(getActivity());
-			router = new DynamoDBRouter(acm);
-			/*
-			 * postfhab : create initial data after video is uploaded to s3
-			 */
-			hm = new HaloMama(username, deviceOS);
-			hm.preparePostFhab(feel, RecordActivity.createdDateVideo);
-			router.postFhab(hm);
-
-			return true;
+			try {
+				acm = new AmazonClientManager(getActivity());
+				router = new DynamoDBRouter(acm);
+				/*
+				 * postfhab : create initial data after video is uploaded to s3
+				 */
+				hm = new HaloMama(username, deviceOS);
+				hm.preparePostFhab(feel, RecordActivity.createdDateVideo);
+				router.postFhab(hm);
+				return true;
+			} catch (AmazonClientException e) {
+				// TODO: handle exception
+				return false;
+			}
 		}
 
 		@Override
@@ -531,7 +550,12 @@ public class FeelingFragment extends Fragment {
 			if ((progress != null) && progress.isShowing()) {
 				progress.dismiss();
 			}
-			new UpdateVideoData().execute();
+			if (result) {
+				new UpdateVideoData().execute();
+			} else {
+				Toast.makeText(getActivity(), "Kesalahan koneksi ke server",
+						Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 
@@ -581,18 +605,23 @@ public class FeelingFragment extends Fragment {
 			if ((progress != null) && progress.isShowing()) {
 				progress.dismiss();
 			}
+			if (result) {
+				Intent i = new Intent(getActivity(), DoneUploadActivity.class);
 
-			Intent i = new Intent(getActivity(), DoneUploadActivity.class);
+				i.addCategory(Intent.CATEGORY_HOME);
+				// closing all the activity
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-			i.addCategory(Intent.CATEGORY_HOME);
-			// closing all the activity
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				// add new flag to start new activity
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-			// add new flag to start new activity
-			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+				getActivity().finish();
+			} else {
+				Toast.makeText(getActivity(), "Kesalahan koneksi ke server",
+						Toast.LENGTH_SHORT).show();
+			}
 
-			startActivity(i);
-			getActivity().finish();
 		}
 	}
 }

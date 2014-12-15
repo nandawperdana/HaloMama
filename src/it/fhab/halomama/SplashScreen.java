@@ -18,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -31,14 +33,13 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
@@ -122,21 +123,20 @@ public class SplashScreen extends Activity {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			acm = new AmazonClientManager(SplashScreen.this);
-			router = new DynamoDBRouter(acm);
-			mManager = new TransferManager(
-					Util.getCredProvider(SplashScreen.this));
+			try {
 
-			// publishProgress("start");
+				acm = new AmazonClientManager(SplashScreen.this);
+				router = new DynamoDBRouter(acm);
+				mManager = new TransferManager(
+						Util.getCredProvider(SplashScreen.this));
+			} catch (AmazonClientException e) {
+				return false;
+			}
+
 			/*
 			 * checking bucket
 			 */
 			AmazonS3Client sS3Client = Util.getS3Client(SplashScreen.this);
-			// try {
-			// Thread.sleep(7000);
-			// } catch (InterruptedException e) {
-			// return null;
-			// }
 
 			/*
 			 * sign in
@@ -166,7 +166,7 @@ public class SplashScreen extends Activity {
 					String fileBucket = Util.getPrefix(SplashScreen.this)
 							+ hm.getUserNameTwitter() + "-"
 							+ hm.getCreatedDate() + ".jpg";
-//					Log.e("nama file thumbnail ", fileBucket);
+					// Log.e("nama file thumbnail ", fileBucket);
 					DownloadModel dl = new DownloadModel(SplashScreen.this,
 							fileBucket, mManager);
 
@@ -177,7 +177,7 @@ public class SplashScreen extends Activity {
 								.getAbsolutePath());
 					}
 				} catch (AmazonS3Exception e) {
-
+					return false;
 				}
 
 				/*
@@ -225,13 +225,13 @@ public class SplashScreen extends Activity {
 				Intent i;
 				if (!pref.contains(Constants.TAG_TWITTER_USERNAME)) {
 					first_run = "pertama";
-//					Log.d("First", "First run!");
+					// Log.d("First", "First run!");
 
 					i = new Intent(SplashScreen.this, DescActivity.class);
-					Toast.makeText(SplashScreen.this, "first",
-							Toast.LENGTH_LONG).show();
+					// Toast.makeText(SplashScreen.this, "first",
+					// Toast.LENGTH_LONG).show();
 				} else {
-//					Log.d("Second...", "Second run...!");
+					// Log.d("Second...", "Second run...!");
 
 					i = new Intent(SplashScreen.this, StreamActivity.class);
 					i.putExtra("objhalomama", hm);
@@ -258,6 +258,7 @@ public class SplashScreen extends Activity {
 				alert.showAlertDialog(SplashScreen.this,
 						"Kesalahan koneksi server", "Koneksi server gagal",
 						false);
+				SplashScreen.this.finish();
 			}
 
 		}
@@ -288,12 +289,12 @@ public class SplashScreen extends Activity {
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-//			Log.e("error ambil", e.getMessage() + " url " + urlsrc);
+			// Log.e("error ambil", e.getMessage() + " url " + urlsrc);
 			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-//			Log.e("error ambil ioe", e.getMessage());
+			// Log.e("error ambil ioe", e.getMessage());
 			return null;
 		}
 

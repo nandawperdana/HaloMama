@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="www.halomama.com/whe_green/1"
+                android:layout_gravity="center_vertical"
                 android:textColor="#fdce31" />
         </FrameLayout>
 

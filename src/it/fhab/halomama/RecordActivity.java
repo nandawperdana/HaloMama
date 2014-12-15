@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.amazonaws.AmazonClientException;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -219,13 +221,13 @@ public class RecordActivity extends Activity {
 								int end = path.length() - 4;
 								String thumbName = path.substring(
 										path.lastIndexOf("/") + 1, end);
-//								Log.e("PATH GAMBAR", path);
-//								Log.e("nama thumb", thumbName);
+								// Log.e("PATH GAMBAR", path);
+								// Log.e("nama thumb", thumbName);
 								Bitmap bmp = createThumbnail(path);
 								uriThumb = Uri.fromFile(saveThumbnail(
 										thumbName, bmp));
-//								Log.e("uri", "" + uriThumb);
-//								Log.e("bmp thumb", "" + bmp);
+								// Log.e("uri", "" + uriThumb);
+								// Log.e("bmp thumb", "" + bmp);
 							} catch (Exception e) {
 							}
 							pRender.dismiss();
@@ -483,13 +485,13 @@ public class RecordActivity extends Activity {
 		try {
 			mMediaRecorder.prepare();
 		} catch (IllegalStateException e) {
-//			Log.d("ERROR", "IllegalStateException preparing MediaRecorder: "
-//					+ e.getMessage());
+			// Log.d("ERROR", "IllegalStateException preparing MediaRecorder: "
+			// + e.getMessage());
 			releaseMediaRecorder();
 			return false;
 		} catch (IOException e) {
-//			Log.d("ERROR",
-//					"IOException preparing MediaRecorder: " + e.getMessage());
+			// Log.d("ERROR",
+			// "IOException preparing MediaRecorder: " + e.getMessage());
 			releaseMediaRecorder();
 			return false;
 		}
@@ -508,8 +510,8 @@ public class RecordActivity extends Activity {
 			try {
 				mCamera.setPreviewDisplay(surfaceHolder);
 			} catch (Throwable t) {
-//				Log.e("PreviewDemo-surfaceCallback",
-//						"Exception in setPreviewDisplay()", t);
+				// Log.e("PreviewDemo-surfaceCallback",
+				// "Exception in setPreviewDisplay()", t);
 				Toast.makeText(RecordActivity.this, t.getMessage(),
 						Toast.LENGTH_LONG).show();
 			}
@@ -520,6 +522,8 @@ public class RecordActivity extends Activity {
 				// parameters.setPreviewSize(size.width, size.height);
 				parameters.setPreviewSize(profile.videoFrameWidth,
 						profile.videoFrameHeight);
+				parameters.set("orientation", "portrait");
+				parameters.setRotation(90);
 				mCamera.setParameters(parameters);
 				cameraConfigured = true;
 			}
@@ -575,7 +579,7 @@ public class RecordActivity extends Activity {
 		// Create the storage directory if it does not exist
 		if (!mediaStorageDir.exists()) {
 			if (!mediaStorageDir.mkdirs()) {
-//				Log.d("HaloMama", "gagal membuat direktori");
+				// Log.d("HaloMama", "gagal membuat direktori");
 				return null;
 			}
 		}
@@ -641,7 +645,7 @@ public class RecordActivity extends Activity {
 		// Create the storage directory if it does not exist
 		if (!mediaStorageDir.exists()) {
 			if (!mediaStorageDir.mkdirs()) {
-//				Log.d("HaloMama", "gagal membuat direktori");
+				// Log.d("HaloMama", "gagal membuat direktori");
 				return null;
 			}
 		}
@@ -666,7 +670,7 @@ public class RecordActivity extends Activity {
 	 * @author Aslab-NWP
 	 * 
 	 */
-	private class GetQuestion extends AsyncTask<String, String, String> {
+	private class GetQuestion extends AsyncTask<String, String, Boolean> {
 
 		@Override
 		protected void onPreExecute() {
@@ -681,21 +685,32 @@ public class RecordActivity extends Activity {
 		}
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			acm = new AmazonClientManager(RecordActivity.this);
-			router = new DynamoDBRouter(acm);
+			try {
+				acm = new AmazonClientManager(RecordActivity.this);
+				router = new DynamoDBRouter(acm);
 
-			listQuestion = router.scanQuestion2();
-			return null;
+				listQuestion = router.scanQuestion2();
+				return true;
+			} catch (AmazonClientException e) {
+				// TODO: handle exception
+				return false;
+			}
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(Boolean result) {
 			// TODO Auto-generated method stub
-			String txt = randomizeQuestion(listQuestion);
-			tvRandom.setText(txt);
 			progress.dismiss();
+			if (result) {
+				String txt = randomizeQuestion(listQuestion);
+				tvRandom.setText(txt);
+			} else {
+				Toast.makeText(RecordActivity.this,
+						"Kesalahan koneksi ke server", Toast.LENGTH_SHORT)
+						.show();
+			}
 		}
 	}
 

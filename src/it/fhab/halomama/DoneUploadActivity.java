@@ -1,5 +1,6 @@
 package it.fhab.halomama;
 
+import it.fhab.halomama.controller.AlertDialogManager;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.controller.Util;
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 
@@ -56,6 +58,7 @@ public class DoneUploadActivity extends Activity {
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
 	private Bitmap bmp = null, bmpPref = null, bmpThumbPop;
+	private AlertDialogManager alert = new AlertDialogManager();
 	private TransferManager mManager;
 
 	/*
@@ -134,22 +137,22 @@ public class DoneUploadActivity extends Activity {
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			acm = new AmazonClientManager(DoneUploadActivity.this);
-			router = new DynamoDBRouter(acm);
-
-			// get popular
-			hm = router.getPopularHaloMama();
-			bmp = getAvatarImage(hm.getAvatarURL());
-			bmpPref = getAvatarImage(pref.getString(
-					Constants.TAG_TWITTER_IMG_URL, ""));
-			/*
-			 * get thumbnail
-			 */
 			try {
+				acm = new AmazonClientManager(DoneUploadActivity.this);
+				router = new DynamoDBRouter(acm);
+
+				// get popular
+				hm = router.getPopularHaloMama();
+				bmp = getAvatarImage(hm.getAvatarURL());
+				bmpPref = getAvatarImage(pref.getString(
+						Constants.TAG_TWITTER_IMG_URL, ""));
+				/*
+				 * get thumbnail
+				 */
 				String fileBucket = Util.getPrefix(DoneUploadActivity.this)
 						+ hm.getUserNameTwitter() + "-" + hm.getCreatedDate()
 						+ ".jpg";
-//				Log.e("nama file thumbnail ", fileBucket);
+				// Log.e("nama file thumbnail ", fileBucket);
 				DownloadModel dl = new DownloadModel(DoneUploadActivity.this,
 						fileBucket, mManager);
 
@@ -160,9 +163,12 @@ public class DoneUploadActivity extends Activity {
 							.getAbsolutePath());
 				}
 			} catch (AmazonS3Exception e) {
-
+				return null;
 			} catch (NullPointerException e) {
-
+				return null;
+			} catch (AmazonClientException e) {
+				// TODO: handle exception
+				return null;
 			}
 
 			/*
@@ -191,6 +197,7 @@ public class DoneUploadActivity extends Activity {
 				} else
 					retweetCountPop = status.getRetweetedStatus()
 							.getRetweetCount();
+				return status.toString();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -205,24 +212,32 @@ public class DoneUploadActivity extends Activity {
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			progress.dismiss();
-			Intent i = new Intent(DoneUploadActivity.this, StreamActivity.class);
+			if (result != null) {
+				Intent i = new Intent(DoneUploadActivity.this,
+						StreamActivity.class);
 
-			i.addCategory(Intent.CATEGORY_HOME);
-			// closing all the activity
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				i.addCategory(Intent.CATEGORY_HOME);
+				// closing all the activity
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-			// add new flag to start new activity
-			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				// add new flag to start new activity
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-			i.putExtra("objhalomama", hm);
-			i.putExtra("imgbmppop", bmp);
-			i.putExtra("imgbmppref", bmpPref);
-			i.putExtra("retweet", retweetCountPop);
-			i.putExtra("imgthumb", bmpThumbPop);
-//			Log.e("GAMBAR", "" + bmp);
-//			Log.e("NAMA", hm.getUserNameTwitter());
-			startActivity(i);
-			DoneUploadActivity.this.finish();
+				i.putExtra("objhalomama", hm);
+				i.putExtra("imgbmppop", bmp);
+				i.putExtra("imgbmppref", bmpPref);
+				i.putExtra("retweet", retweetCountPop);
+				i.putExtra("imgthumb", bmpThumbPop);
+				// Log.e("GAMBAR", "" + bmp);
+				// Log.e("NAMA", hm.getUserNameTwitter());
+				startActivity(i);
+				DoneUploadActivity.this.finish();
+			} else {
+				alert.showAlertDialog(DoneUploadActivity.this,
+						"Kesalahan koneksi server", "Koneksi server gagal",
+						false);
+			}
+
 		}
 	}
 

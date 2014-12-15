@@ -1,5 +1,8 @@
 package it.fhab.halomama;
 
+import com.amazonaws.AmazonClientException;
+
+import it.fhab.halomama.controller.AlertDialogManager;
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
 import it.fhab.halomama.model.Constants;
@@ -57,6 +60,7 @@ public class Desc3Fragment extends Fragment {
 	 */
 	private SharedPreferences pref;
 	private String deviceOS = "Android ";
+	private AlertDialogManager alert = new AlertDialogManager();
 
 	/*
 	 * twitter
@@ -201,15 +205,17 @@ public class Desc3Fragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(String oauth_url) {
+			progress.dismiss();
 			if (oauth_url != null) {
-				Log.e("URL", oauth_url);
-				progress.hide();
+				// Log.e("URL", oauth_url);
 				auth_dialog = new Dialog(getActivity());
 				auth_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 				auth_dialog.setContentView(R.layout.auth_dialog);
 				web = (WebView) auth_dialog.findViewById(R.id.webv);
 				web.clearCache(true);
+				web.clearFormData();
+				web.clearHistory();
 				web.getSettings().setJavaScriptEnabled(true);
 				web.loadUrl(oauth_url);
 				web.setWebViewClient(new WebViewClient() {
@@ -227,7 +233,7 @@ public class Desc3Fragment extends Fragment {
 						if (url.contains("oauth_verifier")
 								&& authComplete == false) {
 							authComplete = true;
-//							Log.e("Url", url);
+							// Log.e("Url", url);
 							Uri uri = Uri.parse(url);
 							oauth_verifier = uri
 									.getQueryParameter("oauth_verifier");
@@ -330,7 +336,8 @@ public class Desc3Fragment extends Fragment {
 			} catch (TwitterException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-
+			} catch (AmazonClientException e) {
+				return false;
 			}
 
 			return true;
@@ -338,9 +345,9 @@ public class Desc3Fragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Boolean response) {
+			progress.dismiss();
+			dialog.dismiss();
 			if (response) {
-				progress.dismiss();
-				dialog.dismiss();
 				Intent i = new Intent(getActivity(), RecordActivity.class);
 				// Intent i = new Intent(getActivity(), UploadActivity.class);
 				i.addCategory(Intent.CATEGORY_HOME);
@@ -350,6 +357,11 @@ public class Desc3Fragment extends Fragment {
 				// add new flag to start new activity
 				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
+				getActivity().finish();
+			} else {
+				alert.showAlertDialog(getActivity(),
+						"Kesalahan koneksi server", "Koneksi server gagal",
+						false);
 				getActivity().finish();
 			}
 		}
