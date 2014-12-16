@@ -68,8 +68,8 @@ public class SplashScreen extends Activity {
 	private SharedPreferences pref;
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
-	private Bitmap bmpPop, bmpPref, bmpThumbPop;
-	private byte[] bytePop, bytePref, byteThumbPop;
+	private Bitmap bmpPop, bmpThumbPop;
+	private byte[] bytePop, byteThumbPop;
 	private static String first_run = "";
 	private TransferManager mManager;
 
@@ -156,8 +156,6 @@ public class SplashScreen extends Activity {
 
 				// bmpPref = getAvatarImage(pref.getString(
 				// Constants.TAG_TWITTER_IMG_URL, ""));
-				bytePref = getAvatarImage(pref.getString(
-						Constants.TAG_TWITTER_IMG_URL, ""));
 				// bmpPop = getAvatarImage(hm.getAvatarURL());
 				bytePop = getAvatarImage(hm.getAvatarURL());
 
@@ -241,7 +239,6 @@ public class SplashScreen extends Activity {
 					// i.putExtra("imgbmppop", bmpPop);
 					// i.putExtra("imgbmppref", bmpPref);
 					i.putExtra("imgbmppop", bytePop);
-					i.putExtra("imgbmppref", bytePref);
 					i.putExtra("retweet", retweetCountPop);
 					// i.putExtra("imgthumb", bmpThumbPop);
 					i.putExtra("imgthumb", byteThumbPop);

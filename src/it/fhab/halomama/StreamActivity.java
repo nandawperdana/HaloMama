@@ -51,8 +51,8 @@ public class StreamActivity extends Activity {
 	/*
 	 * vars
 	 */
-	private Bitmap bitmapPop, bitmapPref, bitmapThumb;
-	private byte[] bytePop, bytePref, byteThumbPop;
+	private Bitmap bitmapPop, bitmapThumb;
+	private byte[] bytePop, byteThumbPop;
 	private SharedPreferences pref;
 	private String usernamePop, usernamePref, deviceOSPop, deviceOsPref;
 	private int retweetCountPop, seenCountPop, emotionPop;
@@ -76,12 +76,9 @@ public class StreamActivity extends Activity {
 		hm = (HaloMama) i.getSerializableExtra("objhalomama");
 
 		bytePop = i.getByteArrayExtra("imgbmppop");
-		bytePref = i.getByteArrayExtra("imgbmppref");
 		byteThumbPop = i.getByteArrayExtra("imgthumb");
 
 		bitmapPop = BitmapFactory.decodeByteArray(bytePop, 0, bytePop.length);
-		bitmapPref = BitmapFactory
-				.decodeByteArray(bytePref, 0, bytePref.length);
 		if (byteThumbPop != null)
 			bitmapThumb = BitmapFactory.decodeByteArray(byteThumbPop, 0,
 					byteThumbPop.length);
@@ -119,14 +116,12 @@ public class StreamActivity extends Activity {
 		tvMood.setText(getStringMood(emotionPop));
 
 		Bitmap roundImgPop = roundImgBitmap(bitmapPop);
-		Bitmap roundImgPref = roundImgBitmap(bitmapPref);
 		if (bitmapThumb != null)
 			layVideo.setBackgroundDrawable(new BitmapDrawable(bitmapThumb));
 
 		if (roundImgPop != null) {
 			imageUser.setBackgroundDrawable(new BitmapDrawable(roundImgPop));
 		}
-		btnProfile.setImageBitmap(roundImgPref);
 
 		layMood.setBackgroundColor(Color.parseColor(getColorMood(emotionPop)));
 

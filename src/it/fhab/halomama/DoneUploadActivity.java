@@ -57,8 +57,8 @@ public class DoneUploadActivity extends Activity {
 	private String url = "http://halo-mama.com/@";
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
-	private Bitmap bmp = null, bmpPref = null, bmpThumbPop;
-	private byte[] bytePop, bytePref, byteThumbPop;
+	private Bitmap bmp = null, bmpThumbPop;
+	private byte[] bytePop, byteThumbPop;
 	private AlertDialogManager alert = new AlertDialogManager();
 	private TransferManager mManager;
 
@@ -150,8 +150,6 @@ public class DoneUploadActivity extends Activity {
 				// bmpPref = getAvatarImage(pref.getString(
 				// Constants.TAG_TWITTER_IMG_URL, ""));
 
-				bytePref = getAvatarImage(pref.getString(
-						Constants.TAG_TWITTER_IMG_URL, ""));
 				// bmpPop = getAvatarImage(hm.getAvatarURL());
 				bytePop = getAvatarImage(hm.getAvatarURL());
 
@@ -235,7 +233,6 @@ public class DoneUploadActivity extends Activity {
 				// i.putExtra("imgbmppop", bmp);
 				// i.putExtra("imgbmppref", bmpPref);
 				i.putExtra("imgbmppop", bytePop);
-				i.putExtra("imgbmppref", bytePref);
 				i.putExtra("retweet", retweetCountPop);
 				// i.putExtra("imgthumb", bmpThumbPop);
 				i.putExtra("imgthumb", byteThumbPop);

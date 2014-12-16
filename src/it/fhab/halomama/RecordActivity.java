@@ -84,10 +84,6 @@ public class RecordActivity extends Activity {
 	// instantiate interface for databaserouter
 	DynamoDBRouter router = null;
 
-	/*
-	 * vars
-	 */
-	private boolean cameraFront = false;
 	private boolean isRecording = false;
 	private ArrayList<Question> listQuestion = new ArrayList<Question>();
 	private Uri uriPath, uriThumb;
@@ -209,7 +205,7 @@ public class RecordActivity extends Activity {
 
 					mMediaRecorder.stop(); // stop the recording
 					releaseMediaRecorder(); // release the MediaRecorder object
-					// mCamera.lock(); // take camera access back from
+					mCamera.lock(); // take camera access back from
 					// MediaRecorder
 
 					mChronometer.stop();
@@ -272,7 +268,7 @@ public class RecordActivity extends Activity {
 
 						pref.edit().putString("KEY_RECORD", KEY_RECORD);
 						pref.edit().commit();
-
+							
 						mChronometer.setBase(SystemClock.elapsedRealtime());
 						mChronometer.start();
 
@@ -474,12 +470,11 @@ public class RecordActivity extends Activity {
 	private boolean prepareVideoRecorder() {
 
 		// Step 1: Unlock and set camera to MediaRecorder
+		mCamera.unlock();
 		if (mMediaRecorder == null)
 			mMediaRecorder = new MediaRecorder(); // Works well
-		mCamera.unlock();
+		
 		mMediaRecorder.setCamera(mCamera);
-		mMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
-
 		// Step 2: Set sources
 		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
@@ -538,6 +533,7 @@ public class RecordActivity extends Activity {
 						profile.videoFrameHeight);
 				parameters.set("orientation", "portrait");
 				parameters.setRotation(90);
+				parameters.setRecordingHint(true);
 				mCamera.setParameters(parameters);
 				cameraConfigured = true;
 			}
