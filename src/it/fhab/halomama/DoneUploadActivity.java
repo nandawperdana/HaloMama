@@ -144,13 +144,16 @@ public class DoneUploadActivity extends Activity {
 				mManager = new TransferManager(
 						Util.getCredProvider(DoneUploadActivity.this));
 
-				// getLastHaloMama - clean up expired one
 				hm = router.getLastHaloMama(pref.getString(
 						Constants.TAG_TWITTER_USERNAME, ""));
-				// bmpPref = getAvatarImage(pref.getString(
-				// Constants.TAG_TWITTER_IMG_URL, ""));
-
-				// bmpPop = getAvatarImage(hm.getAvatarURL());
+				if (hm == null){
+					hm = router.getPopularHaloMama();
+					// remove saved preference
+					SharedPreferences.Editor edit = pref.edit();
+					edit.remove(Constants.TAG_VIDEO_AVAILABLE);
+					edit.commit();
+				}
+					
 				bytePop = getAvatarImage(hm.getAvatarURL());
 
 				/*
@@ -206,10 +209,7 @@ public class DoneUploadActivity extends Activity {
 				// TODO: handle exception
 				return false;
 			}catch (TwitterException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				return false;
-				//maybe tweet deleted
+				//maybe tweet have been deleted
 				return true;
 			}  
 		}

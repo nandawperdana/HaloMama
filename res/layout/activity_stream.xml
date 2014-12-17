@@ -152,10 +152,11 @@
         android:paddingRight="16dp" >
 
         <it.fhab.halomama.roboto.RobotoTextView
+            android:id="@+id/textViewVideoShown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:text="Videoku"
+            android:text="Video Populer Hari Ini"
             android:textColor="#ffffff"
             android:textSize="12dp"
             app:typeface="roboto_medium" />

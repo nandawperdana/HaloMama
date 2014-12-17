@@ -151,7 +151,7 @@ public class FeelingFragment extends Fragment {
 				/**
 				 * upload video
 				 */
-				new UploadAndTweet().execute();
+				new UploadVideo().execute();
 			}
 		});
 
@@ -399,7 +399,7 @@ public class FeelingFragment extends Fragment {
 					}
 				}
 				tweetText = "#HaloMama " + nm
-						+ " selamat #hariibu! http://fhab.it/halomama/@"
+						+ " video ini spesial untuk mama! Selamat #hariibu! http://fhab.it/halomama/@"
 						+ username + " cc:@" + mentionTeman;
 				String text = tweetText;
 				if (text.length() > 140) {
@@ -421,10 +421,10 @@ public class FeelingFragment extends Fragment {
 				progress.dismiss();
 			}
 			if (res != null) {
-				Toast.makeText(getActivity(), "Tweet Posted",
-						Toast.LENGTH_SHORT).show();
-
-				new UploadVideo().execute();
+//				Toast.makeText(getActivity(), "Tweet Posted",
+//						Toast.LENGTH_SHORT).show();
+//				new UploadVideo().execute();
+				new CreateInitialData().execute();
 			} else {
 				Toast.makeText(getActivity(),
 						"Kesalahan ketika men-tweet " + res, Toast.LENGTH_SHORT)
@@ -449,6 +449,7 @@ public class FeelingFragment extends Fragment {
 			super.onPreExecute();
 			progress = new ProgressDialog(getActivity());
 			progress.setMessage("Mengunggah video ...");
+			progress.setProgress(5);
 			progress.setMax(100);
 			progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 			progress.setProgressDrawable(getResources().getDrawable(
@@ -492,7 +493,8 @@ public class FeelingFragment extends Fragment {
 				if ((progress != null) && progress.isShowing()) {
 					progress.dismiss();
 				}
-				new CreateInitialData().execute();
+				new UploadAndTweet().execute();
+				
 			} else {
 				alert.showAlertDialog(getActivity(),
 						"Kesalahan koneksi server", "Koneksi server gagal",

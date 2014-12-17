@@ -56,4 +56,5 @@ public class Constants {
 	public static final String TAG_FULLNAME = "FullName";
 	public static final String TAG_LASTLOGIN = "LastLogin";
 	public static final String TAG_VIDEO_TYPE = "VideoType";
+	public static final String TAG_VIDEO_AVAILABLE = "VideoAvailable";
 }

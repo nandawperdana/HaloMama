@@ -42,7 +42,7 @@ public class StreamActivity extends Activity {
 	 */
 	private ImageButton btnProfile, btnPlayVid, btnShareMedia;
 	private RobotoTextView tvUsername, tvRetweet, tvSeen, tvVideoLainnya,
-			tvMood;
+			tvMood, tvVideoShown;
 	private ImageView imageUser;
 	private Dialog dialog;
 	private ProgressDialog progress;
@@ -83,9 +83,6 @@ public class StreamActivity extends Activity {
 			bitmapThumb = BitmapFactory.decodeByteArray(byteThumbPop, 0,
 					byteThumbPop.length);
 
-		// bitmapPop = (Bitmap) i.getParcelableExtra("imgbmppop");
-		// bitmapPref = (Bitmap) i.getParcelableExtra("imgbmppref");
-		// bitmapThumb = (Bitmap) i.getParcelableExtra("imgthumb");
 		retweetCountPop = i.getIntExtra("retweet", 0);
 
 		// get shared pref
@@ -105,6 +102,7 @@ public class StreamActivity extends Activity {
 		tvRetweet = (RobotoTextView) findViewById(R.id.textViewRetweet);
 		tvSeen = (RobotoTextView) findViewById(R.id.textViewSeen);
 		tvVideoLainnya = (RobotoTextView) findViewById(R.id.textViewVideoLainnya);
+		tvVideoShown = (RobotoTextView) findViewById(R.id.textViewVideoShown);
 		imageUser = (ImageView) findViewById(R.id.imageViewUserImagePopular);
 		btnPlayVid = (ImageButton) findViewById(R.id.buttonPlayVideo);
 		btnProfile = (ImageButton) findViewById(R.id.buttonUserImage);
@@ -114,6 +112,11 @@ public class StreamActivity extends Activity {
 		tvSeen.setText("" + seenCountPop);
 		tvUsername.setText("@" + usernamePop);
 		tvMood.setText(getStringMood(emotionPop));
+		if (!pref.contains(Constants.TAG_VIDEO_AVAILABLE)) {
+			tvVideoShown.setText("" + "Video Populer Hari Ini");
+		}else{
+			tvVideoShown.setText("" + "Videoku");
+		}
 
 		Bitmap roundImgPop = roundImgBitmap(bitmapPop);
 		if (bitmapThumb != null)

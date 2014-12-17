@@ -139,6 +139,8 @@ public class DynamoDBRouter {
 		} catch (AmazonServiceException ex) {
 			amazonClientManager.wipeCredentialsOnAuthError(ex);
 			return null;
+		} catch (Exception e){
+			return null;
 		}
 	}
 
@@ -153,18 +155,34 @@ public class DynamoDBRouter {
 		try {
 			PaginatedQueryList<HaloMama> result = mapper.query(HaloMama.class,
 					queryExpression);
-			hm = result.get(result.size() - 1);
-			boolean first = true;
-			for (HaloMama up : result) {
-				if (!first && up.getStatus().equalsIgnoreCase("ok")) {
-					up.prepareOverideHaloMama();
-					overrideHaloMama(up);
+			if (!result.isEmpty()){
+				hm = result.get(result.size() - 1);
+				boolean first = true;
+				for (HaloMama up : result) {
+					
+					if (!(first) && (up.getStatus() != null)) {
+						if (!up.getStatus().equalsIgnoreCase("ok")){
+							up.prepareOverideHaloMama();
+							overrideHaloMama(up);
+						}
+					}
+					first = false;
 				}
-				first = false;
+				if (hm.getStatus().equalsIgnoreCase("ok")){
+					return hm;
+				}
+				else{
+					return null;
+				}
 			}
-			return hm;
+			else{
+				return null;
+			}
+			
 		} catch (AmazonServiceException ex) {
 			amazonClientManager.wipeCredentialsOnAuthError(ex);
+			return null;
+		} catch (Exception e) {
 			return null;
 		}
 	}

@@ -132,11 +132,6 @@ public class SplashScreen extends Activity {
 			}
 
 			/*
-			 * checking bucket
-			 */
-//			AmazonS3Client sS3Client = Util.getS3Client(SplashScreen.this);
-
-			/*
 			 * sign in
 			 */
 			if (pref.contains(Constants.TAG_TWITTER_USERNAME)) {
@@ -148,14 +143,19 @@ public class SplashScreen extends Activity {
 				p.prepareSignIn(username);
 				router.signIn(p);
 
-				/*
-				 * get popular
-				 */
-				hm = router.getPopularHaloMama();
-
-				// bmpPref = getAvatarImage(pref.getString(
-				// Constants.TAG_TWITTER_IMG_URL, ""));
-				// bmpPop = getAvatarImage(hm.getAvatarURL());
+				hm = router.getLastHaloMama(pref.getString(
+						Constants.TAG_TWITTER_USERNAME, ""));
+				if (hm != null){
+					pref.edit().putString(Constants.TAG_VIDEO_AVAILABLE, "AVAILABLE");
+					pref.edit().commit();
+				}else{
+					hm = router.getPopularHaloMama();
+					// remove saved preference
+					SharedPreferences.Editor edit = pref.edit();
+					edit.remove(Constants.TAG_VIDEO_AVAILABLE);
+					edit.commit();
+				}
+				
 				bytePop = getAvatarImage(hm.getAvatarURL());
 
 				/*
@@ -214,8 +214,6 @@ public class SplashScreen extends Activity {
 					e.printStackTrace();
 				}
 			}
-			// publishProgress("stop");
-//			return Util.doesBucketExist();
 			return true;
 		}
 
@@ -223,24 +221,17 @@ public class SplashScreen extends Activity {
 		protected void onPostExecute(Boolean result) {
 			checked = true;
 			exists = result;
-			// progress.dismiss();
 			pbSplash.setVisibility(View.INVISIBLE);
 			if (exists) {
 				Intent i;
 				if (!pref.contains(Constants.TAG_TWITTER_USERNAME)) {
 					first_run = "pertama";
-					// Log.d("First", "First run!");
 					i = new Intent(SplashScreen.this, DescActivity.class);
 				} else {
-					// Log.d("Second...", "Second run...!");
-
 					i = new Intent(SplashScreen.this, StreamActivity.class);
 					i.putExtra("objhalomama", hm);
-					// i.putExtra("imgbmppop", bmpPop);
-					// i.putExtra("imgbmppref", bmpPref);
 					i.putExtra("imgbmppop", bytePop);
 					i.putExtra("retweet", retweetCountPop);
-					// i.putExtra("imgthumb", bmpThumbPop);
 					i.putExtra("imgthumb", byteThumbPop);
 				}
 
