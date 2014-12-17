@@ -23,7 +23,6 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -40,6 +39,7 @@ import com.amazonaws.services.s3.model.ProgressListener;
  * Class that encapsulates downloads, handling all the interaction with the
  * underlying Download and TransferManager
  */
+@SuppressWarnings("deprecation")
 public class DownloadModel extends TransferModel {
 	private static final String TAG = "DownloadModel";
 

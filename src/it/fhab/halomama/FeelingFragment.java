@@ -41,6 +41,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 @SuppressLint("NewApi")
 public class FeelingFragment extends Fragment {
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
+	public static final int CUSTOM_PROGRESS_DIALOG = 0;
 	/*
 	 * widgets
 	 */
@@ -55,7 +56,7 @@ public class FeelingFragment extends Fragment {
 	 * vars
 	 */
 	private String tweetText, namaMama, mentionTeman, username, deviceOS,
-			avatarUrl, tweetId;
+			avatarUrl;
 	private SharedPreferences pref;
 	private boolean feeling = false;
 	private int feel;
@@ -100,11 +101,6 @@ public class FeelingFragment extends Fragment {
 		namaMama = bundle.getString("NAMA_MAMA", "");
 		mentionTeman = bundle.getString("NAMA_TEMAN", "");
 
-		// Toast.makeText(getActivity(), "" + deviceOS + " thumb " + uriThumb,
-		// Toast.LENGTH_LONG).show();
-		// Log.e("URI thumb", "" + Uri.parse(new
-		// File(fileImagePath).toString()));
-
 		mManager = new TransferManager(Util.getCredProvider(getActivity()));
 
 		/*
@@ -133,7 +129,6 @@ public class FeelingFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				v.startAnimation(buttonClick);
 				Intent i = new Intent(getActivity(), DescActivity.class);
 
@@ -153,7 +148,6 @@ public class FeelingFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation(buttonClick);
-				// TODO Auto-generated method stub
 				/**
 				 * upload video
 				 */
@@ -166,7 +160,7 @@ public class FeelingFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation(buttonClick);
-				// TODO Auto-generated method stub
+				 
 				Intent i = new Intent(getActivity(), RecordActivity.class);
 
 				i.addCategory(Intent.CATEGORY_HOME);
@@ -371,7 +365,7 @@ public class FeelingFragment extends Fragment {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			progress = new ProgressDialog(getActivity());
-			progress.setMessage("Mengunggah video ...");
+			progress.setMessage("Men-tweet ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
 			progress.setCancelable(false);
@@ -447,16 +441,22 @@ public class FeelingFragment extends Fragment {
 	 * 
 	 */
 	private class UploadVideo extends AsyncTask<String, String, Boolean> {
+		UploadModel modelVideo, modelThumb;
 
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			progress = new ProgressDialog(getActivity());
-			progress.setMessage("Mengunggah ...");
-			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progress.setIndeterminate(true);
+			progress.setMessage("Mengunggah video ...");
+			progress.setMax(100);
+			progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			progress.setProgressDrawable(getResources().getDrawable(
+					R.drawable.custom_progress_bar_horizontal));
+			progress.setIndeterminate(false);
 			progress.setCancelable(false);
+			modelVideo = new UploadModel(getActivity(), uriPath, mManager);
+			modelThumb = new UploadModel(getActivity(), uriThumb, mManager);
 			progress.show();
 		}
 
@@ -464,21 +464,22 @@ public class FeelingFragment extends Fragment {
 		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			try {
-				/*
-				 * upload to s3
-				 */
-				UploadModel modelVideo = new UploadModel(getActivity(),
-						uriPath, mManager);
-				UploadModel modelThumb = new UploadModel(getActivity(),
-						uriThumb, mManager);
-
-				modelVideo.upload();
 				modelThumb.upload();
+				modelVideo.upload();
 				return true;
 			} catch (AmazonS3Exception e) {
 				// TODO: handle exception
 				return false;
 			}
+		}
+
+		@Override
+		protected void onProgressUpdate(String... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+			progress.setProgress(modelVideo.getProgress());
+			progress.setSecondaryProgress(modelThumb.getProgress());
+
 		}
 
 		@Override

@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,15 +24,11 @@ public class MamaFragment extends Fragment {
 	/*
 	 * widgets
 	 */
-	private String namaMama, mentionTeman, fileVideoPath;
+	private String namaMama, mentionTeman;
 	private RobotoEditText etNamaMama, etMentionTeman;
 	private ImageButton buttonLanjut;
 	private ImageButton btnBatalkan;
 
-	/*
-	 * vars
-	 */
-	private SharedPreferences pref;
 	private Uri uriPath, uriThumb;
 
 	public MamaFragment() {
@@ -44,7 +39,7 @@ public class MamaFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_upload_mama,
 				container, false);
-		pref = getActivity().getSharedPreferences("halomama",
+		getActivity().getSharedPreferences("halomama",
 				Context.MODE_PRIVATE);
 
 		Bundle bundle = this.getArguments();

@@ -2,7 +2,6 @@ package it.fhab.halomama;
 
 import it.fhab.halomama.controller.AmazonClientManager;
 import it.fhab.halomama.controller.DynamoDBRouter;
-import it.fhab.halomama.model.Constants;
 import it.fhab.halomama.model.Question;
 import it.fhab.halomama.roboto.RobotoTextView;
 
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -51,7 +51,7 @@ import android.widget.Toast;
 
 import com.amazonaws.AmazonClientException;
 
-public class RecordActivity extends Activity {
+@SuppressLint("NewApi") public class RecordActivity extends Activity {
 	final static AlphaAnimation buttonClick = new AlphaAnimation(5F, 0.1F);
 
 	/*
@@ -118,18 +118,8 @@ public class RecordActivity extends Activity {
 				showPopup(RecordActivity.this, p);
 			}
 		}
-
-		/*
-		 * camera init
-		 */
-		// mCamera = getCameraInstance();
 		
-		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_HIGH))
-		{
-			profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-		}else{
-			profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
-		}
+		profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
 		
 		surfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 		surfaceHolder = surfaceView.getHolder();
@@ -382,7 +372,13 @@ public class RecordActivity extends Activity {
 			Camera.getCameraInfo(i, info);
 			if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
 				cameraId = i;
-				cameraFront = true;
+				if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_480P)){
+					profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+				}else if  (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_CIF)){
+					profile = CamcorderProfile.get(CamcorderProfile.QUALITY_CIF);
+				}else{
+					profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+				}
 				break;
 			}
 		}
@@ -405,7 +401,6 @@ public class RecordActivity extends Activity {
 			Camera.getCameraInfo(i, info);
 			if (info.facing == CameraInfo.CAMERA_FACING_BACK) {
 				cameraId = i;
-				cameraFront = false;
 				break;
 			}
 		}
@@ -489,6 +484,7 @@ public class RecordActivity extends Activity {
 
 		// Step 5: Set the preview output
 		mMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
+		mMediaRecorder.setOrientationHint(270);
 
 		// Step 6: Prepare configured MediaRecorder
 		try {

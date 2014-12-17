@@ -38,7 +38,7 @@ import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 
 public class DynamoDBRouter {
 
-	private static final String TAG = "DynamoDBManager";
+//	private static final String TAG = "DynamoDBManager";
 	private AmazonDynamoDBClient dDBClient;
 	private AmazonClientManager amazonClientManager;
 	private DynamoDBMapper mapper;

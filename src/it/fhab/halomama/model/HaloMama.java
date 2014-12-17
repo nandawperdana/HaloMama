@@ -12,6 +12,10 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 @DynamoDBTable(tableName = Constants.TABLE_NAME)
 public class HaloMama extends DDBTableRow implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String userNameTwitter;
 	private String createdDate;
 	private int emotionId;

@@ -31,7 +31,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
@@ -127,8 +126,6 @@ public class Desc3Fragment extends Fragment {
 				dialog.setCancelable(false);
 				dialog.setContentView(R.layout.permission_dialog);
 
-				final RobotoTextView tvTitle = (RobotoTextView) dialog
-						.findViewById(R.id.textViewPermissionTitle);
 				final RobotoTextView tvMessage = (RobotoTextView) dialog
 						.findViewById(R.id.textViewPermission);
 				tvMessage.setText(Html.fromHtml(getString(

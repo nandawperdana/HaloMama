@@ -40,7 +40,6 @@ import android.widget.ProgressBar;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 public class SplashScreen extends Activity {
@@ -68,7 +67,7 @@ public class SplashScreen extends Activity {
 	private SharedPreferences pref;
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
-	private Bitmap bmpPop, bmpThumbPop;
+	private Bitmap bmpThumbPop;
 	private byte[] bytePop, byteThumbPop;
 	private static String first_run = "";
 	private TransferManager mManager;
@@ -131,11 +130,6 @@ public class SplashScreen extends Activity {
 			} catch (AmazonClientException e) {
 				return false;
 			}
-
-			/*
-			 * checking bucket
-			 */
-			AmazonS3Client sS3Client = Util.getS3Client(SplashScreen.this);
 
 			/*
 			 * sign in

@@ -48,6 +48,7 @@ import com.amazonaws.services.s3.model.ProgressListener;
  *
  * You can easily avoid this by directly using an InputStream instead of a Uri.
  */
+@SuppressWarnings("deprecation")
 public class UploadModel extends TransferModel {
 	private static final String TAG = "UploadModel";
 

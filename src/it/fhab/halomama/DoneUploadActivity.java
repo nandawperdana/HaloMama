@@ -57,7 +57,7 @@ public class DoneUploadActivity extends Activity {
 	private String url = "http://halo-mama.com/@";
 	private HaloMama hm = null;
 	private int retweetCountPop = 0;
-	private Bitmap bmp = null, bmpThumbPop;
+	private Bitmap bmpThumbPop;
 	private byte[] bytePop, byteThumbPop;
 	private AlertDialogManager alert = new AlertDialogManager();
 	private TransferManager mManager;

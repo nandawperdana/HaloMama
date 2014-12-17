@@ -16,6 +16,7 @@
 package it.fhab.halomama.controller;
 
 import it.fhab.halomama.R;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -192,7 +193,7 @@ public class LinePageIndicator extends View implements PageIndicator {
         }
     }
 
-    public boolean onTouchEvent(android.view.MotionEvent ev) {
+    @SuppressLint("ClickableViewAccessibility") public boolean onTouchEvent(android.view.MotionEvent ev) {
         if (super.onTouchEvent(ev)) {
             return true;
         }
@@ -354,7 +355,7 @@ public class LinePageIndicator extends View implements PageIndicator {
      *            A measureSpec packed into an int
      * @return The width of the view, honoring constraints from measureSpec
      */
-    private int measureWidth(int measureSpec) {
+    @SuppressLint("FloatMath") private int measureWidth(int measureSpec) {
         float result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
@@ -381,7 +382,7 @@ public class LinePageIndicator extends View implements PageIndicator {
      *            A measureSpec packed into an int
      * @return The height of the view, honoring constraints from measureSpec
      */
-    private int measureHeight(int measureSpec) {
+    @SuppressLint("FloatMath") private int measureHeight(int measureSpec) {
         float result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
@@ -434,7 +435,6 @@ public class LinePageIndicator extends View implements PageIndicator {
             dest.writeInt(currentPage);
         }
 
-        @SuppressWarnings("UnusedDeclaration")
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
             @Override
             public SavedState createFromParcel(Parcel in) {

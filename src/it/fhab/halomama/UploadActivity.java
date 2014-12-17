@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,16 +11,13 @@ import android.view.Window;
 
 public class UploadActivity extends FragmentActivity {
 
-	// shared preferences
-	private SharedPreferences pref;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_upload);
 
-		pref = getSharedPreferences("halomama", Context.MODE_PRIVATE);
+		getSharedPreferences("halomama", Context.MODE_PRIVATE);
 		Intent i = getIntent();
 		Uri UriThumb = i.getParcelableExtra("THUMB_URI");
 		Uri uriPath = i.getParcelableExtra("VIDEO_URI");

@@ -1,7 +1,6 @@
 package it.fhab.halomama;
 
 import it.fhab.halomama.controller.LinePageIndicator;
-import it.fhab.halomama.model.Constants;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,8 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 
 public class DescActivity extends FragmentActivity {
 	public Context ctx = DescActivity.this;
@@ -35,11 +32,6 @@ public class DescActivity extends FragmentActivity {
 	 */
 	ViewPager mViewPager;
 
-	/**
-	 * variables
-	 */
-	// Shared Preferences
-	private SharedPreferences pref;
 	public static boolean exists = false;
 	public static boolean checked = false;
 	public static final String createdDatePeople = ""

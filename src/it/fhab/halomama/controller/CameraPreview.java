@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -13,8 +12,6 @@ public class CameraPreview extends SurfaceView implements
 		SurfaceHolder.Callback {
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
-	private MediaRecorder mMediaRecorder;
-
 	public CameraPreview(Context context, Camera camera) {
 		super(context);
 		mCamera = camera;

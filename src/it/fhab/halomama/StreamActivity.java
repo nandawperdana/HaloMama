@@ -54,7 +54,7 @@ public class StreamActivity extends Activity {
 	private Bitmap bitmapPop, bitmapThumb;
 	private byte[] bytePop, byteThumbPop;
 	private SharedPreferences pref;
-	private String usernamePop, usernamePref, deviceOSPop, deviceOsPref;
+	private String usernamePop, usernamePref, deviceOsPref;
 	private int retweetCountPop, seenCountPop, emotionPop;
 	private AlertDialogManager alert = new AlertDialogManager();
 	/*

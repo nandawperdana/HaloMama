@@ -28,7 +28,7 @@ import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
  * interaction with the underlying TransferManager and Upload/Download classes
  */
 public abstract class TransferModel {
-    private static final String TAG = "TransferModel";
+//    private static final String TAG = "TransferModel";
 
     public static enum Status {
         IN_PROGRESS, PAUSED, CANCELED, COMPLETED
