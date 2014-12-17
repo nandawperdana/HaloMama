@@ -128,7 +128,7 @@ public class DoneUploadActivity extends Activity {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			progress = new ProgressDialog(DoneUploadActivity.this);
-			progress.setMessage("Harap tunggu ...");
+			progress.setMessage("Menampilkan #halomama di internet ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
 			progress.setCancelable(false);

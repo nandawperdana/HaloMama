@@ -365,7 +365,7 @@ public class FeelingFragment extends Fragment {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			progress = new ProgressDialog(getActivity());
-			progress.setMessage("Men-tweet ...");
+			progress.setMessage("Menyebarkan pesan untuk mama via twitter");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
 			progress.setCancelable(false);
@@ -448,7 +448,7 @@ public class FeelingFragment extends Fragment {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			progress = new ProgressDialog(getActivity());
-			progress.setMessage("Mengunggah video ...");
+			progress.setMessage("Mengunggah video #halomama ...");
 			progress.setProgress(5);
 			progress.setMax(100);
 			progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -516,7 +516,7 @@ public class FeelingFragment extends Fragment {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			progress = new ProgressDialog(getActivity());
-			progress.setMessage("Meng-update ...");
+			progress.setMessage("Melampirkan perasaan anda ke video ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
 			progress.setCancelable(false);
@@ -570,7 +570,7 @@ public class FeelingFragment extends Fragment {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			progress = new ProgressDialog(getActivity());
-			progress.setMessage("Meng-update ...");
+			progress.setMessage("Membuat halaman khusus untuk videomu ...");
 			progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progress.setIndeterminate(true);
 			progress.setCancelable(false);
