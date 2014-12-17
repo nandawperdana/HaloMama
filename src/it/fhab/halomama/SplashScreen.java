@@ -132,6 +132,11 @@ public class SplashScreen extends Activity {
 			}
 
 			/*
+			 * checking bucket
+			 */
+//			AmazonS3Client sS3Client = Util.getS3Client(SplashScreen.this);
+
+			/*
 			 * sign in
 			 */
 			if (pref.contains(Constants.TAG_TWITTER_USERNAME)) {
@@ -210,7 +215,8 @@ public class SplashScreen extends Activity {
 				}
 			}
 			// publishProgress("stop");
-			return Util.doesBucketExist();
+//			return Util.doesBucketExist();
+			return true;
 		}
 
 		@Override
