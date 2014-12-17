@@ -156,18 +156,24 @@ public class DynamoDBRouter {
 			PaginatedQueryList<HaloMama> result = mapper.query(HaloMama.class,
 					queryExpression);
 			if (!result.isEmpty()){
-				hm = result.get(result.size() - 1);
+				
 				boolean first = true;
-				for (HaloMama up : result) {
-					
-					if (!(first) && (up.getStatus() != null)) {
-						if (!up.getStatus().equalsIgnoreCase("ok")){
+				for (HaloMama up : result) {	
+					if (up.getStatus() == null){
+						up.prepareDeleteHaloMama();
+						deleteHaloMama(up);
+					}
+					else if (up.getStatus().equalsIgnoreCase("ok")){
+						if (first){
+							hm = up;
+							first = false;
+						}else{
 							up.prepareOverideHaloMama();
 							overrideHaloMama(up);
-						}
+						}	
 					}
-					first = false;
 				}
+
 				if (hm.getStatus().equalsIgnoreCase("ok")){
 					return hm;
 				}

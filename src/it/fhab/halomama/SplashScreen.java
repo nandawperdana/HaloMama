@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -146,8 +147,9 @@ public class SplashScreen extends Activity {
 				hm = router.getLastHaloMama(pref.getString(
 						Constants.TAG_TWITTER_USERNAME, ""));
 				if (hm != null){
-					pref.edit().putString(Constants.TAG_VIDEO_AVAILABLE, "AVAILABLE");
-					pref.edit().commit();
+					Editor editor = pref.edit(); 
+					editor.putString(Constants.TAG_VIDEO_AVAILABLE, "AVAILABLE");
+					editor.commit();
 				}else{
 					hm = router.getPopularHaloMama();
 					// remove saved preference
